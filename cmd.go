@@ -60,9 +60,17 @@ var rootCmd = &cobra.Command{
 		}
 		envFile := ensureConfig(os.Getenv("USER"), args[0])
 		docker := exec.Command("/usr/bin/docker",
-			append([]string{"run", "--rm", "--env-file", envFile, image}, args[1:]...)...)
+			append([]string{"run", "--rm", "-i", "--env-file", envFile, image}, args[1:]...)...)
 		docker.Stdout = os.Stdout
 		docker.Stderr = os.Stderr
+		stdinPipe, err := docker.StdinPipe()
+		if err != nil {
+			log.Fatal(err)
+		}
+		go func() {
+			defer stdinPipe.Close()
+			io.Copy(stdinPipe, os.Stdin)
+		}()
 		if err := docker.Run(); err != nil {
 			os.Exit(1)
 		}
