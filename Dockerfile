@@ -1,16 +1,13 @@
 FROM alpine
-RUN apk --update add bash curl go git mercurial docker
-
-RUN curl -Ls https://github.com/gliderlabs/sshfront/releases/download/v0.2.1/sshfront_0.2.1_Linux_x86_64.tgz \
-    | tar -zxC /bin
-
-COPY ./data /tmp/data
-
-ENV GOPATH /go
-COPY . /go/src/github.com/progrium/cmd
-WORKDIR /go/src/github.com/progrium/cmd
-RUN go get && CGO_ENABLED=0 go build -a -installsuffix cgo -o /bin/cmd \
-  && ln -s /bin/cmd /bin/auth
-
+RUN apk --update add go curl make git docker
+ENV GOPATH /usr/local
+RUN curl https://glide.sh/get | sh
+COPY . /usr/local/src/github.com/progrium/cmd
+WORKDIR /usr/local/src/github.com/progrium/cmd
+RUN glide install
+RUN go install ./cmd
+ENV CMD_LISTEN_ADDR=":22"
+ENV CMD_CONFIG_DIR="/config"
+ENV CMD_HOSTKEY_PEM="/tmp/data/id_host"
 EXPOSE 22
-ENTRYPOINT ["/bin/bash", "-c", "/bin/sshfront -e -k /tmp/data/id_host -a /bin/auth /bin/cmd"]
+CMD ["/usr/local/bin/cmd"]

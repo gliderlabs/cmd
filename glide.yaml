@@ -1,0 +1,13 @@
+package: github.com/progrium/cmd
+ignore:
+- github.com/progrium/cmd
+import:
+- package: github.com/progrium/go-shell
+- package: github.com/spf13/cobra
+- package: github.com/thejerf/suture
+  version: ^2.0.0
+- package: github.com/gliderlabs/pkg
+  subpackages:
+  - log
+  - com
+  - ssh
