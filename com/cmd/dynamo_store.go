@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	dynamoattr "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
@@ -15,9 +16,17 @@ type dynamodbStore struct {
 	client *dynamodb.DynamoDB
 }
 
-func GetDynamodbStore(sess *session.Session) CommandStore {
+func GetDynamodbStore() CommandStore {
+	sess := session.New(
+		aws.NewConfig().
+			WithRegion(
+				com.GetString("aws_region")).
+			WithCredentials(credentials.NewStaticCredentials(
+				com.GetString("aws_access_key"),
+				com.GetString("aws_secret_key"), "")))
+
 	return &dynamodbStore{
-		table:  com.GetString("TABLE_NAME"),
+		table:  com.GetString("table_name"),
 		client: dynamodb.New(sess),
 	}
 }
@@ -40,12 +49,13 @@ func (s *dynamodbStore) List(user string) []*Command {
 		return nil
 	}
 
-	var cmds []*Command
+	cmds := make([]*Command, len(res.Items))
 	for _, item := range res.Items {
 		var cmd Command
 		err := dynamoattr.UnmarshalMap(item, &cmd)
 		if err != nil {
 			log.Debug(err)
+			continue
 		}
 		cmds = append(cmds, &cmd)
 	}
