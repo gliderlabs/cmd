@@ -11,6 +11,7 @@ func init() {
 		com.Option("docker_bin", "docker", "command path to use for docker"),
 		com.Option("listen_addr", "127.0.0.1:2223", "port to bind on"),
 		com.Option("config_dir", "local", "directory containing command configs"),
+		com.Option("table_name", "", "dynamodb table name for command storage"),
 		com.Option("hostkey_pem", "com/cmd/data/id_host", "private key for host verification"))
 }
 
