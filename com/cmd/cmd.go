@@ -14,7 +14,7 @@ import (
 	"github.com/thejerf/suture"
 )
 
-var Store = GetStore()
+var Store = GetDynamodbStore()
 
 var allowedUsers = []string{
 	"progrium",
