@@ -49,7 +49,7 @@ func (s *dynamodbStore) List(user string) []*Command {
 		return nil
 	}
 
-	cmds := make([]*Command, len(res.Items))
+	cmds := make([]*Command, 0, len(res.Items))
 	for _, item := range res.Items {
 		var cmd Command
 		err := dynamoattr.UnmarshalMap(item, &cmd)

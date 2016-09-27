@@ -14,7 +14,7 @@ import (
 	"github.com/thejerf/suture"
 )
 
-var Store = GetDynamodbStore()
+var Store CommandStore
 
 var allowedUsers = []string{
 	"progrium",
@@ -53,6 +53,7 @@ func Run() {
 	cfg.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	com.SetConfig(cfg)
 
+	Store = GetDynamodbStore()
 	app := suture.NewSimple("cmd.io")
 	for _, service := range com.Enabled(new(suture.Service), nil) {
 		app.Add(service.(suture.Service))
