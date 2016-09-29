@@ -1,5 +1,5 @@
-hash: ee7089a4152aa05b31569a0fe63dde6888adc96d1c8b5b6fc6c8b9fe2d45f1a6
-updated: 2016-09-22T16:55:06.471949351-05:00
+hash: 8af460a17b17936feb143c12a309a29321d3cc1bd4fbaa90701f05f074afe899
+updated: 2016-09-28T14:20:53.238364547-05:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 53a3d8a8a362cca54fd6825caf2216aa6d8139fc
@@ -33,8 +33,18 @@ imports:
   - service/dynamodb
   - service/dynamodb/dynamodbattribute
   - service/sts
+- name: github.com/certifi/gocertifi
+  version: a61bf5eafa3aee233ec8043e9da052447e5463dd
+- name: github.com/facebookgo/clock
+  version: 600d898af40aa09a7a93ecb9265d87b0504b6f03
+- name: github.com/facebookgo/limitgroup
+  version: 6abd8d71ec01451d7f1929eacaa263bbe2935d05
+- name: github.com/facebookgo/muster
+  version: fd3d7953fd52354a74b9f6b3d70d0c9650c4ec2a
 - name: github.com/fsnotify/fsnotify
   version: f12c6236fe7b5cf6bcf30e5935d08cb079d78334
+- name: github.com/getsentry/raven-go
+  version: 379f8d0a68ca237cf8893a1cdfd4f574125e2c51
 - name: github.com/gliderlabs/pkg
   version: 366d37da4eaa920cb37ccd14d961a69d15234a05
   subpackages:
@@ -55,6 +65,8 @@ imports:
   - json/parser
   - json/scanner
   - json/token
+- name: github.com/honeycombio/libhoney-go
+  version: b05b08b71be49803f764f348925ecda730d72c9c
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/jmespath/go-jmespath
@@ -83,7 +95,7 @@ imports:
   - mem
   - sftp
 - name: github.com/spf13/cast
-  version: 60e7a69a428e9ac1cf7e0c865fc2fe810d34363e
+  version: 2580bc98dc0e62908119e4737030cc2fdfc45e4c
 - name: github.com/spf13/cobra
   version: 9c28e4bbd74e5c3ed7aacbc552b2cab7cfdfe744
 - name: github.com/spf13/jwalterweatherman
@@ -91,7 +103,7 @@ imports:
 - name: github.com/spf13/pflag
   version: c7e63cf4530bcd3ba943729cee0efeff2ebea63f
 - name: github.com/spf13/viper
-  version: ed0a9674c6ef3646e218d8bb70708d250e94354b
+  version: 382f87b929b84ce13e9c8a375a4b217f224e6c65
 - name: github.com/thejerf/suture
   version: fe1c0d795ff7a7e54fc54ef6afb36ee0adf0c276
 - name: golang.org/x/crypto
@@ -104,10 +116,12 @@ imports:
   subpackages:
   - unix
 - name: golang.org/x/text
-  version: 9c8be9c425872eec4348571de4bcd4113104fceb
+  version: a7c023693a94aedd6b6df43ae7526bfe9d2b7d22
   subpackages:
   - transform
   - unicode/norm
+- name: gopkg.in/alexcesaro/statsd.v2
+  version: 7fea3f0d2fab1ad973e641e51dba45443a311a90
 - name: gopkg.in/yaml.v2
-  version: 31c299268d302dd0aa9a0dcf765a3d58971ac83f
+  version: a5b47d31c556af34a302ce5d659e6fea44d90de0
 testImports: []

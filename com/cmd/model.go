@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/gliderlabs/pkg/com"
+	"github.com/gliderlabs/pkg/log"
 	"github.com/gliderlabs/pkg/ssh"
 )
 
@@ -117,7 +118,8 @@ func (c *Command) image() string {
 
 func (c *Command) Pull() error {
 	pull := exec.Command(com.GetString("docker_bin"), "pull", c.Source)
-	if err := pull.Run(); err != nil {
+	if b, err := pull.CombinedOutput(); err != nil {
+		log.Info(c, err, b)
 		return err
 	}
 	tag := exec.Command(com.GetString("docker_bin"), "tag", c.Source, c.image())

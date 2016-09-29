@@ -6,11 +6,13 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/gliderlabs/pkg/com"
 	"github.com/gliderlabs/pkg/com/viper"
 	"github.com/gliderlabs/pkg/log"
 	"github.com/gliderlabs/pkg/ssh"
+	libhoney "github.com/honeycombio/libhoney-go"
 	"github.com/thejerf/suture"
 )
 
@@ -47,11 +49,23 @@ func DebugMode() bool {
 
 func Run() {
 	log.RegisterObserver(new(logging))
+	log.SetFieldProcessor(fieldProcessor)
 
 	cfg := viper.NewConfig()
 	cfg.AutomaticEnv()
 	cfg.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	com.SetConfig(cfg)
+
+	libhoney.Init(libhoney.Config{
+		WriteKey:   com.GetString("honeycomb_key"),
+		Dataset:    com.GetString("honeycomb_dataset"),
+		SampleRate: 1,
+	})
+	// when all done, call close
+	defer libhoney.Close()
+	log.RegisterObserver(new(honeylog))
+
+	log.RegisterObserver(newRavenLogger(com.GetString("sentry_dsn")))
 
 	Store = GetDynamodbStore()
 	app := suture.NewSimple("cmd.io")
@@ -62,6 +76,9 @@ func Run() {
 }
 
 func HandleSSH(s ssh.Session) {
+	start := time.Now()
+	log.Info("start", s)
+	defer log.Info("done", s, time.Since(start))
 	user := s.User()
 	if !allowed(user) {
 		fmt.Fprintln(s, "Email progrium@gmail.com with your GitHub user for access.")
@@ -81,10 +98,9 @@ func HandleSSH(s ssh.Session) {
 		if parts[0] == "" {
 			runRootMeta(s, args)
 			return
-		} else {
-			runCmdMeta(s, parts[0], args)
-			return
 		}
+		runCmdMeta(s, parts[0], args)
+		return
 	}
 
 	if strings.Contains(args[0], "/") {
@@ -100,6 +116,7 @@ func HandleSSH(s ssh.Session) {
 			s.Exit(1)
 			return
 		}
+		log.Info(s, cmd)
 		cmd.Run(s, args[1:])
 		return
 	}
@@ -117,6 +134,7 @@ func HandleSSH(s ssh.Session) {
 			return
 		}
 	}
+	log.Info(s, cmd)
 	cmd.Run(s, args[1:])
 }
 
@@ -166,7 +184,9 @@ func runCmdMeta(s ssh.Session, cmdName string, args []string) {
 	meta.Cmd.SetOutput(s)
 	meta.Cmd.SetUsageTemplate(metaUsageTmpl)
 	if err := meta.Cmd.Execute(); err != nil {
+
 		//fmt.Fprintln(s.Stderr(), err.Error())
+		log.Debug(s, err)
 		s.Exit(255)
 	}
 }
@@ -174,7 +194,7 @@ func runCmdMeta(s ssh.Session, cmdName string, args []string) {
 func HandleAuth(user string, key ssh.PublicKey) bool {
 	resp, err := http.Get(fmt.Sprintf("https://github.com/%s.keys", user))
 	if err != nil {
-		log.Info(err)
+		log.Info(user, err)
 		return false
 	}
 	defer resp.Body.Close()
@@ -183,7 +203,7 @@ func HandleAuth(user string, key ssh.PublicKey) bool {
 	for scanner.Scan() {
 		k, _, _, _, err := ssh.ParseAuthorizedKey(scanner.Bytes())
 		if err != nil {
-			log.Info(err)
+			log.Info(user, err)
 			return false
 		}
 
@@ -202,6 +222,7 @@ func LazyLoad(user, name string) *Command {
 		Source: fmt.Sprintf("%s/cmd-%s", user, name),
 	}
 	if err := cmd.Pull(); err != nil {
+		log.Info(cmd, err)
 		return nil
 	}
 	return cmd

@@ -9,6 +9,9 @@ import (
 func init() {
 	com.Register("cmd", &Component{},
 		com.Option("docker_bin", "docker", "command path to use for docker"),
+		com.Option("sentry_dsn", "", ""),
+		com.Option("honeycomb_key", "", ""),
+		com.Option("honeycomb_dataset", "", ""),
 		com.Option("listen_addr", "127.0.0.1:2223", "port to bind on"),
 		com.Option("config_dir", "local", "directory containing command configs"),
 		com.Option("table_name", "", "dynamodb table name for command storage"),

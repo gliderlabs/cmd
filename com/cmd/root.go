@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/gliderlabs/pkg/log"
 	"github.com/gliderlabs/pkg/ssh"
 	"github.com/spf13/cobra"
 )
@@ -77,11 +78,13 @@ var rootInstall = &MetaCommand{
 			Config: make(map[string]string),
 		}
 		if err := cmd.Pull(); err != nil {
+			// log.Info(err)
 			fmt.Fprintln(sess.Stderr(), "Command unable to install")
 			sess.Exit(1)
 			return
 		}
 		if err := Store.Put(cmd.User, cmd.Name, cmd); err != nil {
+			log.Info(sess, cmd, err)
 			fmt.Fprintln(sess.Stderr(), err.Error())
 			sess.Exit(255)
 			return
@@ -106,6 +109,7 @@ var rootUninstall = &MetaCommand{
 			return
 		}
 		if err := Store.Delete(cmd.User, cmd.Name); err != nil {
+			log.Info(sess, cmd, err)
 			fmt.Fprintln(sess.Stderr(), err.Error())
 			sess.Exit(255)
 			return
