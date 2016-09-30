@@ -18,26 +18,7 @@ import (
 
 var Store CommandStore
 
-var allowedUsers = []string{
-	"progrium",
-	"mdiebolt",
-	"mattaitchison",
-	"mgood",
-	"Siedrix",
-	"Natosaichek",
-	"jpf",
-	"rndmcnlly",
-	"adrianPerez",
-}
-
-func allowed(user string) bool {
-	for _, u := range allowedUsers {
-		if u == user {
-			return true
-		}
-	}
-	return false
-}
+var allowedUsers = &Allowed{}
 
 func LocalMode() bool {
 	return os.Getenv("LOCAL") != "false"
@@ -80,8 +61,8 @@ func HandleSSH(s ssh.Session) {
 	log.Info("start", s)
 	defer log.Info("done", s, time.Since(start))
 	user := s.User()
-	if !allowed(user) {
-		fmt.Fprintln(s, "Email progrium@gmail.com with your GitHub user for access.")
+	if !allowedUsers.Check(user) {
+		fmt.Fprintln(s, com.GetString("access_denied_msg"))
 		return
 	}
 	args := s.Command()

@@ -89,7 +89,6 @@ func (c *ravenLog) Log(e log.Event) {
 	if !ok {
 		return
 	}
-	fmt.Println(e.Fields)
 	packet := raven.NewPacket(err,
 		&raven.User{Username: e.Fields["sess.user"]},
 		raven.NewException(errors.New(err), raven.NewStacktrace(4, 3, nil)))
