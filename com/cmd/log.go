@@ -98,11 +98,7 @@ func (c *ravenLog) Log(e log.Event) {
 type honeylog struct{}
 
 func (c *honeylog) Log(e log.Event) {
-
 	ev := libhoney.NewEvent()
-	for k, v := range e.Fields {
-		ev.AddField(k, v)
-	}
-	// send the event
+	ev.Add(e.Fields)
 	ev.Send()
 }

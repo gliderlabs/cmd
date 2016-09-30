@@ -44,6 +44,10 @@ func Run() {
 	})
 	// when all done, call close
 	defer libhoney.Close()
+	hostname, _ := os.Hostname()
+	libhoney.AddField("servername", hostname)
+	libhoney.AddField("release", os.Getenv("RELEASE"))
+
 	log.RegisterObserver(new(honeylog))
 
 	log.RegisterObserver(newRavenLogger(com.GetString("sentry_dsn")))
