@@ -61,9 +61,10 @@ func Run() {
 }
 
 func HandleSSH(s ssh.Session) {
-	start := time.Now()
-	log.Info("start", s)
-	defer log.Info("done", s, time.Since(start))
+	var start, cmd = time.Now(), &Command{}
+	defer func() {
+		log.Info(s, cmd, time.Since(start))
+	}()
 	user := s.User()
 	if !allowedUsers.Check(user) {
 		fmt.Fprintln(s, com.GetString("access_denied_msg"))
@@ -90,7 +91,7 @@ func HandleSSH(s ssh.Session) {
 
 	if strings.Contains(args[0], "/") {
 		parts := strings.SplitN(args[0], "/", 2)
-		cmd := Store.Get(parts[0], parts[1])
+		cmd = Store.Get(parts[0], parts[1])
 		if cmd == nil {
 			fmt.Fprintln(s.Stderr(), "Command not found: "+args[0])
 			s.Exit(1)
@@ -101,12 +102,11 @@ func HandleSSH(s ssh.Session) {
 			s.Exit(1)
 			return
 		}
-		log.Info(s, cmd)
 		cmd.Run(s, args[1:])
 		return
 	}
 
-	cmd := Store.Get(user, args[0])
+	cmd = Store.Get(user, args[0])
 	if cmd == nil {
 		if cmd = LazyLoad(user, args[0]); cmd == nil {
 			fmt.Fprintln(s.Stderr(), "Command not found: "+args[0])
@@ -119,7 +119,6 @@ func HandleSSH(s ssh.Session) {
 			return
 		}
 	}
-	log.Info(s, cmd)
 	cmd.Run(s, args[1:])
 }
 

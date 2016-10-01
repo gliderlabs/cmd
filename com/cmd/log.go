@@ -61,7 +61,7 @@ func (c *logging) Log(e log.Event) {
 func fieldProcessor(e log.Event, o interface{}) (log.Event, bool) {
 	switch obj := o.(type) {
 	case time.Duration:
-		return e.Append("dur", obj.String()), true
+		return e.Append("dur", fmt.Sprintf("%.2f", obj.Seconds()*1e3)), true
 	case *Command:
 		e = e.Append("cmd.user", obj.User)
 		e = e.Append("cmd.name", obj.Name)
