@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"github.com/gliderlabs/ssh"
-	"github.com/spf13/cobra"
 	"github.com/progrium/cmd/com/core"
+	"github.com/spf13/cobra"
 )
 
 type MetaCommand struct {
@@ -29,9 +29,9 @@ func (c *MetaCommand) Add(cmds ...*MetaCommand) *MetaCommand {
 		cmdCopy.ForCmd = c.ForCmd
 		c.setup().Cmd.AddCommand((&cmdCopy).setup().Cmd)
 		passCmd = &cmdCopy
-	}
-	if passCmd.Setup != nil {
-		passCmd.Setup(passCmd)
+		if passCmd.Setup != nil {
+			passCmd.Setup(passCmd)
+		}
 	}
 	return passCmd
 }
