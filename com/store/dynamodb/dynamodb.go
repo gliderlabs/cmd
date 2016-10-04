@@ -13,7 +13,7 @@ import (
 
 func init() {
 	com.Register("store.dynamodb", &Component{},
-		com.Option("table_name", "", "dynamodb table name for command storage"),
+		com.Option("table", "", "dynamodb table name for command storage"),
 		com.Option("access_key", "", "aws access key for dynamodb store"),
 		com.Option("secret_key", "", "aws secret key for dynamodb store"),
 		com.Option("region", "us-east-1", "aws region for dynamodb store"),
@@ -46,7 +46,7 @@ func (c *Component) List(user string) []*core.Command {
 	})
 	if err != nil {
 		// FIXME: Should actually do something with this error.
-		log.Debug(err)
+		log.Info(err)
 		return nil
 	}
 
@@ -76,7 +76,7 @@ func (c *Component) Get(user, name string) *core.Command {
 		TableName: aws.String(com.GetString("table")),
 	})
 	if err != nil {
-		log.Debug(err)
+		log.Info(err)
 		return nil
 	}
 
