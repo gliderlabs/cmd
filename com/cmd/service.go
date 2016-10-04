@@ -3,9 +3,9 @@ package cmd
 import (
 	"net"
 
-	"github.com/gliderlabs/pkg/com"
-	"github.com/gliderlabs/pkg/log"
-	"github.com/gliderlabs/pkg/ssh"
+	"github.com/gliderlabs/gosper/pkg/com"
+	"github.com/gliderlabs/gosper/pkg/log"
+	"github.com/gliderlabs/ssh"
 )
 
 func (c *Component) Stop() {

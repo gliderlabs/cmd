@@ -4,64 +4,55 @@ import (
 	"bufio"
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
-	"github.com/gliderlabs/pkg/com"
-	"github.com/gliderlabs/pkg/com/viper"
-	"github.com/gliderlabs/pkg/log"
-	"github.com/gliderlabs/pkg/ssh"
-	libhoney "github.com/honeycombio/libhoney-go"
-	"github.com/thejerf/suture"
+	"github.com/gliderlabs/gosper/pkg/com"
+	"github.com/gliderlabs/gosper/pkg/log"
+	"github.com/gliderlabs/ssh"
+
+	"github.com/progrium/cmd/com/core"
+	"github.com/progrium/cmd/com/store"
 )
 
-var Store CommandStore
+const rootUsageTmpl = `Usage:{{if .Runnable}}
+  ssh <user>@{{.UseLine}}{{ if .HasAvailableSubCommands}} [command]{{end}}{{end}}{{if gt .Aliases 0}}
+
+Aliases:
+  {{.NameAndAliases}}
+{{end}}{{if .HasExample}}
+
+Examples:
+{{ .Example }}{{end}}{{ if .HasAvailableSubCommands}}
+
+Available Commands:{{range .Commands}}{{if .IsAvailableCommand}}
+  {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{ if .HasAvailableLocalFlags}}
+
+Additional help topics:{{range .Commands}}{{if .IsHelpCommand}}
+  {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{ if .HasAvailableSubCommands }}
+
+Use "[command] --help" for help about a meta command.{{end}}
+
+`
+
+const metaUsageTmpl = `Usage:{{if .Runnable}}{{if not .HasParent }}
+  ssh <user>@cmd.io {{.UseLine}}{{ if .HasAvailableSubCommands}}:[command]{{end}}{{else}}
+  {{.UseLine}}{{ if .HasAvailableSubCommands}} [command]{{end}}{{end}}{{end}}{{ if .HasAvailableSubCommands}}
+
+Available Commands:{{range .Commands}}{{if .IsAvailableCommand}}
+  {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{ if .HasAvailableLocalFlags}}
+
+Additional help topics:{{range .Commands}}{{if .IsHelpCommand}}
+  {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{ if .HasAvailableSubCommands }}
+
+Use "[command] --help" for help about a meta command.{{end}}
+
+`
 
 var allowedUsers = &Allowed{}
 
-func LocalMode() bool {
-	return os.Getenv("LOCAL") != "false"
-}
-
-func DebugMode() bool {
-	return os.Getenv("DEBUG") != ""
-}
-
-func Run() {
-	log.RegisterObserver(new(logging))
-	log.SetFieldProcessor(fieldProcessor)
-
-	cfg := viper.NewConfig()
-	cfg.AutomaticEnv()
-	cfg.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	com.SetConfig(cfg)
-
-	libhoney.Init(libhoney.Config{
-		WriteKey:   com.GetString("honeycomb_key"),
-		Dataset:    com.GetString("honeycomb_dataset"),
-		SampleRate: 1,
-	})
-	// when all done, call close
-	defer libhoney.Close()
-	hostname, _ := os.Hostname()
-	libhoney.AddField("servername", hostname)
-	libhoney.AddField("release", os.Getenv("RELEASE"))
-
-	log.RegisterObserver(new(honeylog))
-
-	log.RegisterObserver(newRavenLogger(com.GetString("sentry_dsn")))
-
-	Store = GetDynamodbStore()
-	app := suture.NewSimple("cmd.io")
-	for _, service := range com.Enabled(new(suture.Service), nil) {
-		app.Add(service.(suture.Service))
-	}
-	app.Serve()
-}
-
 func HandleSSH(s ssh.Session) {
-	var start, cmd = time.Now(), &Command{}
+	var start, cmd = time.Now(), &core.Command{}
 	defer func() {
 		log.Info(s, cmd, time.Since(start))
 	}()
@@ -91,7 +82,7 @@ func HandleSSH(s ssh.Session) {
 
 	if strings.Contains(args[0], "/") {
 		parts := strings.SplitN(args[0], "/", 2)
-		cmd = Store.Get(parts[0], parts[1])
+		cmd = store.Selected().Get(parts[0], parts[1])
 		if cmd == nil {
 			fmt.Fprintln(s.Stderr(), "Command not found: "+args[0])
 			s.Exit(1)
@@ -106,25 +97,32 @@ func HandleSSH(s ssh.Session) {
 		return
 	}
 
-	cmd = Store.Get(user, args[0])
+	cmd = store.Selected().Get(user, args[0])
 	if cmd == nil {
 		if cmd = LazyLoad(user, args[0]); cmd == nil {
 			fmt.Fprintln(s.Stderr(), "Command not found: "+args[0])
 			s.Exit(1)
 			return
 		}
-		if err := Store.Put(user, args[0], cmd); err != nil {
+		if err := store.Selected().Put(user, args[0], cmd); err != nil {
 			fmt.Fprintln(s.Stderr(), err.Error())
 			s.Exit(255)
 			return
 		}
 	}
 	cmd.Run(s, args[1:])
+	if cmd.Changed {
+		if err := store.Selected().Put(cmd.User, cmd.Name, cmd); err != nil {
+			fmt.Fprintln(s.Stderr(), err.Error())
+			s.Exit(255)
+			return
+		}
+	}
 }
 
 func runRootMeta(s ssh.Session, args []string) {
 	root := &MetaCommand{Use: "cmd.io", Session: s}
-	root.Add(rootHelp, rootInstall, rootUninstall, rootList)
+	root.Add(RootCommands()...)
 	root.Cmd.SetArgs(args)
 	root.Cmd.SetOutput(s)
 	root.Cmd.SetUsageTemplate(rootUsageTmpl)
@@ -135,12 +133,12 @@ func runRootMeta(s ssh.Session, args []string) {
 }
 
 func runCmdMeta(s ssh.Session, cmdName string, args []string) {
-	var cmd *Command
+	var cmd *core.Command
 	if strings.Contains(cmdName, "/") {
 		parts := strings.SplitN(cmdName, "/", 2)
-		cmd = Store.Get(parts[0], parts[1])
+		cmd = store.Selected().Get(parts[0], parts[1])
 	} else {
-		cmd = Store.Get(s.User(), cmdName)
+		cmd = store.Selected().Get(s.User(), cmdName)
 	}
 	if cmd == nil {
 		fmt.Fprintln(s.Stderr(), "Command not found: "+cmdName)
@@ -153,17 +151,7 @@ func runCmdMeta(s ssh.Session, cmdName string, args []string) {
 		return
 	}
 	meta := &MetaCommand{Use: cmdName, Session: s, ForCmd: cmd}
-	configCmd := meta.Add(metaConfig)
-	configCmd.Add(metaConfigSet, metaConfigUnset)
-	accessCmd := meta.Add(metaAccess)
-	if cmd.IsPublic() {
-		accessCmd.Add(metaAccessPrivate)
-	} else {
-		accessCmd.Add(metaAccessPublic, metaAccessAdd, metaAccessRemove)
-	}
-	adminsCmd := meta.Add(metaAdmins)
-	adminsCmd.Add(metaAdminsAdd, metaAdminsRemove)
-	meta.Add(metaHelp)
+	meta.Add(MetaCommands()...)
 	meta.Cmd.SetArgs(args)
 	meta.Cmd.SetOutput(s)
 	meta.Cmd.SetUsageTemplate(metaUsageTmpl)
@@ -198,8 +186,8 @@ func HandleAuth(user string, key ssh.PublicKey) bool {
 	return false
 }
 
-func LazyLoad(user, name string) *Command {
-	cmd := &Command{
+func LazyLoad(user, name string) *core.Command {
+	cmd := &core.Command{
 		Name:   name,
 		User:   user,
 		Config: make(map[string]string),

@@ -6,33 +6,34 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	dynamoattr "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"github.com/gliderlabs/pkg/com"
-	"github.com/gliderlabs/pkg/log"
+	"github.com/gliderlabs/gosper/pkg/com"
+	"github.com/gliderlabs/gosper/pkg/log"
+	"github.com/progrium/cmd/com/core"
 )
 
-type dynamodbStore struct {
-	table string
-
-	client *dynamodb.DynamoDB
+func init() {
+	com.Register("store.dynamodb", &Component{},
+		com.Option("table_name", "", "dynamodb table name for command storage"),
+		com.Option("access_key", "", "aws access key for dynamodb store"),
+		com.Option("secret_key", "", "aws secret key for dynamodb store"),
+		com.Option("region", "us-east-1", "aws region for dynamodb store"),
+	)
 }
 
-func GetDynamodbStore() CommandStore {
-	sess := session.New(
+type Component struct{}
+
+func (c *Component) client() *dynamodb.DynamoDB {
+	return dynamodb.New(session.New(
 		aws.NewConfig().
 			WithRegion(
-				com.GetString("aws_region")).
+				com.GetString("region")).
 			WithCredentials(credentials.NewStaticCredentials(
-				com.GetString("aws_access_key"),
-				com.GetString("aws_secret_key"), "")))
-
-	return &dynamodbStore{
-		table:  com.GetString("table_name"),
-		client: dynamodb.New(sess),
-	}
+				com.GetString("access_key"),
+				com.GetString("secret_key"), ""))))
 }
 
-func (s *dynamodbStore) List(user string) []*Command {
-	res, err := s.client.Scan(&dynamodb.ScanInput{
+func (c *Component) List(user string) []*core.Command {
+	res, err := c.client().Scan(&dynamodb.ScanInput{
 		ScanFilter: map[string]*dynamodb.Condition{
 			"User": &dynamodb.Condition{
 				AttributeValueList: []*dynamodb.AttributeValue{
@@ -41,7 +42,7 @@ func (s *dynamodbStore) List(user string) []*Command {
 				ComparisonOperator: aws.String("EQ"),
 			},
 		},
-		TableName: aws.String(s.table),
+		TableName: aws.String(com.GetString("table")),
 	})
 	if err != nil {
 		// FIXME: Should actually do something with this error.
@@ -49,9 +50,9 @@ func (s *dynamodbStore) List(user string) []*Command {
 		return nil
 	}
 
-	cmds := make([]*Command, 0, len(res.Items))
+	cmds := make([]*core.Command, 0, len(res.Items))
 	for _, item := range res.Items {
-		var cmd Command
+		var cmd core.Command
 		err := dynamoattr.UnmarshalMap(item, &cmd)
 		if err != nil {
 			log.Debug(err)
@@ -62,8 +63,8 @@ func (s *dynamodbStore) List(user string) []*Command {
 	return cmds
 }
 
-func (s *dynamodbStore) Get(user, name string) *Command {
-	res, err := s.client.GetItem(&dynamodb.GetItemInput{
+func (c *Component) Get(user, name string) *core.Command {
+	res, err := c.client().GetItem(&dynamodb.GetItemInput{
 		Key: map[string]*dynamodb.AttributeValue{
 			"User": &dynamodb.AttributeValue{
 				S: aws.String(user),
@@ -72,35 +73,35 @@ func (s *dynamodbStore) Get(user, name string) *Command {
 				S: aws.String(name),
 			},
 		},
-		TableName: aws.String(s.table),
+		TableName: aws.String(com.GetString("table")),
 	})
 	if err != nil {
 		log.Debug(err)
 		return nil
 	}
 
-	var cmd Command
+	var cmd core.Command
 	if err = dynamoattr.UnmarshalMap(res.Item, &cmd); err != nil {
 		log.Debug(err)
 	}
 	return &cmd
 }
 
-func (s *dynamodbStore) Put(user, name string, cmd *Command) error {
+func (c *Component) Put(user, name string, cmd *core.Command) error {
 	item, err := dynamoattr.MarshalMap(cmd)
 	if err != nil {
 		return err
 	}
 
-	_, err = s.client.PutItem(&dynamodb.PutItemInput{
+	_, err = c.client().PutItem(&dynamodb.PutItemInput{
 		Item:      item,
-		TableName: aws.String(s.table),
+		TableName: aws.String(com.GetString("table")),
 	})
 	return err
 }
 
-func (s *dynamodbStore) Delete(user, name string) error {
-	_, err := s.client.DeleteItem(&dynamodb.DeleteItemInput{
+func (c *Component) Delete(user, name string) error {
+	_, err := c.client().DeleteItem(&dynamodb.DeleteItemInput{
 		Key: map[string]*dynamodb.AttributeValue{
 			"User": &dynamodb.AttributeValue{
 				S: aws.String(user),
@@ -109,7 +110,7 @@ func (s *dynamodbStore) Delete(user, name string) error {
 				S: aws.String(name),
 			},
 		},
-		TableName: aws.String(s.table),
+		TableName: aws.String(com.GetString("table")),
 	})
 	return err
 }

@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"github.com/gliderlabs/pkg/ssh"
+	"github.com/gliderlabs/ssh"
 	"github.com/spf13/cobra"
+	"github.com/progrium/cmd/com/core"
 )
 
 type MetaCommand struct {
@@ -13,10 +14,11 @@ type MetaCommand struct {
 	Example string
 	Hidden  bool
 	Run     func(*MetaCommand, ssh.Session, []string)
+	Setup   func(*MetaCommand)
 
 	Cmd     *cobra.Command
 	Session ssh.Session
-	ForCmd  *Command
+	ForCmd  *core.Command
 }
 
 func (c *MetaCommand) Add(cmds ...*MetaCommand) *MetaCommand {
@@ -27,6 +29,9 @@ func (c *MetaCommand) Add(cmds ...*MetaCommand) *MetaCommand {
 		cmdCopy.ForCmd = c.ForCmd
 		c.setup().Cmd.AddCommand((&cmdCopy).setup().Cmd)
 		passCmd = &cmdCopy
+	}
+	if passCmd.Setup != nil {
+		passCmd.Setup(passCmd)
 	}
 	return passCmd
 }

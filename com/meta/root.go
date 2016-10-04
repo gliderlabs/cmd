@@ -1,39 +1,23 @@
-package cmd
+package meta
 
 import (
 	"fmt"
 
-	"github.com/gliderlabs/pkg/log"
-	"github.com/gliderlabs/pkg/ssh"
+	"github.com/gliderlabs/gosper/pkg/log"
+	"github.com/gliderlabs/ssh"
 	"github.com/spf13/cobra"
+
+	"github.com/progrium/cmd/com/cmd"
+	"github.com/progrium/cmd/com/core"
+	"github.com/progrium/cmd/com/store"
 )
 
-const rootUsageTmpl = `Usage:{{if .Runnable}}
-  ssh <user>@{{.UseLine}}{{ if .HasAvailableSubCommands}} [command]{{end}}{{end}}{{if gt .Aliases 0}}
-
-Aliases:
-  {{.NameAndAliases}}
-{{end}}{{if .HasExample}}
-
-Examples:
-{{ .Example }}{{end}}{{ if .HasAvailableSubCommands}}
-
-Available Commands:{{range .Commands}}{{if .IsAvailableCommand}}
-  {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{ if .HasAvailableLocalFlags}}
-
-Additional help topics:{{range .Commands}}{{if .IsHelpCommand}}
-  {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{ if .HasAvailableSubCommands }}
-
-Use "[command] --help" for help about a meta command.{{end}}
-
-`
-
-var rootHelp = &MetaCommand{
+var rootHelp = &cmd.MetaCommand{
 	Use:    ":help",
 	Short:  "Print this help",
 	Hidden: true,
-	Run: func(cmd *MetaCommand, sess ssh.Session, args []string) {
-		for _, c := range Store.List(sess.User()) {
+	Run: func(cmd *cmd.MetaCommand, sess ssh.Session, args []string) {
+		for _, c := range store.Selected().List(sess.User()) {
 			cmd.Cmd.Parent().AddCommand(&cobra.Command{
 				Use:   c.Name,
 				Short: c.Description,
@@ -44,23 +28,23 @@ var rootHelp = &MetaCommand{
 	},
 }
 
-var rootList = &MetaCommand{
+var rootList = &cmd.MetaCommand{
 	Use:   ":ls",
 	Short: "List installed commands",
-	Run: func(meta *MetaCommand, sess ssh.Session, args []string) {
+	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
 		fmt.Fprintln(sess, "")
 		fmt.Fprintln(sess, "Installed Commands:")
-		for _, cmd := range Store.List(sess.User()) {
+		for _, cmd := range store.Selected().List(sess.User()) {
 			fmt.Fprintf(sess, "  %-10s  %s\n", cmd.Name, cmd.Description)
 		}
 		fmt.Fprintln(sess, "")
 	},
 }
 
-var rootInstall = &MetaCommand{
+var rootInstall = &cmd.MetaCommand{
 	Use:   ":add <name> <source>",
 	Short: "Install a command",
-	Run: func(meta *MetaCommand, sess ssh.Session, args []string) {
+	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
 		if len(args) < 1 {
 			fmt.Fprintln(sess, "Must specify a name")
 			sess.Exit(1)
@@ -71,7 +55,7 @@ var rootInstall = &MetaCommand{
 			sess.Exit(1)
 			return
 		}
-		cmd := &Command{
+		cmd := &core.Command{
 			Name:   args[0],
 			User:   sess.User(),
 			Source: args[1],
@@ -83,7 +67,7 @@ var rootInstall = &MetaCommand{
 			sess.Exit(1)
 			return
 		}
-		if err := Store.Put(cmd.User, cmd.Name, cmd); err != nil {
+		if err := store.Selected().Put(cmd.User, cmd.Name, cmd); err != nil {
 			log.Info(sess, cmd, err)
 			fmt.Fprintln(sess.Stderr(), err.Error())
 			sess.Exit(255)
@@ -93,22 +77,22 @@ var rootInstall = &MetaCommand{
 	},
 }
 
-var rootUninstall = &MetaCommand{
+var rootUninstall = &cmd.MetaCommand{
 	Use:   ":rm <name>",
 	Short: "Uninstall a command",
-	Run: func(meta *MetaCommand, sess ssh.Session, args []string) {
+	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
 		if len(args) < 1 {
 			fmt.Fprintln(sess, "Must specify a command")
 			sess.Exit(1)
 			return
 		}
-		cmd := Store.Get(sess.User(), args[0])
+		cmd := store.Selected().Get(sess.User(), args[0])
 		if cmd == nil {
 			fmt.Fprintln(sess, "Command not found")
 			sess.Exit(1)
 			return
 		}
-		if err := Store.Delete(cmd.User, cmd.Name); err != nil {
+		if err := store.Selected().Delete(cmd.User, cmd.Name); err != nil {
 			log.Info(sess, cmd, err)
 			fmt.Fprintln(sess.Stderr(), err.Error())
 			sess.Exit(255)

@@ -6,11 +6,11 @@ import:
 - package: github.com/spf13/cobra
 - package: github.com/thejerf/suture
   version: ^2.0.0
-- package: github.com/gliderlabs/pkg
+- package: github.com/gliderlabs/ssh
+- package: github.com/gliderlabs/gosper
   subpackages:
-  - log
-  - com
-  - ssh
+  - pkg/log
+  - pkg/com
 - package: github.com/aws/aws-sdk-go
   version: ^1.4.12
 - package: github.com/getsentry/raven-go

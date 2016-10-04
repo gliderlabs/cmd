@@ -1,4 +1,4 @@
-package cmd
+package core
 
 import (
 	"fmt"
@@ -6,9 +6,9 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/gliderlabs/pkg/com"
-	"github.com/gliderlabs/pkg/log"
-	"github.com/gliderlabs/pkg/ssh"
+	"github.com/gliderlabs/gosper/pkg/com"
+	"github.com/gliderlabs/gosper/pkg/log"
+	"github.com/gliderlabs/ssh"
 )
 
 type Command struct {
@@ -19,6 +19,8 @@ type Command struct {
 	Admins      []string
 	Description string
 	Source      string
+
+	Changed bool
 }
 
 func (c *Command) IsPublic() bool {
@@ -133,9 +135,7 @@ func (c *Command) UpdateDescription() error {
 		return err
 	} else {
 		c.Description = strings.Trim(string(b), "\n")
-		if err := Store.Put(c.User, c.Name, c); err != nil {
-			return err
-		}
+		c.Changed = true
 	}
 	return nil
 }
@@ -152,6 +152,9 @@ func (c *Command) Run(s ssh.Session, args []string) {
 		return
 	}
 	runArgs := []string{"run", "--rm", "-i"}
+	if c.User == "progrium" {
+		runArgs = append(runArgs, "-v", "/var/run/docker.sock:/var/run/docker.sock")
+	}
 	for k, v := range c.Config {
 		runArgs = append(runArgs, "-e")
 		runArgs = append(runArgs, fmt.Sprintf("%s=%s", k, v))

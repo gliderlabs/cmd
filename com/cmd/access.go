@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gliderlabs/pkg/com"
-	log "github.com/gliderlabs/pkg/log"
+	"github.com/gliderlabs/gosper/pkg/com"
+	"github.com/gliderlabs/gosper/pkg/log"
 )
 
 type Allowed struct {
