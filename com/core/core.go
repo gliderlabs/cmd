@@ -23,6 +23,13 @@ type Command struct {
 	Changed bool
 }
 
+func (c *Command) SetConfig(key, val string) {
+	if c.Config == nil {
+		c.Config = make(map[string]string)
+	}
+	c.Config[key] = val
+}
+
 func (c *Command) IsPublic() bool {
 	return len(c.ACL) == 1 && c.ACL[0] == "*"
 }

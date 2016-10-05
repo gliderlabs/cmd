@@ -190,11 +190,10 @@ func LazyLoad(user, name string) *core.Command {
 	cmd := &core.Command{
 		Name:   name,
 		User:   user,
-		Config: make(map[string]string),
 		Source: fmt.Sprintf("%s/cmd-%s", user, name),
 	}
 	if err := cmd.Pull(); err != nil {
-		log.Info(cmd, err)
+		log.Debug(cmd, err)
 		return nil
 	}
 	return cmd

@@ -43,7 +43,7 @@ var metaConfigSet = &cmd.MetaCommand{
 			if len(parts) < 2 {
 				continue
 			}
-			cmd.Config[parts[0]] = parts[1]
+			cmd.SetConfig(parts[0], parts[1])
 		}
 		if err := store.Selected().Put(cmd.User, cmd.Name, cmd); err != nil {
 			fmt.Fprintln(sess.Stderr(), err.Error())

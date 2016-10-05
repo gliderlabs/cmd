@@ -59,7 +59,6 @@ var rootInstall = &cmd.MetaCommand{
 			Name:   args[0],
 			User:   sess.User(),
 			Source: args[1],
-			Config: make(map[string]string),
 		}
 		if err := cmd.Pull(); err != nil {
 			// log.Info(err)
