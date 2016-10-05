@@ -29,6 +29,9 @@ func fieldProcessor(e log.Event, o interface{}) (log.Event, bool) {
 		e = e.Append("path", obj.RequestURI)
 		return e, true
 	case *core.Command:
+		if obj == nil {
+			return e, false
+		}
 		e = e.Append("cmd.user", obj.User)
 		e = e.Append("cmd.name", obj.Name)
 		return e, true

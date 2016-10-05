@@ -80,6 +80,10 @@ func (c *Component) Get(user, name string) *core.Command {
 		return nil
 	}
 
+	if res.Item == nil {
+		return nil
+	}
+
 	var cmd core.Command
 	if err = dynamoattr.UnmarshalMap(res.Item, &cmd); err != nil {
 		log.Debug(err)
