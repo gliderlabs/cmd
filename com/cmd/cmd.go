@@ -66,6 +66,20 @@ func HandleSSH(s ssh.Session) {
 		args = []string{":"}
 	}
 
+	// handle git-receive-pack by finding the first cmd which has io.cmd.git-receive == arg[1]
+	if strings.HasPrefix(args[0], "git-receive-pack") && len(args) > 1 {
+		cmds := store.Selected().List(user)
+		args[1] = strings.TrimPrefix(args[1], "/")
+		for _, c := range cmds {
+			path, ok := c.Config["io.cmd.git-receive"]
+			if ok && args[1] == path {
+				cmd = c
+				c.Run(s, args)
+				return
+			}
+		}
+	}
+
 	if strings.Contains(args[0], ":") {
 		parts := strings.Split(args[0], ":")
 		if parts[1] == "" {
