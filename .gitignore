@@ -1,2 +1,5 @@
 /vendor
 /local
+/build
+
+.DS_STORE
