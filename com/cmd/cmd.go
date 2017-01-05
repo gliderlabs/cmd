@@ -52,12 +52,13 @@ Use "[command] --help" for help about a meta command.{{end}}
 var allowedUsers = &Allowed{}
 
 func HandleSSH(s ssh.Session) {
-	var start, cmd = time.Now(), &core.Command{}
+	var start, cmd, msg = time.Now(), &core.Command{}, ""
 	defer func() {
-		log.Info(s, cmd, time.Since(start))
+		log.Info(s, cmd, time.Since(start), msg)
 	}()
 	user := s.User()
 	if !allowedUsers.Check(user) {
+		msg = "channel access denied"
 		fmt.Fprintln(s, com.GetString("access_denied_msg"))
 		return
 	}
@@ -72,7 +73,7 @@ func HandleSSH(s ssh.Session) {
 		args[1] = strings.TrimPrefix(args[1], "/")
 		for _, c := range cmds {
 			path, ok := c.Config["io.cmd.git-receive"]
-			if ok && args[1] == path {
+			if ok && strings.HasPrefix(args[1], path) {
 				cmd = c
 				c.Run(s, args)
 				return
@@ -98,11 +99,13 @@ func HandleSSH(s ssh.Session) {
 		parts := strings.SplitN(args[0], "/", 2)
 		cmd = store.Selected().Get(parts[0], parts[1])
 		if cmd == nil {
+			msg = "command not found"
 			fmt.Fprintln(s.Stderr(), "Command not found: "+args[0])
 			s.Exit(1)
 			return
 		}
 		if !cmd.HasAccess(user) {
+			msg = "cmd access denied"
 			fmt.Fprintln(s.Stderr(), "Not allowed")
 			s.Exit(1)
 			return
@@ -114,6 +117,7 @@ func HandleSSH(s ssh.Session) {
 	cmd = store.Selected().Get(user, args[0])
 	if cmd == nil {
 		if cmd = LazyLoad(user, args[0]); cmd == nil {
+			msg = "command not found"
 			fmt.Fprintln(s.Stderr(), "Command not found: "+args[0])
 			s.Exit(1)
 			return
@@ -190,13 +194,14 @@ func HandleAuth(user string, key ssh.PublicKey) bool {
 		k, _, _, _, err := ssh.ParseAuthorizedKey(scanner.Bytes())
 		if err != nil {
 			log.Info(user, err)
-			return false
+			continue
 		}
 
 		if ssh.KeysEqual(key, k) {
 			return true
 		}
 	}
+	log.Info("auth: no matching keys for: "+user, key)
 	return false
 }
 

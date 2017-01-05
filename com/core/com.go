@@ -6,7 +6,7 @@ import (
 
 func init() {
 	com.Register("core", &Component{},
-		com.Option("docker_bin", "docker", "command path to use for docker"))
+		com.Option("host", "", ""))
 }
 
 type Component struct{}

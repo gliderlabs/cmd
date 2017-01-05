@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"crypto/md5"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -40,6 +42,10 @@ func fieldProcessor(e log.Event, o interface{}) (log.Event, bool) {
 		e = e.Append("sess.remoteaddr", obj.RemoteAddr().String())
 		e = e.Append("sess.command", strings.Join(obj.Command(), " "))
 		return e, true
+	case ssh.PublicKey:
+		e = e.Append("pubkey.type", obj.Type())
+		e = e.Append("pubkey.hash", fmt.Sprintf("%x", md5.Sum(obj.Marshal())))
+		return e, true
 	}
 	return e, false
 }
@@ -68,6 +74,9 @@ type honeylog struct{}
 
 func (c *honeylog) Log(e log.Event) {
 	ev := libhoney.NewEvent()
+	if e.Fields["dur"] == "" {
+		ev.Dataset += "_stream"
+	}
 	ev.Add(e.Fields)
 	ev.Send()
 }

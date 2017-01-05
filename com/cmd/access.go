@@ -1,54 +1,43 @@
 package cmd
 
 import (
-	"encoding/json"
-	"fmt"
-	"net/http"
-	"sync"
-	"time"
+	"strconv"
+
+	"golang.org/x/oauth2"
 
 	"github.com/gliderlabs/gosper/pkg/com"
 	"github.com/gliderlabs/gosper/pkg/log"
+	"github.com/google/go-github/github"
+	"github.com/gregjones/httpcache"
 )
 
 type Allowed struct {
-	last time.Time
-	ttl  time.Duration
+	gh *github.Client
+}
 
-	users map[string]bool
-	mu    sync.Mutex // protects users map
+func (a *Allowed) client() *github.Client {
+	if a.gh == nil {
+		auth := &oauth2.Transport{Source: oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: com.GetString("gh_token")},
+		)}
+		cache := httpcache.NewMemoryCacheTransport()
+		cache.Transport = auth
+		a.gh = github.NewClient(cache.Client())
+		a.gh.UserAgent = "cmd.io"
+	}
+	return a.gh
 }
 
 func (a *Allowed) Check(name string) bool {
-	a.mu.Lock()
-	defer a.mu.Unlock()
-	if a.users == nil {
-		a.users = make(map[string]bool)
-	}
-	if time.Since(a.last) < a.ttl {
-		return a.users[name]
-	}
-	a.last = time.Now()
-	url := fmt.Sprintf("https://api.github.com/teams/%s/members?access_token=%s",
-		com.GetString("gh_team_id"), com.GetString("gh_token"))
-
-	req, _ := http.NewRequest(http.MethodGet, url, nil)
-	req.Header.Set("User-Agent", "cmd.io")
-	c := &http.Client{}
-	res, err := c.Do(req)
+	id, _ := strconv.Atoi(com.GetString("gh_team_id"))
+	isMember, res, err := a.client().Organizations.IsTeamMember(id, name)
 	if err != nil {
 		log.Info(err)
-		return a.users[name]
+		return isMember
 	}
-
-	members := []struct {
-		Login string
-	}{}
-	json.NewDecoder(res.Body).Decode(&members)
-	defer res.Body.Close()
-	for _, m := range members {
-		a.users[m.Login] = true
+	log.Info("github api rate:", res.Rate.String())
+	if res.Header.Get(httpcache.XFromCache) != "" {
+		log.Info("member: " + name + " checked from cache")
 	}
-
-	return a.users[name]
+	return isMember
 }

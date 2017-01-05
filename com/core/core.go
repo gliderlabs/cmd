@@ -1,16 +1,22 @@
 package core
 
 import (
+	"context"
 	"fmt"
 	"io"
-	"os/exec"
+	"io/ioutil"
 	"strings"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/gliderlabs/gosper/pkg/com"
 	"github.com/gliderlabs/gosper/pkg/log"
 	"github.com/gliderlabs/ssh"
+	"github.com/progrium/cmd/pkg/dune"
 )
 
+// Command is a the definition for a runnable command on cmd
 type Command struct {
 	Name        string
 	User        string
@@ -21,13 +27,41 @@ type Command struct {
 	Source      string
 
 	Changed bool
+
+	docker *dune.Client
 }
 
+// Docker will return a configured docker client
+func (c *Command) Docker() *dune.Client {
+	if c.docker != nil {
+		return c.docker
+	}
+	var err error
+	c.docker, err = dune.NewClient(com.GetString("host"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return c.docker
+}
+
+// SetConfig for command
 func (c *Command) SetConfig(key, val string) {
 	if c.Config == nil {
 		c.Config = make(map[string]string)
 	}
 	c.Config[key] = val
+}
+
+// Env returns config in a `k=v` format without any cmd specific keys
+func (c *Command) Env() (env []string) {
+	for k, v := range c.Config {
+		if strings.HasPrefix(k, "io.cmd") {
+			continue
+		}
+		env = append(env, fmt.Sprintf("%s=%s", k, v))
+	}
+	return
 }
 
 func (c *Command) IsPublic() bool {
@@ -38,6 +72,7 @@ func (c *Command) MakePublic() {
 	c.ACL = []string{"*"}
 }
 
+// MakePrivate by setting ACL to an empty string slice
 func (c *Command) MakePrivate() {
 	c.ACL = []string{}
 }
@@ -62,6 +97,7 @@ func (c *Command) HasAccess(user string) bool {
 	return false
 }
 
+// AddAccess for user to command
 func (c *Command) AddAccess(user string) {
 	if c.HasAccess(user) {
 		return
@@ -69,6 +105,7 @@ func (c *Command) AddAccess(user string) {
 	c.ACL = append(c.ACL, user)
 }
 
+// RemoveAccess from user to command
 func (c *Command) RemoveAccess(user string) {
 	var i int
 	var u string
@@ -125,28 +162,30 @@ func (c *Command) image() string {
 	return fmt.Sprintf("%s-%s", c.User, c.Name)
 }
 
+// Pull and tag image for command
 func (c *Command) Pull() error {
-	pull := exec.Command(com.GetString("docker_bin"), "pull", c.Source)
-	if b, err := pull.CombinedOutput(); err != nil {
-		log.Info(c, err, b)
+	ctx := context.Background()
+	res, err := c.Docker().ImagePull(ctx, c.Source, types.ImagePullOptions{})
+	if err != nil {
 		return err
 	}
-	tag := exec.Command(com.GetString("docker_bin"), "tag", c.Source, c.image())
-	return tag.Run()
+	io.Copy(ioutil.Discard, res)
+	res.Close()
+	return c.Docker().ImageTag(ctx, c.Source, c.image())
 }
 
 func (c *Command) UpdateDescription() error {
-	descCmd := exec.Command(com.GetString("docker_bin"),
-		[]string{"inspect", "-f", `{{ index .ContainerConfig.Labels "io.cmd.description" }}`, c.image()}...)
-	if b, err := descCmd.Output(); err != nil {
+	res, _, err := c.Docker().ImageInspectWithRaw(context.Background(), c.image())
+	if err != nil {
 		return err
-	} else {
-		c.Description = strings.Trim(string(b), "\n")
-		c.Changed = true
 	}
+	desc := res.ContainerConfig.Labels["io.cmd.description"]
+	c.Description = strings.Trim(desc, "\n")
+	c.Changed = true
 	return nil
 }
 
+// Run a command in a container attaching input/output to ssh session
 func (c *Command) Run(s ssh.Session, args []string) {
 	if err := c.Pull(); err != nil {
 		fmt.Fprintln(s.Stderr(), err.Error())
@@ -158,29 +197,95 @@ func (c *Command) Run(s ssh.Session, args []string) {
 		s.Exit(255)
 		return
 	}
-	runArgs := []string{"run", "--rm", "-i"}
-	if c.User == "progrium" {
-		runArgs = append(runArgs, "-v", "/var/run/docker.sock:/var/run/docker.sock")
-	}
-	for k, v := range c.Config {
-		runArgs = append(runArgs, "-e")
-		runArgs = append(runArgs, fmt.Sprintf("%s=%s", k, v))
-	}
-	runArgs = append(runArgs, c.image())
-	docker := exec.Command(com.GetString("docker_bin"), append(runArgs, args...)...)
-	docker.Stdout = s
-	docker.Stderr = s.Stderr()
-	stdinPipe, err := docker.StdinPipe()
-	if err != nil {
+	if err := c.run(s, args); err != nil {
 		fmt.Fprintln(s.Stderr(), err.Error())
 		s.Exit(255)
 		return
 	}
-	go func() {
-		defer stdinPipe.Close()
-		io.Copy(stdinPipe, s)
-	}()
-	if err := docker.Run(); err != nil {
-		s.Exit(1)
+}
+
+func (c *Command) run(s ssh.Session, args []string) error {
+	outputStream, errorStream, inputStream := s, s.Stderr(), s
+	client := c.Docker()
+	ctx := context.Background()
+	conf := &container.Config{
+		Image:        c.image(),
+		Env:          c.Env(),
+		Cmd:          args,
+		OpenStdin:    true,
+		AttachStderr: true,
+		AttachStdin:  true,
+		AttachStdout: true,
+		StdinOnce:    true,
+		Volumes:      make(map[string]struct{}),
 	}
+
+	hostConf := &container.HostConfig{}
+	if c.User == "progrium" || c.User == "mattaitchison" {
+		conf.Volumes["/var/run/docker.sock"] = struct{}{}
+		hostConf.Binds = []string{"/var/run/docker.sock:/var/run/docker.sock"}
+		hostConf.Privileged = true
+		hostConf.UsernsMode = "host"
+	}
+
+	res, err := client.ContainerCreate(ctx, conf, hostConf, nil, "")
+	if err != nil {
+		return err
+	}
+
+	containerStream, err := client.ContainerAttach(ctx, res.ID,
+		types.ContainerAttachOptions{
+			Stdin:  true,
+			Stdout: true,
+			Stderr: true,
+			Stream: true,
+		})
+	if err != nil {
+		return err
+	}
+	defer containerStream.Close()
+
+	receiveStream := make(chan error, 1)
+	go func() {
+		_, copyErr := stdcopy.StdCopy(outputStream, errorStream, containerStream.Reader)
+		receiveStream <- copyErr
+	}()
+
+	inputDone := make(chan struct{})
+	go func() {
+		io.Copy(containerStream.Conn, inputStream)
+		if copyErr := containerStream.CloseWrite(); copyErr != nil {
+			log.Debug("Couldn't send EOF: %s", copyErr)
+		}
+		close(inputDone)
+	}()
+
+	statusChan := make(chan int64, 1)
+	go func() {
+		s, _ := client.ContainerWait(ctx, res.ID)
+		statusChan <- s
+	}()
+
+	err = client.ContainerStart(ctx, res.ID, types.ContainerStartOptions{})
+	if err != nil {
+		return err
+	}
+
+	select {
+	case err := <-receiveStream:
+		if err != nil {
+			return err
+		}
+	case <-inputDone:
+		select {
+		case err := <-receiveStream:
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	status := <-statusChan
+	client.ContainerRemove(ctx, res.ID, types.ContainerRemoveOptions{})
+	return s.Exit(int(status))
 }
