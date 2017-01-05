@@ -88,6 +88,12 @@ func (c *Component) Get(user, name string) *core.Command {
 	if err = dynamoattr.UnmarshalMap(res.Item, &cmd); err != nil {
 		log.Debug(err)
 	}
+
+	// TODO: remove when lazy migrations are added
+	if cmd.Environment == nil {
+		cmd.Environment = cmd.Config
+	}
+
 	return &cmd
 }
 

@@ -8,6 +8,7 @@ func (c *Component) MetaCommands() []*cmd.MetaCommand {
 	return []*cmd.MetaCommand{
 		metaHelp,
 		metaConfig,
+		metaEnv,
 		metaAccess,
 		metaAdmins,
 	}

@@ -72,7 +72,7 @@ func HandleSSH(s ssh.Session) {
 		cmds := store.Selected().List(user)
 		args[1] = strings.TrimPrefix(args[1], "/")
 		for _, c := range cmds {
-			path, ok := c.Config["io.cmd.git-receive"]
+			path, ok := c.Environment["io.cmd.git-receive"]
 			if ok && strings.HasPrefix(args[1], path) {
 				cmd = c
 				c.Run(s, args)
@@ -110,6 +110,7 @@ func HandleSSH(s ssh.Session) {
 			s.Exit(1)
 			return
 		}
+
 		cmd.Run(s, args[1:])
 		return
 	}
@@ -145,7 +146,6 @@ func runRootMeta(s ssh.Session, args []string) {
 	root.Cmd.SetOutput(s)
 	root.Cmd.SetUsageTemplate(rootUsageTmpl)
 	if err := root.Cmd.Execute(); err != nil {
-		//fmt.Fprintln(s.Stderr(), err.Error())
 		s.Exit(255)
 	}
 }
@@ -174,8 +174,6 @@ func runCmdMeta(s ssh.Session, cmdName string, args []string) {
 	meta.Cmd.SetOutput(s)
 	meta.Cmd.SetUsageTemplate(metaUsageTmpl)
 	if err := meta.Cmd.Execute(); err != nil {
-
-		//fmt.Fprintln(s.Stderr(), err.Error())
 		log.Debug(s, err)
 		s.Exit(255)
 	}

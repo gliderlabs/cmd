@@ -23,19 +23,31 @@ var metaConfig = &cmd.MetaCommand{
 	Use:   ":config",
 	Short: "Manage command configuration",
 	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
+		fmt.Fprintln(sess.Stderr(), "WARN: meta command", meta.Use, "has been deprecated and replaced with", metaEnv.Use)
+		metaEnv.Run(meta, sess, args)
+	},
+	Setup: func(meta *cmd.MetaCommand) {
+		metaEnv.Setup(meta)
+	},
+}
+
+var metaEnv = &cmd.MetaCommand{
+	Use:   ":env",
+	Short: "Manage command environment",
+	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
 		cmd := meta.ForCmd
-		for k, v := range cmd.Config {
+		for k, v := range cmd.Environment {
 			fmt.Fprintf(sess, "%s=%s\n", k, v)
 		}
 	},
 	Setup: func(meta *cmd.MetaCommand) {
-		meta.Add(metaConfigSet, metaConfigUnset)
+		meta.Add(metaEnvSet, metaEnvUnset)
 	},
 }
 
-var metaConfigSet = &cmd.MetaCommand{
+var metaEnvSet = &cmd.MetaCommand{
 	Use:   "set <key=value>...",
-	Short: "Manage command configuration",
+	Short: "Manage command environment",
 	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
 		cmd := meta.ForCmd
 		for _, kvp := range args {
@@ -43,31 +55,31 @@ var metaConfigSet = &cmd.MetaCommand{
 			if len(parts) < 2 {
 				continue
 			}
-			cmd.SetConfig(parts[0], parts[1])
+			cmd.SetEnv(parts[0], parts[1])
 		}
 		if err := store.Selected().Put(cmd.User, cmd.Name, cmd); err != nil {
 			fmt.Fprintln(sess.Stderr(), err.Error())
 			sess.Exit(255)
 			return
 		}
-		fmt.Fprintln(sess, "Config updated.")
+		fmt.Fprintln(sess, "Env updated.")
 	},
 }
 
-var metaConfigUnset = &cmd.MetaCommand{
+var metaEnvUnset = &cmd.MetaCommand{
 	Use:   "unset <key>",
-	Short: "Manage command configuration",
+	Short: "Manage command environment",
 	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
 		cmd := meta.ForCmd
 		for _, key := range args {
-			delete(cmd.Config, key)
+			delete(cmd.Environment, key)
 		}
 		if err := store.Selected().Put(cmd.User, cmd.Name, cmd); err != nil {
 			fmt.Fprintln(sess.Stderr(), err.Error())
 			sess.Exit(255)
 			return
 		}
-		fmt.Fprintln(sess, "Config updated.")
+		fmt.Fprintln(sess, "Env updated.")
 	},
 }
 

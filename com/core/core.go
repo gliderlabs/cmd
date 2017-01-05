@@ -20,7 +20,7 @@ import (
 type Command struct {
 	Name        string
 	User        string
-	Config      map[string]string
+	Environment map[string]string
 	ACL         []string
 	Admins      []string
 	Description string
@@ -29,6 +29,9 @@ type Command struct {
 	Changed bool
 
 	docker *dune.Client
+
+	// Deprecated, field will be removed when migration support is added
+	Config map[string]string
 }
 
 // Docker will return a configured docker client
@@ -41,21 +44,20 @@ func (c *Command) Docker() *dune.Client {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	return c.docker
 }
 
-// SetConfig for command
-func (c *Command) SetConfig(key, val string) {
-	if c.Config == nil {
-		c.Config = make(map[string]string)
+// SetEnv for command
+func (c *Command) SetEnv(key, val string) {
+	if c.Environment == nil {
+		c.Environment = make(map[string]string)
 	}
-	c.Config[key] = val
+	c.Environment[key] = val
 }
 
 // Env returns config in a `k=v` format without any cmd specific keys
 func (c *Command) Env() (env []string) {
-	for k, v := range c.Config {
+	for k, v := range c.Environment {
 		if strings.HasPrefix(k, "io.cmd") {
 			continue
 		}
