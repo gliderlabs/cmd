@@ -13,6 +13,7 @@ import (
 	"github.com/gliderlabs/gosper/pkg/com"
 	"github.com/gliderlabs/gosper/pkg/log"
 	"github.com/gliderlabs/ssh"
+	"github.com/pkg/errors"
 	"github.com/progrium/cmd/pkg/dune"
 )
 
@@ -29,9 +30,6 @@ type Command struct {
 	Changed bool
 
 	docker *dune.Client
-
-	// Deprecated, field will be removed when migration support is added
-	Config map[string]string
 }
 
 // Docker will return a configured docker client
@@ -42,7 +40,11 @@ func (c *Command) Docker() *dune.Client {
 	var err error
 	c.docker, err = dune.NewClient(com.GetString("host"))
 	if err != nil {
-		log.Fatal(err)
+		log.Info(errors.Wrap(err, "failed to create new dune client"))
+	}
+	c.docker, err = dune.NewEnvClient()
+	if err != nil {
+		log.Fatal(errors.Wrap(err, "failed to create docker env client"))
 	}
 	return c.docker
 }
