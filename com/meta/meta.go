@@ -92,10 +92,6 @@ var metaAccess = &cmd.MetaCommand{
 			fmt.Fprintln(sess, "Nobody else has access to this command.")
 			return
 		}
-		if cmd.IsPublic() {
-			fmt.Fprintln(sess, "This command is accessible by everyone.")
-			return
-		}
 		fmt.Fprintln(sess, "These GitHub users have access:\n")
 		for _, user := range cmd.Admins {
 			fmt.Fprintf(sess, "  %s\n", user)
@@ -106,11 +102,7 @@ var metaAccess = &cmd.MetaCommand{
 		fmt.Fprintln(sess, "")
 	},
 	Setup: func(meta *cmd.MetaCommand) {
-		if meta.ForCmd.IsPublic() {
-			meta.Add(metaAccessPrivate)
-		} else {
-			meta.Add(metaAccessPublic, metaAccessAdd, metaAccessRemove)
-		}
+		meta.Add(metaAccessPrivate, metaAccessAdd, metaAccessRemove)
 	},
 }
 
@@ -151,21 +143,6 @@ var metaAccessRemove = &cmd.MetaCommand{
 			return
 		}
 		fmt.Fprintln(sess, "Access revoked.")
-	},
-}
-
-var metaAccessPublic = &cmd.MetaCommand{
-	Use:   "public",
-	Short: "Make command public to all",
-	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
-		cmd := meta.ForCmd
-		cmd.MakePublic()
-		if err := store.Selected().Put(cmd.User, cmd.Name, cmd); err != nil {
-			fmt.Fprintln(sess.Stderr(), err.Error())
-			sess.Exit(255)
-			return
-		}
-		fmt.Fprintln(sess, "Command is now public.")
 	},
 }
 

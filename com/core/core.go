@@ -68,23 +68,12 @@ func (c *Command) Env() (env []string) {
 	return
 }
 
-func (c *Command) IsPublic() bool {
-	return len(c.ACL) == 1 && c.ACL[0] == "*"
-}
-
-func (c *Command) MakePublic() {
-	c.ACL = []string{"*"}
-}
-
 // MakePrivate by setting ACL to an empty string slice
 func (c *Command) MakePrivate() {
 	c.ACL = []string{}
 }
 
 func (c *Command) HasAccess(user string) bool {
-	if c.IsPublic() {
-		return true
-	}
 	if c.User == user {
 		return true
 	}

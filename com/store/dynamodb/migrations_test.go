@@ -52,21 +52,78 @@ func TestAllMigrations(t *testing.T) {
 		},
 	}
 
-	res, err := migrations.Apply(latestVesion, cmd)
+	actual := assertMigrationApply(t, 1, cmd)
+	assert.Contains(t, actual, "Environment")
+	assert.NotNil(t, actual["Environment"])
+	assert.Equal(t,
+		cmd["Config"].M["name"],
+		actual["Environment"].M["name"],
+		"Environment should match Config")
+
+	assert.NotContains(t, actual, "Config",
+		"config attribute should have been removed in migration")
+}
+
+func TestSchemaV2(t *testing.T) {
+	cmd := map[string]*dynamodb.AttributeValue{
+		"ACL": &dynamodb.AttributeValue{
+			L: []*dynamodb.AttributeValue{
+				{S: aws.String("*")},
+			},
+		},
+		schemaAttr: &dynamodb.AttributeValue{
+			N: aws.String("1"),
+		},
+	}
+
+	actual := assertMigrationApply(t, 2, cmd)
+	assert.Equal(t,
+		&dynamodb.AttributeValue{NULL: aws.Bool(true)},
+		actual["ACL"],
+		"NULL AttributeValue should replace public ACL")
+
+	cmd = map[string]*dynamodb.AttributeValue{
+		"ACL": &dynamodb.AttributeValue{
+			L: []*dynamodb.AttributeValue{
+				{S: aws.String("user")},
+			},
+		},
+		schemaAttr: &dynamodb.AttributeValue{
+			N: aws.String("1"),
+		},
+	}
+
+	actual = assertMigrationApply(t, 2, cmd)
+	assert.Equal(t, cmd["ACL"], actual["ACL"],
+		"No modification should be made unless ACL contains *")
+
+	cmd = map[string]*dynamodb.AttributeValue{
+		"ACL": &dynamodb.AttributeValue{
+			L: []*dynamodb.AttributeValue{
+				{S: aws.String("user")},
+				{S: aws.String("*")},
+			},
+		},
+		schemaAttr: &dynamodb.AttributeValue{
+			N: aws.String("1"),
+		},
+	}
+
+	actual = assertMigrationApply(t, 2, cmd)
+	assert.Equal(t,
+		&dynamodb.AttributeValue{NULL: aws.Bool(true)},
+		actual["ACL"],
+		"NULL AttributeValue should replace list containing public ACL")
+}
+
+func assertMigrationApply(t *testing.T, target int, item map[string]*dynamodb.AttributeValue) map[string]*dynamodb.AttributeValue {
+	res, err := migrations.Apply(target, item)
 	assert.NoError(t, err,
 		"failed to apply migrations")
 	assert.NotNil(t, res)
-
-	assert.NotEqual(t, cmd, res,
+	assert.NotEqual(t, item, res,
 		"migrations must return copy of item")
+	assert.Equal(t, target, itemVersion(res))
 
-	assert.Contains(t, res, "Environment")
-	assert.NotNil(t, res["Environment"])
-
-	assert.Equal(t, cmd["Config"].M["name"], res["Environment"].M["name"])
-
-	assert.NotContains(t, res, "Config",
-		"config attribute should have been removed in migration")
-
-	assert.Equal(t, latestVesion, itemVersion(res))
+	return res
 }

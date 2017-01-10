@@ -8,11 +8,12 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/pkg/errors"
 )
 
 const (
 	schemaAttr   = "_schema"
-	latestVesion = 1
+	latestVesion = 2
 )
 
 type migration struct {
@@ -28,10 +29,35 @@ var migrations = Migrations{
 		description: "rename config to env",
 		apply: func(in map[string]*dynamodb.AttributeValue) (map[string]*dynamodb.AttributeValue, error) {
 			out := map[string]*dynamodb.AttributeValue{}
-			copyAttrVal(out, in)
+			err := copyAttrVal(out, in)
+			if err != nil {
+				return out, err
+			}
 			if _, ok := in["Environment"]; !ok {
 				out["Environment"] = in["Config"]
 				delete(out, "Config")
+			}
+			return out, nil
+		},
+	},
+	2: {
+		version:     2,
+		description: "drop public cmd support",
+		apply: func(in map[string]*dynamodb.AttributeValue) (map[string]*dynamodb.AttributeValue, error) {
+			out := map[string]*dynamodb.AttributeValue{}
+			err := copyAttrVal(out, in)
+			if err != nil {
+				return out, err
+			}
+			if acl := in["ACL"]; acl != nil {
+				for _, v := range acl.L {
+					if aws.StringValue(v.S) == "*" {
+						out["ACL"] = &dynamodb.AttributeValue{
+							NULL: aws.Bool(true),
+						}
+						return out, nil
+					}
+				}
 			}
 			return out, nil
 		},
@@ -45,7 +71,7 @@ type Migrations map[int]migration
 func (ms Migrations) Apply(target int, item map[string]*dynamodb.AttributeValue) (map[string]*dynamodb.AttributeValue, error) {
 	initialVer := itemVersion(item)
 	cur := item
-	for nextVer := initialVer; nextVer <= target; nextVer++ {
+	for nextVer := initialVer + 1; nextVer <= target; nextVer++ {
 		m, ok := ms[nextVer]
 		if !ok {
 			continue
@@ -53,7 +79,8 @@ func (ms Migrations) Apply(target int, item map[string]*dynamodb.AttributeValue)
 		var next map[string]*dynamodb.AttributeValue
 		next, err := m.apply(cur)
 		if err != nil {
-			return cur, err
+			return cur, errors.Wrapf(err,
+				"unable to apply migration version: %d - %s", nextVer, m.description)
 		}
 		next[schemaAttr] = &dynamodb.AttributeValue{
 			N: aws.String(strconv.Itoa(nextVer)),
