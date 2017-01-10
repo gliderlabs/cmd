@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"strings"
+	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -264,7 +265,11 @@ func (c *Command) run(s ssh.Session, args []string) error {
 		return err
 	}
 
+	maxDur := Plans[DefaultPlan].MaxRuntime
+	timeout := time.After(maxDur)
 	select {
+	case <-timeout:
+		return ErrMaxRuntimeExceded
 	case err := <-receiveStream:
 		if err != nil {
 			return err
