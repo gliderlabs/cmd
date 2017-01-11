@@ -218,6 +218,7 @@ func (c *Command) run(s ssh.Session, args []string) error {
 		Resources: container.Resources{
 			CPUPeriod: Plans[DefaultPlan].CPUPeriod,
 			CPUQuota:  Plans[DefaultPlan].CPUQuota,
+			Memory:    Plans[DefaultPlan].Memory,
 		},
 	}
 
