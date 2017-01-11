@@ -45,6 +45,14 @@ var rootInstall = &cmd.MetaCommand{
 	Use:   ":add <name> <source>",
 	Short: "Install a command",
 	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
+		limit := core.Plans[core.DefaultPlan].MaxCmds
+		cmds := store.Selected().List(sess.User())
+		if limit >= 0 && len(cmds) >= limit {
+			fmt.Fprintln(sess, "Unable to install command: command limit for plan reached")
+			sess.Exit(1)
+			return
+		}
+
 		if len(args) < 1 {
 			fmt.Fprintln(sess, "Must specify a name")
 			sess.Exit(1)

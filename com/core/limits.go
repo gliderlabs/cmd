@@ -12,6 +12,7 @@ const DefaultPlan = "basic"
 
 var Plans = map[string]Plan{
 	DefaultPlan: {
+		MaxCmds:    10,
 		MaxRuntime: 10 * time.Minute,
 
 		// 20% of 1 CPU
@@ -22,6 +23,7 @@ var Plans = map[string]Plan{
 
 // Plan describes limits for a specific plan.
 type Plan struct {
+	MaxCmds    int
 	MaxRuntime time.Duration
 
 	CPUPeriod int64 // length of a period (in microseconds)
