@@ -214,7 +214,13 @@ func (c *Command) run(s ssh.Session, args []string) error {
 		Volumes:      make(map[string]struct{}),
 	}
 
-	hostConf := &container.HostConfig{}
+	hostConf := &container.HostConfig{
+		Resources: container.Resources{
+			CPUPeriod: Plans[DefaultPlan].CPUPeriod,
+			CPUQuota:  Plans[DefaultPlan].CPUQuota,
+		},
+	}
+
 	if c.User == "progrium" || c.User == "mattaitchison" {
 		conf.Volumes["/var/run/docker.sock"] = struct{}{}
 		hostConf.Binds = []string{"/var/run/docker.sock:/var/run/docker.sock"}
