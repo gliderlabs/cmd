@@ -1,0 +1,20 @@
+machine:
+  services:
+    - docker
+  environment:
+    _JAVA_OPTIONS: "-Xms512m -Xmx1024m"
+  java:
+    version: openjdk7
+  post:
+    - curl -k -L -o dynamodb-local.tgz http://dynamodb-local.s3-website-us-west-2.amazonaws.com/dynamodb_local_latest.tar.gz
+    - tar -xzf dynamodb-local.tgz
+    - java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -inMemory -sharedDb:
+        background: true
+
+dependencies:
+  override:
+    - docker build -t progrium/cmd:dev -f Dockerfile.dev .
+
+test:
+  override:
+    - docker run --net=host progrium/cmd:dev /bin/sh -c 'go test -v $(glide nv)'

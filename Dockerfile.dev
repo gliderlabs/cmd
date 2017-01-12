@@ -1,0 +1,12 @@
+FROM alpine:3.5
+
+ENV GOPATH /go
+ENV GOBIN /usr/local/bin
+
+RUN apk --no-cache add go git glide build-base ca-certificates
+
+COPY . /go/src/github.com/progrium/cmd
+WORKDIR /go/src/github.com/progrium/cmd
+
+RUN glide install
+RUN go install ./cmd/cmd
