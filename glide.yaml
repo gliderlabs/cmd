@@ -15,7 +15,10 @@ import:
 - package: github.com/getsentry/raven-go
 - package: github.com/honeycombio/libhoney-go
 - package: github.com/docker/docker
-  version: master
+  version: ~1.13.0-rc7
   subpackages:
   - client
 - package: github.com/gregjones/httpcache
+- package: github.com/golang/mock
+  subpackages:
+  - gomock

@@ -9,7 +9,7 @@ import (
 )
 
 type Client struct {
-	*client.Client
+	client.APIClient
 	host string
 }
 
@@ -25,14 +25,14 @@ func NewClient(name string) (*Client, error) {
 
 	c := &Client{}
 	c.host = strings.TrimSuffix(addrs[0].Target, ".")
-	c.Client, err = client.NewClient(fmt.Sprintf("tcp://%s:%v", c.host, addrs[0].Port), client.DefaultVersion, nil, nil)
+	c.APIClient, err = client.NewClient(fmt.Sprintf("tcp://%s:%v", c.host, addrs[0].Port), client.DefaultVersion, nil, nil)
 	return c, err
 }
 
 func NewEnvClient() (*Client, error) {
 	c := &Client{}
 	var err error
-	c.Client, err = client.NewEnvClient()
+	c.APIClient, err = client.NewEnvClient()
 	return c, err
 }
 

@@ -5,8 +5,10 @@ import (
 	"time"
 )
 
-// ErrMaxRuntimeExceded returned when command runtime exceedes plan limit
-var ErrMaxRuntimeExceded = fmt.Errorf("maximum runtime exceded")
+var (
+	// ErrMaxRuntimeExceded returned when command runtime exceedes plan limit
+	ErrMaxRuntimeExceded = fmt.Errorf("maximum runtime exceded")
+)
 
 const DefaultPlan = "basic"
 
@@ -15,6 +17,7 @@ var Plans = map[string]Plan{
 		MaxCmds:    10,
 		MaxRuntime: 10 * time.Minute,
 
+		ImageSize: 100 << 20, // 100mb
 		// 20% of 1 CPU
 		CPUPeriod: (50 * time.Millisecond).Nanoseconds() / 1000, // 50000 microseconds
 		CPUQuota:  (10 * time.Millisecond).Nanoseconds() / 1000, // 10000 microseconds
@@ -26,6 +29,8 @@ var Plans = map[string]Plan{
 type Plan struct {
 	MaxCmds    int
 	MaxRuntime time.Duration
+
+	ImageSize int64 // size in bytes
 
 	CPUPeriod int64 // length of a period (in microseconds)
 	CPUQuota  int64 // total available run-time within a period (in microseconds)

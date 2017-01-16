@@ -1,5 +1,5 @@
-hash: 2f6ca793305f81ec5ca0f7755377f7f12faff835d2546a54c861b2db86896c9d
-updated: 2017-01-12T12:01:42.337604961-06:00
+hash: 97847b17637df017dd9be21c63c4b70a4b6d1cf8614c7e0fee5092e5f83b5910
+updated: 2017-01-16T14:18:57.027370753-06:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -41,7 +41,7 @@ imports:
   - digest
   - reference
 - name: github.com/docker/docker
-  version: f018c0dfff3c3dc213b3d3c05228dfed4ef0fb4a
+  version: 48a9e53d70472bebad908b273351d8a07939a764
   subpackages:
   - api/types
   - api/types/blkiodev
@@ -93,6 +93,10 @@ imports:
   version: dd02304d04da08bd215c3879af9af64d9685c3a7
 - name: github.com/go-ini/ini
   version: 6e4869b434bd001f6983749881c7ead3545887d8
+- name: github.com/golang/mock
+  version: bd3c8e81be01eef76d4b503f5e687d2d1354d2d9
+  subpackages:
+  - gomock
 - name: github.com/golang/protobuf
   version: 8d92cf5fc15a4382f8964b08e1f42a75c0591aa3
   subpackages:

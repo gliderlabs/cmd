@@ -8,5 +8,5 @@ RUN apk --no-cache add go git glide build-base ca-certificates
 COPY . /go/src/github.com/progrium/cmd
 WORKDIR /go/src/github.com/progrium/cmd
 
-RUN glide install
+RUN glide install --strip-vendor
 RUN go install ./cmd/cmd
