@@ -19,6 +19,26 @@ import (
 	"github.com/progrium/cmd/pkg/dune"
 )
 
+// Token used to provide access to non-github users
+type Token struct {
+	Key         string
+	Description string
+	User        string
+	LastUsedIP  string
+	LastUsedOn  time.Time
+}
+
+func (t *Token) Validate() error {
+	if t.Key == "" {
+		return fmt.Errorf("token Key required")
+	}
+
+	if t.User == "" {
+		return fmt.Errorf("token User required")
+	}
+	return nil
+}
+
 // Command is a the definition for a runnable command on cmd
 type Command struct {
 	Name        string

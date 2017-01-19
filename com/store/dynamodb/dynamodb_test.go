@@ -5,17 +5,20 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/gliderlabs/gosper/pkg/com"
 	"github.com/gliderlabs/gosper/pkg/com/viper"
-	"github.com/progrium/cmd/com/core"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/progrium/cmd/com/core"
+	"github.com/progrium/cmd/com/store"
 )
 
 func TestStore(t *testing.T) {
+	assert.Implements(t, new(store.Backend), new(Component))
+
 	os.Setenv("DYNAMODB_TABLE", "cmd-test-table")
+	os.Setenv("DYNAMODB_TOKEN_TABLE", "cmd-test-tokens-table")
 	os.Setenv("DYNAMODB_ENDPOINT", "http://localhost:8000")
 	os.Setenv("DYNAMODB_ACCESS_KEY", "test")
 	os.Setenv("DYNAMODB_SECRET_KEY", "test")
@@ -41,6 +44,11 @@ func TestStore(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
+	t.Run("PutNil", func(t *testing.T) {
+		err := c.Put("user", "cmd", nil)
+		assert.Error(t, err)
+	})
+
 	t.Run("Get", func(t *testing.T) {
 		assert.NotNil(t, c.Get("user", "cmd"))
 	})
@@ -53,49 +61,29 @@ func TestStore(t *testing.T) {
 		assert.Nil(t, c.Get("user", "cmd"))
 	})
 
-}
-
-// ensureTableExists creates a DynamoDB table with a given
-// DynamoDB client. If the table already exists, it is not
-// being reconfigured.
-func ensureTableExists(client *dynamodb.DynamoDB, table string, readCapacity, writeCapacity int) error {
-	_, err := client.DescribeTable(&dynamodb.DescribeTableInput{
-		TableName: aws.String(table),
+	ensureTokenTableExists(c.client(), "cmd-test-tokens-table", 5, 5)
+	t.Run("PutToken", func(t *testing.T) {
+		assert.NoError(t, c.PutToken(&core.Token{Key: "key", User: "user"}))
 	})
-	if awserr, ok := err.(awserr.Error); ok {
-		if awserr.Code() == "ResourceNotFoundException" {
-			_, err = client.CreateTable(&dynamodb.CreateTableInput{
-				TableName: aws.String(table),
-				ProvisionedThroughput: &dynamodb.ProvisionedThroughput{
-					ReadCapacityUnits:  aws.Int64(int64(readCapacity)),
-					WriteCapacityUnits: aws.Int64(int64(writeCapacity)),
-				},
-				KeySchema: []*dynamodb.KeySchemaElement{{
-					AttributeName: aws.String("User"),
-					KeyType:       aws.String("HASH"),
-				}, {
-					AttributeName: aws.String("Name"),
-					KeyType:       aws.String("RANGE"),
-				}},
-				AttributeDefinitions: []*dynamodb.AttributeDefinition{{
-					AttributeName: aws.String("User"),
-					AttributeType: aws.String("S"),
-				}, {
-					AttributeName: aws.String("Name"),
-					AttributeType: aws.String("S"),
-				}},
-			})
-			if err != nil {
-				return err
-			}
-			err = client.WaitUntilTableExists(&dynamodb.DescribeTableInput{
-				TableName: aws.String(table),
-			})
-			if err != nil {
-				return err
-			}
-		}
-	}
 
-	return err
+	t.Run("GetToken", func(t *testing.T) {
+		token, err := c.GetToken("key")
+		assert.NoError(t, err)
+		assert.NotNil(t, token)
+	})
+
+	t.Run("ListTokens", func(t *testing.T) {
+		tokens, err := c.ListTokens("user")
+		assert.NoError(t, err)
+		if assert.NotNil(t, tokens) {
+			assert.Len(t, tokens, 1)
+		}
+	})
+
+	t.Run("DeleteToken", func(t *testing.T) {
+		assert.NoError(t, c.DeleteToken("key"))
+		token, err := c.GetToken("key")
+		assert.NoError(t, err)
+		assert.Nil(t, token)
+	})
 }

@@ -1,10 +1,10 @@
-hash: 97847b17637df017dd9be21c63c4b70a4b6d1cf8614c7e0fee5092e5f83b5910
-updated: 2017-01-16T14:18:57.027370753-06:00
+hash: 6e5ec0fe20a7cebfc82e6200438522fe1e74589b994751482139616339f434cc
+updated: 2017-01-17T13:23:11.160698043-06:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
 - name: github.com/aws/aws-sdk-go
-  version: 63ce630574a5ec05ecd8e8de5cea16332a5a684d
+  version: b6b1636522e0b5267ce4fc90fcdb13d55faf9724
   subpackages:
   - aws
   - aws/awserr
@@ -156,6 +156,8 @@ imports:
   version: 839d9e913e063e28dfd0e6c7b7512793e0a48be9
 - name: github.com/pkg/sftp
   version: 4d0e916071f68db74f8a73926335f809396d6b42
+- name: github.com/satori/go.uuid
+  version: b061729afc07e77a8aa4fad0a2fd840958f1942a
 - name: github.com/SermoDigital/jose
   version: b10f12c5188d355a3eacc61aba9abd3eb6b3b787
   subpackages:

@@ -20,8 +20,20 @@ func Selected() Backend {
 }
 
 type Backend interface {
+	CmdBackend
+	TokenBackend
+}
+
+type CmdBackend interface {
 	List(user string) []*core.Command
 	Get(user, name string) *core.Command
 	Put(user, name string, cmd *core.Command) error
 	Delete(user, name string) error
+}
+
+type TokenBackend interface {
+	ListTokens(user string) ([]*core.Token, error)
+	GetToken(key string) (*core.Token, error)
+	PutToken(token *core.Token) error
+	DeleteToken(key string) error
 }

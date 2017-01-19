@@ -6,7 +6,7 @@ machine:
   java:
     version: openjdk7
   post:
-    - curl -k -L -o dynamodb-local.tgz http://dynamodb-local.s3-website-us-west-2.amazonaws.com/dynamodb_local_latest.tar.gz
+    - curl -k -L -o dynamodb-local.tgz https://s3-us-west-2.amazonaws.com/dynamodb-local/dynamodb_local_latest.tar.gz
     - tar -xzf dynamodb-local.tgz
     - java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -inMemory -sharedDb:
         background: true

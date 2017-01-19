@@ -10,6 +10,7 @@ import (
 	"github.com/gliderlabs/gosper/pkg/com"
 	"github.com/gliderlabs/gosper/pkg/log"
 	"github.com/gliderlabs/ssh"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/progrium/cmd/com/core"
 	"github.com/progrium/cmd/com/store"
@@ -52,16 +53,23 @@ Use "[command] --help" for help about a meta command.{{end}}
 var allowedUsers = &Allowed{}
 
 func HandleSSH(s ssh.Session) {
-	var start, cmd, msg = time.Now(), &core.Command{}, ""
+	var (
+		start = time.Now()
+		msg   = ""
+		cmd   = &core.Command{}
+		user  = s.User()
+	)
 	defer func() {
 		log.Info(s, cmd, time.Since(start), msg)
 	}()
-	user := s.User()
-	if !allowedUsers.Check(user) {
+
+	// check for channel access when user is not a token
+	if tok := uuid.FromStringOrNil(user); tok == uuid.Nil && !allowedUsers.Check(user) {
 		msg = "channel access denied"
 		fmt.Fprintln(s, com.GetString("access_denied_msg"))
 		return
 	}
+
 	args := s.Command()
 	if len(args) == 0 {
 		args = []string{":"}
@@ -180,6 +188,14 @@ func runCmdMeta(s ssh.Session, cmdName string, args []string) {
 }
 
 func HandleAuth(user string, key ssh.PublicKey) bool {
+	if tok := uuid.FromStringOrNil(user); tok != uuid.Nil {
+		token, _ := store.Selected().GetToken(tok.String())
+		if token != nil && token.Key == user {
+			return true
+		}
+		log.Info("no match found for token: " + user)
+	}
+
 	resp, err := http.Get(fmt.Sprintf("https://github.com/%s.keys", user))
 	if err != nil {
 		log.Info(user, err)

@@ -69,8 +69,8 @@ var rootInstall = &cmd.MetaCommand{
 			Source: args[1],
 		}
 		if err := cmd.Pull(); err != nil {
-			// log.Info(err)
-			fmt.Fprintln(sess.Stderr(), "Command unable to install")
+			log.Info(err)
+			fmt.Fprintln(sess.Stderr(), "Command unable to install:", err)
 			sess.Exit(1)
 			return
 		}
