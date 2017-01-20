@@ -72,7 +72,12 @@ func HandleSSH(s ssh.Session) {
 
 	args := s.Command()
 	if len(args) == 0 {
-		args = []string{":"}
+		args = []string{"cmd-help"}
+	}
+
+	if strings.HasPrefix(args[0], "cmd-") {
+		runRootMeta(s, args)
+		return
 	}
 
 	// handle git-receive-pack by finding the first cmd which has io.cmd.git-receive == arg[1]
@@ -96,7 +101,9 @@ func HandleSSH(s ssh.Session) {
 		}
 		args[0] = ":" + parts[1]
 		if parts[0] == "" {
-			runRootMeta(s, args)
+			msg = "command missing"
+			fmt.Fprintln(s.Stderr(), "Command name required for meta command: "+args[0])
+			s.Exit(1)
 			return
 		}
 		runCmdMeta(s, parts[0], args)

@@ -13,7 +13,7 @@ import (
 )
 
 var rootHelp = &cmd.MetaCommand{
-	Use:    ":help",
+	Use:    "cmd-help",
 	Short:  "Print this help",
 	Hidden: true,
 	Run: func(cmd *cmd.MetaCommand, sess ssh.Session, args []string) {
@@ -29,7 +29,7 @@ var rootHelp = &cmd.MetaCommand{
 }
 
 var rootList = &cmd.MetaCommand{
-	Use:   ":ls",
+	Use:   "cmd-ls",
 	Short: "List installed commands",
 	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
 		fmt.Fprintln(sess, "")
@@ -42,7 +42,7 @@ var rootList = &cmd.MetaCommand{
 }
 
 var rootInstall = &cmd.MetaCommand{
-	Use:   ":add <name> <source>",
+	Use:   "cmd-add <name> <source>",
 	Short: "Install a command",
 	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
 		limit := core.Plans[core.DefaultPlan].MaxCmds
@@ -85,7 +85,7 @@ var rootInstall = &cmd.MetaCommand{
 }
 
 var rootUninstall = &cmd.MetaCommand{
-	Use:   ":rm <name>",
+	Use:   "cmd-rm <name>",
 	Short: "Uninstall a command",
 	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
 		if len(args) < 1 {

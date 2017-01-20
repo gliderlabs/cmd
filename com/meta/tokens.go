@@ -13,7 +13,7 @@ import (
 )
 
 var tokens = &cmd.MetaCommand{
-	Use: ":cmd-tokens",
+	Use: "cmd-tokens",
 	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
 		meta.Cmd.Help()
 	},
