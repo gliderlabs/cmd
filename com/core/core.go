@@ -235,9 +235,10 @@ func (c *Command) run(s ssh.Session, args []string) error {
 	outputStream, errorStream, inputStream := s, s.Stderr(), s
 	client := c.Docker()
 	ctx := context.Background()
+	env := append(c.Env(), "USER="+s.User())
 	conf := &container.Config{
 		Image:        c.image(),
-		Env:          c.Env(),
+		Env:          env,
 		Cmd:          args,
 		OpenStdin:    true,
 		AttachStderr: true,
