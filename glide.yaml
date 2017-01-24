@@ -23,3 +23,5 @@ import:
   subpackages:
   - gomock
 - package: github.com/satori/go.uuid
+- package: golang.org/x/crypto
+  version: master

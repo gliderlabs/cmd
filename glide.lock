@@ -1,10 +1,10 @@
-hash: 6e5ec0fe20a7cebfc82e6200438522fe1e74589b994751482139616339f434cc
-updated: 2017-01-17T13:23:11.160698043-06:00
+hash: 7b63e0be54482b72479506ae326befbbf81aa34e1aea1f389058b1a14b38c598
+updated: 2017-01-24T12:40:26.637728924-06:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
 - name: github.com/aws/aws-sdk-go
-  version: b6b1636522e0b5267ce4fc90fcdb13d55faf9724
+  version: 15bd33ce2edbdb46acdec779652ed39926682a9f
   subpackages:
   - aws
   - aws/awserr
@@ -41,7 +41,7 @@ imports:
   - digest
   - reference
 - name: github.com/docker/docker
-  version: 48a9e53d70472bebad908b273351d8a07939a764
+  version: 49bf474f9ed7ce7143a59d1964ff7b7fd9b52178
   subpackages:
   - api/types
   - api/types/blkiodev
@@ -186,8 +186,11 @@ imports:
 - name: github.com/thejerf/suture
   version: fe1c0d795ff7a7e54fc54ef6afb36ee0adf0c276
 - name: golang.org/x/crypto
-  version: c10c31b5e94b6f7a0283272dc2bb27163dcea24b
+  version: dc7f3af03ebbba4b0c90f8d95c682dba7d4c70f5
   subpackages:
+  - curve25519
+  - ed25519
+  - ed25519/internal/edwards25519
   - ssh
 - name: golang.org/x/net
   version: 4876518f9e71663000c348837735820161a42df7
