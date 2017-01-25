@@ -1,0 +1,18 @@
+[dynamodb]
+table = "cmd-dev"
+token_table = "cmd-dev-tokens"
+endpoint = "http://localhost:8000"
+access_key = "dev"
+secret_key = "dev"
+max_retries = 1
+
+[web]
+listen_addr = "127.0.0.1:8080"
+
+[auth0]
+domain = "gl-cmd.auth0.com"
+callback_url = "http://localhost:8080/_auth/callback"
+logout_url = "http://localhost:8080/_auth/logout"
+
+[mailgun]
+domain = "gliderlabs.com"

@@ -3,7 +3,7 @@ package meta
 import (
 	"fmt"
 
-	"github.com/gliderlabs/gosper/pkg/log"
+	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/gliderlabs/ssh"
 	uuid "github.com/satori/go.uuid"
 

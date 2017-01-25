@@ -1,5 +1,13 @@
-/vendor
-/local
-/build
-
 .DS_STORE
+/com/local
+/local
+/cmd
+/build
+/vendor
+/.env
+/ui/node_modules
+/ui/semantic/node_modules
+/ui/semantic/dist
+/ui/static/semantic
+/ui/static/bundle*
+npm-debug.log

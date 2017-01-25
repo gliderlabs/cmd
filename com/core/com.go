@@ -1,7 +1,7 @@
 package core
 
 import (
-	"github.com/gliderlabs/gosper/pkg/com"
+	"github.com/gliderlabs/comlab/pkg/com"
 )
 
 func init() {

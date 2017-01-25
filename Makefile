@@ -1,6 +1,9 @@
 
 dev:
-	gosper dev
+	comlab dev
+
+build:
+	go build -a -o ./build/cmd ./cmd/cmd
 
 image:
 	docker build -t progrium/cmd .
@@ -31,4 +34,4 @@ dynamodb:
 	docker build -t dynamodb-local ./dev/dynamodb
 	docker run -p 8000:8000 dynamodb-local -inMemory -sharedDb
 
-.PHONY: dev image docker deploy dynamodb
+ .PHONY: dev image docker deploy dynamodb build

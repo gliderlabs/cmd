@@ -8,8 +8,8 @@ import (
 	"github.com/facebookgo/httpdown"
 	"github.com/gorilla/context"
 
-	"github.com/gliderlabs/gosper/pkg/com"
-	"github.com/gliderlabs/gosper/pkg/log"
+	"github.com/gliderlabs/comlab/pkg/com"
+	"github.com/gliderlabs/comlab/pkg/log"
 )
 
 // Serve of com.Service extension point
@@ -38,6 +38,13 @@ func (c *Component) Serve() {
 				}
 
 				// serve component
+				for _, handler := range Handlers() {
+					if handler.MatchHTTP(r) {
+						handler.ServeHTTP(lw, r)
+						return
+					}
+				}
+				r.URL.Fragment = "NotFound"
 				for _, handler := range Handlers() {
 					if handler.MatchHTTP(r) {
 						handler.ServeHTTP(lw, r)

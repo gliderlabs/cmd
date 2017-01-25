@@ -8,8 +8,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	dynamoattr "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"github.com/gliderlabs/gosper/pkg/com"
-	"github.com/gliderlabs/gosper/pkg/log"
+	"github.com/gliderlabs/comlab/pkg/com"
+	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/pkg/errors"
 	"github.com/progrium/cmd/com/core"
 )

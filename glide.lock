@@ -1,10 +1,10 @@
-hash: 7b63e0be54482b72479506ae326befbbf81aa34e1aea1f389058b1a14b38c598
-updated: 2017-01-24T12:40:26.637728924-06:00
+hash: 6bdca20d9d5fc99df015843adfe948847346e77bcd78a7d160b6be4b4da53bf0
+updated: 2017-01-25T12:51:26.251313497-06:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
 - name: github.com/aws/aws-sdk-go
-  version: 15bd33ce2edbdb46acdec779652ed39926682a9f
+  version: d19ab4db0d0710880bef4634767f1a9382aee67c
   subpackages:
   - aws
   - aws/awserr
@@ -82,6 +82,13 @@ imports:
   version: c07fd863aee264025aa0ef438bf9d2046c803493
 - name: github.com/getsentry/raven-go
   version: 379f8d0a68ca237cf8893a1cdfd4f574125e2c51
+- name: github.com/gliderlabs/comlab
+  version: 827d180b97638a7f16458c6a4dd1c6e2b4a30f13
+  subpackages:
+  - lib/daemon
+  - pkg/com
+  - pkg/com/viper
+  - pkg/log
 - name: github.com/gliderlabs/gosper
   version: 36b9fe22ff96b616c58c1225ede487533c8f595c
   subpackages:
@@ -115,6 +122,8 @@ imports:
   version: fa5329f913702981df43dcb2a380bac429c810b5
 - name: github.com/gorilla/sessions
   version: ca9ada44574153444b00d3fd9c8559e4cc95f896
+- name: github.com/goware/emailx
+  version: 8d8152488187485a81764618de67ec1c61ffe55e
 - name: github.com/gregjones/httpcache
   version: 413781778738c08fdbb98e1dd65f5abffe8832d0
 - name: github.com/hashicorp/hcl
@@ -136,6 +145,8 @@ imports:
   version: bd40a432e4c76585ef6b72d3fd96fb9b6dc7b68d
 - name: github.com/kr/fs
   version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
+- name: github.com/leekchan/accounting
+  version: a35854c075934d6aa1a6c1ab3ea8a82ee0dc1a93
 - name: github.com/magiconair/properties
   version: 0723e352fa358f9322c938cc2dadda874e9151a9
 - name: github.com/mgutz/ansi
@@ -158,12 +169,6 @@ imports:
   version: 4d0e916071f68db74f8a73926335f809396d6b42
 - name: github.com/satori/go.uuid
   version: b061729afc07e77a8aa4fad0a2fd840958f1942a
-- name: github.com/SermoDigital/jose
-  version: b10f12c5188d355a3eacc61aba9abd3eb6b3b787
-  subpackages:
-  - crypto
-  - jws
-  - jwt
 - name: github.com/Sirupsen/logrus
   version: 55eb11d21d2a31a3cc93838241d04800f52e823d
   subpackages:
@@ -183,10 +188,46 @@ imports:
   version: c7e63cf4530bcd3ba943729cee0efeff2ebea63f
 - name: github.com/spf13/viper
   version: 382f87b929b84ce13e9c8a375a4b217f224e6c65
+- name: github.com/stripe/stripe-go
+  version: 3f2707ab5115e7c54c70a77aabcb386d6f405810
+  subpackages:
+  - account
+  - balance
+  - bankaccount
+  - bitcoinreceiver
+  - bitcointransaction
+  - card
+  - charge
+  - client
+  - countryspec
+  - coupon
+  - customer
+  - discount
+  - dispute
+  - event
+  - fee
+  - feerefund
+  - fileupload
+  - invoice
+  - invoiceitem
+  - order
+  - orderitem
+  - orderreturn
+  - paymentsource
+  - plan
+  - product
+  - recipient
+  - refund
+  - reversal
+  - sku
+  - source
+  - sub
+  - token
+  - transfer
 - name: github.com/thejerf/suture
   version: fe1c0d795ff7a7e54fc54ef6afb36ee0adf0c276
 - name: golang.org/x/crypto
-  version: dc7f3af03ebbba4b0c90f8d95c682dba7d4c70f5
+  version: 41d678d1df78cd0410143162dff954e6dc09300f
   subpackages:
   - curve25519
   - ed25519
@@ -224,6 +265,8 @@ imports:
   - urlfetch
 - name: gopkg.in/alexcesaro/statsd.v2
   version: 7fea3f0d2fab1ad973e641e51dba45443a311a90
+- name: gopkg.in/mailgun/mailgun-go.v1
+  version: 369a1fa57ce6fb314e627087b9fff0db5c266c0f
 - name: gopkg.in/yaml.v2
   version: bef53efd0c76e49e6de55ead051f886bea7e9420
 testImports:

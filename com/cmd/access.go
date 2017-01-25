@@ -5,8 +5,8 @@ import (
 
 	"golang.org/x/oauth2"
 
-	"github.com/gliderlabs/gosper/pkg/com"
-	"github.com/gliderlabs/gosper/pkg/log"
+	"github.com/gliderlabs/comlab/pkg/com"
+	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/google/go-github/github"
 	"github.com/gregjones/httpcache"
 )

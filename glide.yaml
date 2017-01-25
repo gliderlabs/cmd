@@ -6,10 +6,11 @@ import:
 - package: github.com/thejerf/suture
   version: ^2.0.0
 - package: github.com/gliderlabs/ssh
-- package: github.com/gliderlabs/gosper
+- package: github.com/gliderlabs/comlab
   subpackages:
   - pkg/log
   - pkg/com
+  - lib/daemon
 - package: github.com/aws/aws-sdk-go
   version: ^1.4.12
 - package: github.com/getsentry/raven-go
@@ -25,3 +26,16 @@ import:
 - package: github.com/satori/go.uuid
 - package: golang.org/x/crypto
   version: master
+- package: github.com/leekchan/accounting
+  version: ^0.2.0
+- package: github.com/goware/emailx
+- package: github.com/gliderlabs/gosper
+  subpackages:
+  - pkg/com
+  - pkg/log
+  - lib/daemon
+- package: gopkg.in/mailgun/mailgun-go.v1
+  version: ^1.0.2
+- package: github.com/stripe/stripe-go
+  version: ^19.2.0
+- package: golang.org/x/oauth2

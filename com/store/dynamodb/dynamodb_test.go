@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/aws/aws-sdk-go/aws/awserr"
-	"github.com/gliderlabs/gosper/pkg/com"
-	"github.com/gliderlabs/gosper/pkg/com/viper"
+	"github.com/gliderlabs/comlab/pkg/com"
+	"github.com/gliderlabs/comlab/pkg/com/viper"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/progrium/cmd/com/core"

@@ -3,7 +3,7 @@ package store
 import (
 	"github.com/progrium/cmd/com/core"
 
-	"github.com/gliderlabs/gosper/pkg/com"
+	"github.com/gliderlabs/comlab/pkg/com"
 )
 
 func init() {

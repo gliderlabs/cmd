@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/getsentry/raven-go"
-	"github.com/gliderlabs/gosper/pkg/log"
+	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/gliderlabs/ssh"
 	"github.com/honeycombio/libhoney-go"
 	"github.com/spf13/cast"

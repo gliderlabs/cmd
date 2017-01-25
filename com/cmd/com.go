@@ -3,7 +3,7 @@ package cmd
 import (
 	"net"
 
-	"github.com/gliderlabs/gosper/pkg/com"
+	"github.com/gliderlabs/comlab/pkg/com"
 )
 
 func init() {

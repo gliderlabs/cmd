@@ -2,30 +2,19 @@ package web
 
 import (
 	"net/http"
-	"strings"
+	"text/template"
 
 	"github.com/facebookgo/httpdown"
 
-	"github.com/gliderlabs/gosper/pkg/com"
+	"github.com/gliderlabs/comlab/pkg/com"
 )
 
 func init() {
 	com.Register("web", &Component{},
-		com.Option("listen_addr", "127.0.0.1:8080", "Address and port to listen on"),
+		com.Option("listen_addr", "0.0.0.0:8080", "Address and port to listen on"),
 		com.Option("static_dir", "ui/static/", "Directory to serve static files from"),
-		com.Option("static_path", "/static", "URL path to serve static files at"))
-}
-
-type ScriptProvider interface {
-	PageScript() string
-}
-
-func Scripts() string {
-	var scripts []string
-	for _, com := range com.Enabled(new(ScriptProvider), nil) {
-		scripts = append(scripts, com.(ScriptProvider).PageScript())
-	}
-	return strings.Join(scripts, "\n")
+		com.Option("static_path", "/static", "URL path to serve static files at"),
+		com.Option("cookie_secret", "", "Random string to use for session cookies"))
 }
 
 // Handler extension point for matching and handling HTTP requests
@@ -41,6 +30,20 @@ func Handlers() []Handler {
 		handlers = append(handlers, com.(Handler))
 	}
 	return handlers
+}
+
+type TemplateFuncProvider interface {
+	WebTemplateFuncMap(r *http.Request) template.FuncMap
+}
+
+func TemplateFuncMap(r *http.Request) template.FuncMap {
+	funcMap := template.FuncMap{}
+	for _, com := range com.Enabled(new(TemplateFuncProvider), nil) {
+		for k, v := range com.(TemplateFuncProvider).WebTemplateFuncMap(r) {
+			funcMap[k] = v
+		}
+	}
+	return funcMap
 }
 
 // Web component
