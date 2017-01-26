@@ -14,7 +14,6 @@ import (
 	units "github.com/docker/go-units"
 	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/comlab/pkg/log"
-	"github.com/gliderlabs/ssh"
 	"github.com/pkg/errors"
 	"github.com/progrium/cmd/pkg/dune"
 )
@@ -37,6 +36,12 @@ func (t *Token) Validate() error {
 		return fmt.Errorf("token User required")
 	}
 	return nil
+}
+
+type Stream struct {
+	Stdin  io.ReadCloser
+	Stdout io.Writer
+	Stderr io.Writer
 }
 
 // Command is a the definition for a runnable command on cmd
@@ -213,29 +218,31 @@ func (c *Command) UpdateDescription() error {
 }
 
 // Run a command in a container attaching input/output to ssh session
-func (c *Command) Run(s ssh.Session, args []string) {
+func (c *Command) Run(stream *Stream, user string, args []string) int {
 	if err := c.Pull(); err != nil {
-		fmt.Fprintln(s.Stderr(), err.Error())
-		s.Exit(255)
-		return
+		fmt.Fprintln(stream.Stderr, err.Error())
+		return 255
 	}
 	if err := c.UpdateDescription(); err != nil {
-		fmt.Fprintln(s.Stderr(), err.Error())
-		s.Exit(255)
-		return
+		fmt.Fprintln(stream.Stderr, err.Error())
+		return 255
 	}
-	if err := c.run(s, args); err != nil {
-		fmt.Fprintln(s.Stderr(), err.Error())
-		s.Exit(255)
-		return
+
+	status, err := c.run(stream, user, args)
+	if err != nil {
+		fmt.Fprintln(stream.Stderr, err.Error())
+		return status
 	}
+
+	return status
 }
 
-func (c *Command) run(s ssh.Session, args []string) error {
-	outputStream, errorStream, inputStream := s, s.Stderr(), s
+// func (c *Command) run(s ssh.Session, args []string) error {
+func (c *Command) run(stream *Stream, user string, args []string) (int, error) {
+	// outputStream, errorStream, inputStream := stdout, s.Stderr(), s
 	client := c.Docker()
 	ctx := context.Background()
-	env := append(c.Env(), "USER="+s.User())
+	env := append(c.Env(), "USER="+user)
 	conf := &container.Config{
 		Image:        c.image(),
 		Env:          env,
@@ -265,7 +272,7 @@ func (c *Command) run(s ssh.Session, args []string) error {
 
 	res, err := client.ContainerCreate(ctx, conf, hostConf, nil, "")
 	if err != nil {
-		return err
+		return 255, err
 	}
 
 	containerStream, err := client.ContainerAttach(ctx, res.ID,
@@ -276,19 +283,18 @@ func (c *Command) run(s ssh.Session, args []string) error {
 			Stream: true,
 		})
 	if err != nil {
-		return err
+		return 255, err
 	}
 	defer containerStream.Close()
-
 	receiveStream := make(chan error, 1)
 	go func() {
-		_, copyErr := stdcopy.StdCopy(outputStream, errorStream, containerStream.Reader)
+		_, copyErr := stdcopy.StdCopy(stream.Stdout, stream.Stderr, containerStream.Reader)
 		receiveStream <- copyErr
 	}()
 
 	inputDone := make(chan struct{})
 	go func() {
-		io.Copy(containerStream.Conn, inputStream)
+		io.Copy(containerStream.Conn, stream.Stdin)
 		if copyErr := containerStream.CloseWrite(); copyErr != nil {
 			log.Debug("Couldn't send EOF: %s", copyErr)
 		}
@@ -303,28 +309,28 @@ func (c *Command) run(s ssh.Session, args []string) error {
 
 	err = client.ContainerStart(ctx, res.ID, types.ContainerStartOptions{})
 	if err != nil {
-		return err
+		return 255, err
 	}
 
 	maxDur := Plans[DefaultPlan].MaxRuntime
 	timeout := time.After(maxDur)
 	select {
 	case <-timeout:
-		return ErrMaxRuntimeExceded
+		return 255, ErrMaxRuntimeExceded
 	case err := <-receiveStream:
 		if err != nil {
-			return err
+			return 255, err
 		}
 	case <-inputDone:
 		select {
 		case err := <-receiveStream:
 			if err != nil {
-				return err
+				return 255, err
 			}
 		}
 	}
 
 	status := <-statusChan
 	client.ContainerRemove(ctx, res.ID, types.ContainerRemoveOptions{})
-	return s.Exit(int(status))
+	return int(status), nil
 }

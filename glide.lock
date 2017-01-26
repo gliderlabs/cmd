@@ -1,10 +1,10 @@
-hash: 6bdca20d9d5fc99df015843adfe948847346e77bcd78a7d160b6be4b4da53bf0
-updated: 2017-01-25T12:51:26.251313497-06:00
+hash: 8789a8acbb291d137a1d40c02fa7fa5bae03a8a5e76cdfc43289ed6ac1352fc8
+updated: 2017-01-25T21:22:55.874394301-06:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
 - name: github.com/aws/aws-sdk-go
-  version: d19ab4db0d0710880bef4634767f1a9382aee67c
+  version: aa8704199ea17856a3f37852f16a6008aea97e81
   subpackages:
   - aws
   - aws/awserr
@@ -94,7 +94,6 @@ imports:
   subpackages:
   - lib/daemon
   - pkg/com
-  - pkg/com/viper
   - pkg/log
 - name: github.com/gliderlabs/ssh
   version: dd02304d04da08bd215c3879af9af64d9685c3a7
@@ -122,6 +121,8 @@ imports:
   version: fa5329f913702981df43dcb2a380bac429c810b5
 - name: github.com/gorilla/sessions
   version: ca9ada44574153444b00d3fd9c8559e4cc95f896
+- name: github.com/gorilla/websocket
+  version: e8f0f8aaa98dfb6586cbdf2978d511e3199a960a
 - name: github.com/goware/emailx
   version: 8d8152488187485a81764618de67ec1c61ffe55e
 - name: github.com/gregjones/httpcache
@@ -169,6 +170,12 @@ imports:
   version: 4d0e916071f68db74f8a73926335f809396d6b42
 - name: github.com/satori/go.uuid
   version: b061729afc07e77a8aa4fad0a2fd840958f1942a
+- name: github.com/SermoDigital/jose
+  version: b10f12c5188d355a3eacc61aba9abd3eb6b3b787
+  subpackages:
+  - crypto
+  - jws
+  - jwt
 - name: github.com/Sirupsen/logrus
   version: 55eb11d21d2a31a3cc93838241d04800f52e823d
   subpackages:

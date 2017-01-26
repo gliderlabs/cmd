@@ -39,3 +39,4 @@ import:
 - package: github.com/stripe/stripe-go
   version: ^19.2.0
 - package: golang.org/x/oauth2
+- package: github.com/gorilla/websocket
