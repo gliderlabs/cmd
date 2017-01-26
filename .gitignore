@@ -1,7 +1,6 @@
 .DS_STORE
 /com/local
 /local
-/cmd
 /build
 /vendor
 /.env

@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Standard Meta -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <!-- Site Properties -->
+  <title>Cmd.io Console</title>
+  <link rel="stylesheet" type="text/css" href="/static/semantic/semantic.min.css">
+  <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+  <script src="https://unpkg.com/js-base64@2.1.9/base64.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.3/js.cookie.min.js"></script>
+  <style type="text/css">
+    code {
+      padding-left: 3px;
+      padding-right: 3px;
+    }
+    .masthead.segment {
+      padding: 1em 0em 0em;
+    }
+    .masthead .row {
+      padding: 100px 0 0 !important;
+    }
+    .masthead .image {
+      border-bottom-left-radius: 0em !important;
+      border-bottom-right-radius: 0em !important;
+    }
+    .masthead .segment {
+      font-size: 1.5em;
+      padding: 0;
+    }
+    .masthead .column .text {
+      padding-top: 50px;
+      margin-left: 50px;
+    }
+    .masthead .column .text p {
+      color: rgba(255,255,255,.5);
+    }
+    .masthead .ui.menu .ui.button {
+      margin-left: 0.5em;
+    }
+    .masthead h1.ui.header {
+      margin-top: 3em;
+      margin-bottom: 0em;
+      font-size: 4em;
+      font-weight: normal;
+    }
+    .masthead h2 {
+      font-size: 1.7em;
+      font-weight: normal;
+    }
+
+    .masthead .terminal {
+      margin-bottom: -1px;
+      margin-top: -40px;
+    }
+    .masthead .terminal header {
+      position: relative;
+      background-color: gray;
+      text-align: center;
+      height: 26px;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+    }
+    .masthead .terminal h4 {
+      margin: 0px;
+    }
+    .masthead .terminal ul {
+      position: absolute;
+      top: 0px;
+      left: 4px;
+      padding-left: 0;
+      margin: 0;
+
+    }
+    .masthead .terminal li {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 6px;
+      margin-left: 6px;
+      background-color: lightgray;
+    }
+
+    .ui.vertical.stripe {
+      padding: 8em 0em;
+    }
+    .ui.vertical.stripe h3 {
+      font-size: 2em;
+    }
+    .ui.vertical.stripe .button + h3,
+    .ui.vertical.stripe p + h3 {
+      margin-top: 3em;
+    }
+    .ui.vertical.stripe .floated.image {
+      clear: both;
+    }
+    .ui.vertical.stripe p {
+      font-size: 1.33em;
+    }
+    .ui.vertical.stripe .horizontal.divider {
+      margin: 3em 0em;
+    }
+
+    .quote.stripe.segment {
+      padding: 0em;
+    }
+    .quote.stripe.segment .grid .column {
+      padding-top: 5em;
+      padding-bottom: 5em;
+    }
+
+    .footer.segment {
+      padding: 5em 0em;
+    }
+
+
+    .footer .project h3 {
+      line-height: 14px;
+      margin-top: -4px;
+    }
+    .footer .project h3 img {
+      width: 32px;
+      float: left;
+      margin-top: -2px;
+      margin-right: 6px;
+      vertical-align: top;
+    }
+    .footer .project h3 span {
+      font-weight: 100;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+    .footer .project h4 {
+      margin-top: 30px;
+      color: rgba(255,255,255,0.8);
+      font-weight: normal;
+    }
+    .footer .project a {
+      color: white;
+    }
+    .footer small {
+      color: rgba(255,255,255,0.3);
+      font-size: small;
+    }
+    .footer form {
+      margin-bottom: 4px;
+    }
+    .footer input[type=email] {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    .footer input[type=submit] {
+      background: rgba(255,255,255,0.9);
+    }
+
+
+    @media only screen and (max-width: 700px) {
+      .ui.fixed.menu {
+        display: none !important;
+      }
+      .secondary.pointing.menu .item,
+      .secondary.pointing.menu .menu {
+        display: none;
+      }
+      .secondary.pointing.menu .toc.item {
+        display: block;
+      }
+      .masthead.segment {
+        min-height: 350px;
+      }
+      .masthead h1.ui.header {
+        font-size: 2em;
+        margin-top: 1.5em;
+      }
+      .masthead h2 {
+        margin-top: 0.5em;
+        font-size: 1.5em;
+      }
+    }
+
+    pre.sticky {
+      padding: 20px;
+    }
+
+  </style>
+
+  <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+  <script src="/static/semantic/semantic.min.js"></script>
+</head>
+<body>
+
+  <!-- Page Contents -->
+  <div class="pusher">
+    <div class="ui inverted vertical segment" style="padding:0;">
+
+      <div class="ui container">
+        <div class="ui large borderless inverted menu">
+          <a class="header item">Cmd.io</a>
+          <a href="/docs" class="item"><i class="icon book"></i> Documentation</a>
+          <a class="item"><i class="icon slack"></i>Community</a>
+          <a class="item"><i class="icon github"></i>Development</a>
+          <div class="ui right simple dropdown item">
+            <div class="text">
+              <img class="ui avatar image" src="{{.Picture}}">
+              {{ .Username }}
+            </div>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <div class="header">
+                {{.BillingInfo.Plan}} Account
+              </div>
+              {{if eq .BillingInfo.Plan "Basic"}}<div onclick="$('#upgrade-modal').modal('show')" class="item">Upgrade</div>{{end}}
+              <div onclick="$('#billing-modal').modal('show')" class="item">Billing</div>
+              <div class="item">SSH Keys</div>
+              <div class="divider"></div>
+              <a class="item" href="/_auth/logout">Logout</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="ui text container" style="padding-top: 20px;">
+      {{if ne .Success ""}}
+      <div class="ui success message">
+        <i class="close icon"></i>
+        <div class="header"><small>{{.Success}}</small></div>
+      </div>
+      <script type="text/javascript">
+        $('.success.message .close')
+          .on('click', function() {
+            $(this)
+              .closest('.message')
+              .transition('fade');
+          });
+      </script>
+      {{end}}
+      {{if ne .Error ""}}
+      <div class="ui error message">
+        <i class="close icon"></i>
+        <div class="header"><small>{{.Error}}</small></div>
+      </div>
+      <script type="text/javascript">
+        $('.error.message .close')
+          .on('click', function() {
+            $(this)
+              .closest('.message')
+              .transition('fade');
+          });
+      </script>
+      {{end}}
+
+      <div class="ui segment">
+        <h2>Thank you!</h2>
+        <p>We appreciate you using our tool. One of many to come!</p>
+        <p>Consider upgrading to
+          <a onclick="$('#upgrade-modal').modal('show')" href="javascript:void()">Cmd.io Plus</a>
+          to keep this one alive and let us continue building great tools.</p>
+      </div>
+      <div class="ui segment">
+        <h2>Next Steps</h2>
+        <p>Right now, this console provides administrative functions for your account.</p>
+        <p>If you're not sure what to do next, here are some ideas:
+          <ul>
+            <li>Take a look at our <a href="/docs">documentation</a></li>
+            <li>Join and mingle with our <a href="/community">community</a></li>
+            <li>Pop open the hood and <a href="http://github.com/gliderlabs/cmd">view our source code</a></li>
+        </p>
+      </div>
+
+    </div>
+
+
+  <div class="ui modal" id="upgrade-modal">
+    <i class="close icon"></i>
+    <div class="header">
+      Cmd.io Plus
+    </div>
+    <div class="content">
+      <div class="ui divided grid">
+
+        <div class="nine wide column">
+
+          <table class="ui center aligned definition celled table">
+            <thead>
+              <tr><th></th>
+              <th>Basic</th>
+              <th>Plus</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td>10 commands</td>
+                <td class="positive">100 commands</td>
+              </tr>
+              <tr>
+                <td>Memory</td>
+                <td>512 MB</td>
+                <td class="positive">2 GB</td>
+              </tr>
+              <tr>
+                <td>Runtime</td>
+                <td>30 seconds</td>
+                <td class="positive">5 minutes</td>
+              </tr>
+              <tr>
+                <td>Community Support</td>
+                <td><i class="large star half empty icon"></i></td>
+                <td class="positive"><i class="large star icon"></i></td>
+              </tr>
+              <tr>
+                <td>Priority CPU</td>
+                <td></td>
+                <td class="positive"><i class="large star icon"></i></td>
+              </tr>
+              <tr>
+                <td>Sustainable</td>
+                <td></td>
+                <td class="positive"><i class="large star icon"></i></td>
+              </tr>
+          </tbody>
+          </table>
+
+
+        </div>
+
+        <div class="seven wide column">
+          <div class="ui horizontal segments">
+            <div id="select-monthly" class="ui green segment" style="cursor: pointer;">
+              <div class="ui content horizontal statistic" style="margin-top: 10px;">
+                <div class="value">
+                  $10
+                </div>
+                <div class="label" style="text-transform: lowercase; font-weight: 300;">
+                  /month
+                </div>
+              </div>
+              <i class="green large check circle icon" style="position: absolute; top: 5px; right: 0px;"></i>
+            </div>
+            <div id="select-yearly" class="ui segment" style="cursor: pointer;">
+              <div class="ui content horizontal statistic" style="margin-top: 10px;">
+                <div class="value">
+                  $120
+                </div>
+                <div class="label" style="text-transform: lowercase; font-weight: 300;">
+                  /year
+                </div>
+              </div>
+              <i class="green large check circle icon" style="position: absolute; top: 5px; right: 0px; display:none;"></i>
+            </div>
+          </div>
+          <script>
+            $("#select-yearly").click(function(el) {
+              $("#select-yearly").addClass("green");
+              $("#select-yearly i").show();
+              $("#select-monthly").removeClass("green");
+              $("#select-monthly i").hide();
+              $("#upgrade-modal input[name='period']").val("yearly");
+            })
+            $("#select-monthly").click(function(el) {
+              $("#select-monthly").addClass("green");
+              $("#select-monthly i").show();
+              $("#select-yearly").removeClass("green");
+              $("#select-yearly i").hide();
+              $("#upgrade-modal input[name='period']").val("monthly");
+            })
+          </script>
+          <br />
+          <form class="ui form" method="post" action="/console/-/billing">
+            <input type="hidden" name="period" value="monthly" />
+            <div class="inline field">
+              <div class="ui left icon input">
+                <input type="text" size="30" class="card-num" placeholder="Card number">
+                <i class="payment icon"></i>
+              </div>
+            </div>
+            <div class="fields">
+              <div class="field">
+              <div class="ui left icon input">
+                <input type="text" size="7" class="card-expiry" placeholder="MM / YY">
+                <i class="calendar outline icon"></i>
+              </div>
+              </div>
+              <div class="field">
+              <div class="ui left icon input">
+                <input type="text" size="5" class="card-cvc" placeholder="CVC">
+                <i class="lock icon"></i>
+              </div>
+              </div>
+            </div>
+            <input type="hidden" name="subscribe" value="1" />
+          </form>
+          <p>Your credit card will be charged $10. This subscription will automatically renew.</p>
+          <p>Sales tax will be added in MA, NY, PA, TN, and TX.</p>
+        </div>
+
+
+      </div>
+      <div class="ui hidden error message">
+        <i class="icon warning"></i>
+        <span class="content">Hello</span>
+      </div>
+    </div>
+    <div class="actions">
+      <div class="ui black deny icon button">
+        Never mind
+        <i class="frown icon"></i>
+      </div>
+      <button class="ui positive right labeled icon button">
+        Purchase Plus
+        <i class="heart icon"></i>
+      </button>
+    </div>
+  </div>
+  <script>
+    $("#upgrade-modal").modal({
+      onApprove: function() {
+        $("#upgrade-modal .positive.button").prop('disabled', true);
+        var expiry = $("#upgrade-modal .card-expiry").val().split("/");
+        Stripe.card.createToken({
+          number: $('#upgrade-modal .card-num').val(),
+          cvc: $('#upgrade-modal .card-cvc').val(),
+          exp_month: expiry[0].trim(),
+          exp_year: (expiry[1]||"").trim(),
+        }, function(status, response) {
+          var $form = $('#upgrade-modal form');
+          if (response.error) {
+            $('#upgrade-modal .error.message span').text(response.error.message);
+            $('#upgrade-modal .error.message').show();
+            $("#upgrade-modal .positive.button").prop('disabled', false);
+          } else {
+            var token = response.id;
+            $form.append($('<input type="hidden" name="stripe-token" />').val(token));
+            $form.get(0).submit();
+          }
+        });
+        return false;
+      }
+    })
+  </script>
+
+  <div class="ui modal" id="billing-modal">
+    <i class="close icon"></i>
+    <div class="header">
+      Billing and Payments
+    </div>
+    <div class="content">
+      <div class="ui divided grid">
+        <div class="seven wide column">
+          <h2 class="ui sub header">
+            Subscription
+          </h2>
+          <table class="ui very basic small table">
+            <tbody>
+              <tr>
+                <td>Plan</td>
+                <td>{{.BillingInfo.Plan}}</td>
+              </tr>
+              <tr>
+                <td>Billing email</td>
+                <td>{{.BillingInfo.Email}} <a href="javascript:void(0)" onclick="$('#edit-email-modal').modal('show')" style="display:block;float:right;">update</a></td>
+              </tr>
+              <tr>
+                <td>Billing period</td>
+                <td>{{if ne .BillingInfo.Plan "Basic"}}{{.BillingInfo.Period | title}}ly{{end}}</td>
+              </tr>
+              <tr>
+                <td>Next payment</td>
+                <td>{{if ne .BillingInfo.Plan "Basic"}}{{.BillingInfo.NextPayment.Format "Feb 2, 2006"}}{{end}}</td>
+              </tr>
+              <tr>
+                <td>Amount</td>
+                <td>{{.BillingInfo.NextAmount}}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2 class="ui sub header">
+            Payment Method
+          </h2>
+          <table class="ui very basic small table">
+            <tbody>
+              <tr>
+                <td>Card</td>
+                <td>{{if ne .BillingInfo.Plan "Basic"}}{{.BillingInfo.CardType}} xxxx-xxxx-xxxx-{{.BillingInfo.CardLastFour}}  <a href="javascript:void(0)" onclick="$('#edit-payment-modal').modal('show')" style="display:block;float:right;">update</a>{{end}}</td>
+              </tr>
+              <tr>
+                <td>Expiration</td>
+                <td>{{if ne .BillingInfo.Plan "Basic"}}{{.BillingInfo.CardExpMonth}}/{{.BillingInfo.CardExpYear}}{{end}}</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+        <div class="nine wide column">
+          <h2 class="ui sub header">
+            Payment History
+          </h2>
+          {{if eq (len .BillingInfo.History) 0}}
+          <br />
+          <p>No payment history yet.</p>
+          <p>Upgrade to <a onclick="$('#billing-modal').modal('hide');$('#upgrade-modal').modal('show')" href="javascript:void()">Cmd.io Plus</a> to help keep Cmd.io alive!</p>
+          {{else}}
+          <table class="ui single line small table">
+            <thead>
+              <tr>
+                <th class="collapsing"></th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Payment Method</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{range .BillingInfo.History}}
+              <tr>
+                <td class="collapsing">{{if .Paid}}<i class="green checkmark icon"></i>{{end}}</td>
+                <td>{{.Date.Format "2006-01-02"}}</td>
+                <td>{{.Amount}}</td>
+                <td>{{.Description}} plan</td>
+                <td>{{.CardType}} ending in {{.CardLastFour}}</td>
+              </tr>
+              {{end}}
+            </tbody>
+          </table>
+          {{end}}
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      {{if ne .BillingInfo.Plan "Basic"}}
+      <div onclick="$('#cancel-modal').modal('show');" class="ui left floated basic button">
+        Cancel Subscription
+      </div>
+      {{end}}
+      <div class="ui black cancel button">
+        Done
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <div class="ui basic small modal" id="edit-email-modal">
+    <div class="content" style="width: 400px; margin-left: 140px;">
+      <h3 class="ui center aligned top attached header">
+        Billing Email
+      </h3>
+      <div class="ui attached segment">
+        <form method="post" action="/console/-/billing" class="ui form">
+          <div class="fluid field">
+            <div class="ui left icon input">
+              <input type="text" name="email" placeholder="Email" value="{{.BillingInfo.Email}}" />
+              <i class="mail outline icon"></i>
+            </div>
+          </div>
+          <div style="text-align:center;">
+            <div onclick="$('#edit-email-modal').modal('hide');" class="ui cancel button">Cancel</div>
+            <input type="submit" class="ui primary button" value="Update" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script>
+    $("#edit-email-modal").modal({
+      onHidden: function() {
+        $('#billing-modal').modal('show');
+      }
+    })
+  </script>
+
+
+  <div class="ui basic small modal" id="edit-payment-modal">
+    <div class="content" style="width: 400px; margin-left: 140px;">
+      <h3 class="ui center aligned top attached header">
+        Payment Method
+      </h3>
+      <div class="ui attached segment">
+        <form method="post" action="/console/-/billing" class="ui form">
+          <div class="inline field" style="text-align:center;">
+            <div class="ui left icon input">
+              <input type="text" size="30" class="card-num" placeholder="Card number">
+              <i class="payment icon"></i>
+            </div>
+          </div>
+          <div class="two fields" style="margin-left: 30px; margin-right: 30px;">
+            <div class="fluid field">
+              <div class="ui left icon input">
+                <input type="text" size="7" class="card-expiry" placeholder="MM / YY">
+                <i class="calendar outline icon"></i>
+              </div>
+            </div>
+            <div class="fluid field">
+              <div class="ui left icon input">
+                <input type="text" size="5" class="card-cvc" placeholder="CVC">
+                <i class="lock icon"></i>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;">
+            <div onclick="$('#edit-payment-modal').modal('hide');" class="ui cancel button">Cancel</div>
+            <button class="ui primary button">Update</button>
+          </div>
+        </form>
+      </div>
+      <div class="ui hidden bottom attached error message">
+        <i class="icon warning"></i>
+        <span class="content"></span>
+      </div>
+    </div>
+  </div>
+  <script>
+    $("#edit-payment-modal").modal({
+      onHidden: function() {
+        $('#billing-modal').modal('show');
+      }
+    });
+    $("#edit-payment-modal .primary.button").click(function() {
+      $("#edit-payment-modal .primary.button").prop('disabled', true);
+      var expiry = $("#edit-payment-modal .card-expiry").val().split("/");
+      Stripe.card.createToken({
+        number: $('#edit-payment-modal .card-num').val(),
+        cvc: $('#edit-payment-modal .card-cvc').val(),
+        exp_month: expiry[0].trim(),
+        exp_year: (expiry[1]||"").trim(),
+      }, function(status, response) {
+        var $form = $('#edit-payment-modal form');
+        if (response.error) {
+          $('#edit-payment-modal .error.message span').text(response.error.message);
+          $('#edit-payment-modal .error.message').show();
+          $("#edit-payment-modal .primary.button").prop('disabled', false);
+        } else {
+          var token = response.id;
+          $form.append($('<input type="hidden" name="update-token" />').val(token));
+          $form.get(0).submit();
+        }
+      });
+    });
+  </script>
+
+  <div class="ui basic modal" id="cancel-modal">
+    <div class="ui icon header">
+      <i class="frown icon"></i>
+      Cancel Subscription
+    </div>
+    <div class="content" style="text-align:center;">
+      <p>Are you sure you want to stop supporting this software and go back to the Basic plan?</p>
+    </div>
+    <div class="actions" style="text-align:center;">
+      <div class="ui basic cancel inverted button">
+        <i class="remove icon"></i>
+        No
+      </div>
+      <button class="ui basic ok inverted button">
+        <i class="checkmark icon"></i>
+        Yes
+      </button>
+    </div>
+    <form method="post" action="/console/-/billing">
+    <input type="hidden" name="unsubscribe" value="1" />
+    </form>
+  </div>
+  <script>
+    $("#cancel-modal").modal({
+      onApprove: function() {
+        $("#cancel-modal form").submit();
+      }
+    })
+  </script>
+
+  <script type="text/javascript">
+    //$('.ui.dropdown').dropdown();
+    $('.ui.sticky').sticky();
+    Stripe.setPublishableKey('{{stripe "pub_key"}}');
+  </script>
+  </body>
+
+  </html>
