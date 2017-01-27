@@ -11,9 +11,11 @@ import (
 	_ "github.com/progrium/cmd/com/stripe"
 	_ "github.com/progrium/cmd/com/web"
 
+	access "github.com/progrium/cmd/pkg/access/com"
 	auth0 "github.com/progrium/cmd/pkg/auth0/com"
 )
 
 func init() {
 	auth0.Register()
+	access.Register()
 }

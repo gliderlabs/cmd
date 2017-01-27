@@ -14,6 +14,7 @@ import (
 
 	"github.com/progrium/cmd/com/core"
 	"github.com/progrium/cmd/com/store"
+	"github.com/progrium/cmd/pkg/access"
 )
 
 const rootUsageTmpl = `Usage:{{if .Runnable}}
@@ -50,8 +51,6 @@ Use "[command] --help" for help about a meta command.{{end}}
 
 `
 
-var allowedUsers = &Allowed{}
-
 func HandleSSH(s ssh.Session) {
 	var (
 		start = time.Now()
@@ -64,7 +63,7 @@ func HandleSSH(s ssh.Session) {
 	}()
 
 	// check for channel access when user is not a token
-	if tok := uuid.FromStringOrNil(user); tok == uuid.Nil && !allowedUsers.Check(user) {
+	if tok := uuid.FromStringOrNil(user); tok == uuid.Nil && !access.Check(user) {
 		msg = "channel access denied"
 		fmt.Fprintln(s, com.GetString("access_denied_msg"))
 		return
