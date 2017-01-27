@@ -30,9 +30,10 @@ type Component struct{}
 func (c *Component) AppPreStart() error {
 	err := ensureTableExists(c.client(), com.GetString("table"), 5, 5)
 	if err != nil {
-		return err
+		return errors.Wrapf(err, "dynamodb table '%s' setup failed", com.GetString("table"))
 	}
-	return ensureTokenTableExists(c.client(), com.GetString("token_table"), 5, 5)
+	err = ensureTokenTableExists(c.client(), com.GetString("token_table"), 5, 5)
+	return errors.Wrapf(err, "dynamodb table '%s' setup failed", com.GetString("token_table"))
 }
 
 func (c *Component) client() *dynamodb.DynamoDB {
