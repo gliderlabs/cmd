@@ -1,13 +1,21 @@
-FROM alpine
-RUN apk --update add go curl make git docker
-ENV GOPATH /usr/local
-RUN curl https://glide.sh/get | sh
-COPY . /usr/local/src/github.com/progrium/cmd
-WORKDIR /usr/local/src/github.com/progrium/cmd
-RUN glide install
-RUN go install ./cmd/cmd
+FROM alpine:3.5
+
+ENV GOPATH /go
+ENV GOBIN /usr/local/bin
+
+COPY . /go/src/github.com/progrium/cmd
+WORKDIR /go/src/github.com/progrium/cmd
+
+RUN apk --no-cache add go git glide build-base ca-certificates \
+  && glide install --strip-vendor \
+  && go install ./cmd/cmd \
+  && glide cc && rm -r ./vendor \
+  && apk --no-cache del go git glide build-base
+
+
 ENV CMD_LISTEN_ADDR=":22"
 ENV CMD_CONFIG_DIR="/config"
 ENV CMD_HOSTKEY_PEM="/tmp/data/id_host"
-EXPOSE 22
+ENV WEB_LISTEN_ADDR=":80"
+EXPOSE 22 80
 CMD ["/usr/local/bin/cmd"]

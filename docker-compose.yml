@@ -1,7 +1,12 @@
-app:
-  build: .
-  ports:
-    - 22:22
-  volumes:
-    - /tmp/data
-    - /var/run/docker.sock:/var/run/docker.sock
+version: '2'
+services:
+  app:
+    build: .
+    labels:
+      - convox.health.timeout=60
+    ports:
+      - 22:22
+      - 80:80
+    volumes:
+      - /tmp/data
+      - /var/run/docker.sock:/var/run/docker.sock

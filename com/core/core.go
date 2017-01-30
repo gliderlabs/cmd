@@ -69,6 +69,9 @@ func (c *Command) Docker() *dune.Client {
 	if err != nil {
 		log.Info(errors.Wrap(err, "failed to create new dune client"))
 	}
+	if c.docker != nil {
+		return c.docker
+	}
 	c.docker, err = dune.NewEnvClient()
 	if err != nil {
 		log.Fatal(errors.Wrap(err, "failed to create docker env client"))
