@@ -49,6 +49,10 @@ func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	parts := strings.SplitN(r.URL.Path, "/", 5)
+	if len(parts) < 3 {
+		http.Error(w, "path missing user and/or cmd", http.StatusBadRequest)
+		return
+	}
 	cmd := store.Selected().Get(parts[2], parts[3])
 	if cmd == nil {
 		http.Error(w, "cmd not found", http.StatusNotFound)
@@ -70,7 +74,12 @@ func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Stdout: ow,
 		Stderr: ow,
 	}
-	args := strings.Split(parts[4], "+")
+
+	var args []string
+	if len(parts) > 4 {
+		args = strings.Split(parts[4], "+")
+	}
+
 	if status := cmd.Run(stream, token.Key, args); status != 0 {
 		fmt.Fprintf(ow, "exit status: %d", status)
 		return
