@@ -17,7 +17,7 @@ var Plans = map[string]Plan{
 		MaxCmds:    10,
 		MaxRuntime: 10 * time.Minute,
 
-		ImageSize: 100 << 20, // 100mb
+		ImageSize: 500 << 20, // 500mb
 		// 20% of 1 CPU
 		CPUPeriod: (50 * time.Millisecond).Nanoseconds() / 1000, // 50000 microseconds
 		CPUQuota:  (10 * time.Millisecond).Nanoseconds() / 1000, // 10000 microseconds
