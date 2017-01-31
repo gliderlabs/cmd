@@ -35,7 +35,8 @@ func getToken(r *http.Request) string {
 	}
 	if fields[0] == "Basic" {
 		b, _ := base64.StdEncoding.DecodeString(fields[1])
-		return string(b)
+		// remove colon which may be present even if a password was not provided
+		return strings.TrimSuffix(string(b), ":")
 	}
 	return fields[1]
 }
