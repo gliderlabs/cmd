@@ -3,10 +3,12 @@ services:
   app:
     build: .
     labels:
+      - convox.port.443.protocol=https
       - convox.health.timeout=60
     ports:
       - 22:22
       - 80:80
+      - 443:80
     volumes:
       - /tmp/data
       - /var/run/docker.sock:/var/run/docker.sock
