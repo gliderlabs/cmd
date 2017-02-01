@@ -1,0 +1,51 @@
+#!/bin/bash
+
+REPO_NAME="progrium/cmd"
+BASE_URL="https://progrium.github.io/cmd"
+BUILD_CMD="make www-build"
+BUILD_DIR="build/www/public"
+DOCS_DIR="docs"
+WWW_DIR="www"
+COMMIT_MSG="published via www/publisher/publish"
+TARGET_BRANCH="gh-pages"
+
+set -eo pipefail
+
+main() {
+  chown -R $(whoami) /root/.ssh
+  if [[ "$1" == "-" ]]; then
+    cat | tar -xpf -
+  else
+    git clone --depth 1 "git@github.com:${REPO_NAME}.git" .
+  fi
+  local checksum="$(checksum-src)"
+  local url="${BASE_URL}/checksum.txt?$(date +%s)"
+  local deployed="$(wget -qO- $url)"
+  if [[ "$checksum" == "$deployed" ]]; then
+    echo "No changes to deploy."
+    exit
+  fi
+  rm -rf .git
+  $BUILD_CMD
+  cd $BUILD_DIR
+  echo "$checksum" > checksum.txt
+  git init
+  git add .
+  git commit -m "${COMMIT_MSG}"
+  git remote add origin "git@github.com:${REPO_NAME}.git"
+  git push -f origin "master:${TARGET_BRANCH}"
+}
+
+checksum-src() {
+  echo "$(checksum-dir $DOCS_DIR)$(checksum-dir $WWW_DIR)" | md5sum | cut -d' ' -f1
+}
+
+checksum-dir() {
+  find $1 -type f -exec md5sum {} \; | sort -k 2 | md5sum | cut -d' ' -f1
+}
+
+if [[ "$1" == "--pubkey" ]]; then
+  cat /root/.ssh/id_rsa.pub
+else
+  main "$@"
+fi

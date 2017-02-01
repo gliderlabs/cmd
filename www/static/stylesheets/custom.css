@@ -1,0 +1,34 @@
+
+p {
+  font-family: Lora, Georgia, serif;
+}
+
+.main {
+  max-width: 1100px;
+}
+.backdrop-paper {
+  max-width: 1100px;
+}
+.article {
+  font-size: 16px;
+}
+.article .wrapper {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+.article h3, .article h4 {
+  font-size: 16px;
+}
+.article h2 {
+  font-size: 22px;
+}
+.article h1 {
+  font-size: 30px;
+  padding: 0 0 10px;
+}
+.admonition p {
+  font-family: Leto, sans-serif;;
+}
+.palette-primary-grey .header, .palette-primary-grey .footer {
+  background: #1B1C1D;
+}

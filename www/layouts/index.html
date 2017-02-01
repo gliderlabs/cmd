@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Standard Meta -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <!-- Site Properties -->
+  <title>Shell commands in the cloud - Cmd.io</title>
+  <link rel="stylesheet" type="text/css" href="/semantic/semantic.min.css">
+
+  <style type="text/css">
+    code {
+      padding-left: 3px;
+      padding-right: 3px;
+    }
+    .masthead.segment {
+      padding: 1em 0em 0em;
+    }
+    .masthead .row {
+      padding: 100px 0 0 !important;
+    }
+    .masthead .image {
+      border-bottom-left-radius: 0em !important;
+      border-bottom-right-radius: 0em !important;
+    }
+    .masthead .segment {
+      font-size: 1.5em;
+      padding: 0;
+    }
+    .masthead .column .text {
+      padding-top: 50px;
+      margin-left: 50px;
+    }
+    .masthead .column .text p {
+      color: rgba(255,255,255,.5);
+    }
+    .masthead .ui.menu .ui.button {
+      margin-left: 0.5em;
+    }
+    .masthead h1.ui.header {
+      margin-top: 3em;
+      margin-bottom: 0em;
+      font-size: 4em;
+      font-weight: normal;
+    }
+    .masthead h2 {
+      font-size: 1.7em;
+      font-weight: normal;
+    }
+
+    .masthead .terminal {
+      margin-bottom: -1px;
+      margin-top: -40px;
+    }
+    .masthead .terminal header {
+      position: relative;
+      background-color: gray;
+      text-align: center;
+      height: 26px;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+    }
+    .masthead .terminal h4 {
+      margin: 0px;
+    }
+    .masthead .terminal ul {
+      position: absolute;
+      top: 0px;
+      left: 4px;
+      padding-left: 0;
+      margin: 0;
+
+    }
+    .masthead .terminal li {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 6px;
+      margin-left: 6px;
+      background-color: lightgray;
+    }
+
+    .ui.vertical.stripe {
+      padding: 8em 0em;
+    }
+    .ui.vertical.stripe h3 {
+      font-size: 2em;
+    }
+    .ui.vertical.stripe .button + h3,
+    .ui.vertical.stripe p + h3 {
+      margin-top: 3em;
+    }
+    .ui.vertical.stripe .floated.image {
+      clear: both;
+    }
+    .ui.vertical.stripe p {
+      font-size: 1.33em;
+    }
+    .ui.vertical.stripe .horizontal.divider {
+      margin: 3em 0em;
+    }
+
+    .quote.stripe.segment {
+      padding: 0em;
+    }
+    .quote.stripe.segment .grid .column {
+      padding-top: 5em;
+      padding-bottom: 5em;
+    }
+
+    .footer.segment {
+      padding: 5em 0em;
+    }
+
+
+    .footer .project h3 {
+      line-height: 14px;
+      margin-top: -4px;
+    }
+    .footer .project h3 img {
+      width: 32px;
+      float: left;
+      margin-top: -2px;
+      margin-right: 6px;
+      vertical-align: top;
+    }
+    .footer .project h3 span {
+      font-weight: 100;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+    .footer .project h4 {
+      margin-top: 30px;
+      color: rgba(255,255,255,0.8);
+      font-weight: normal;
+    }
+    .footer .project a {
+      color: white;
+    }
+    .footer small {
+      color: rgba(255,255,255,0.3);
+      font-size: small;
+    }
+    .footer form {
+      margin-bottom: 4px;
+    }
+    .footer input[type=email] {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    .footer input[type=submit] {
+      background: rgba(255,255,255,0.9);
+    }
+
+
+    @media only screen and (max-width: 700px) {
+      .ui.fixed.menu {
+        display: none !important;
+      }
+      .secondary.pointing.menu .item,
+      .secondary.pointing.menu .menu {
+        display: none;
+      }
+      .secondary.pointing.menu .toc.item {
+        display: block;
+      }
+      .masthead.segment {
+        min-height: 350px;
+      }
+      .masthead h1.ui.header {
+        font-size: 2em;
+        margin-top: 1.5em;
+      }
+      .masthead h2 {
+        margin-top: 0.5em;
+        font-size: 1.5em;
+      }
+    }
+
+
+  </style>
+
+  <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+  <script src="https://gliderlabs.io/static/semantic/semantic.min.js"></script>
+</head>
+<body>
+
+<!-- Page Contents -->
+<div class="pusher">
+  <div class="ui inverted vertical masthead center aligned segment">
+
+    <div class="ui container">
+      <div class="ui large secondary pointing inverted menu">
+        <a class="active item">Cmd.io</a>
+        <!--a href="/docs" class="item"><i class="icon book"></i> Documentation</a-->
+        <a href="https://medium.com/cmd-io" class="item"><i class="icon medium"></i>Blog</a>
+        <a href="https://slack.gliderlabs.com" class="item"><i class="icon slack"></i>Community</a>
+        <a href="https://github.com/gliderlabs/cmd" class="item"><i class="icon github"></i>Development</a>
+
+        <div class="right item">
+          <a href="https://alpha.cmd.io/login" class="ui inverted button" style="box-shadow: none!important;">Login</a>
+          <a href="https://alpha.cmd.io/request" class="ui inverted button">Request Access</a>
+          <!--a class="ui inverted button">Sign Up</a-->
+        </div>
+      </div>
+
+
+      <div class="ui inverted vertical segment">
+        <div class="ui equal width stackable grid">
+          <div class="left aligned row">
+            <div class="column">
+              <div class="text">
+                <h2>Shell Commands in the Cloud</h2>
+                <p>Run command-line tools and scripts from anywhere using SSH or HTTP.</p>
+                <a href="https://alpha.cmd.io/request" class="ui big primary button">Request Access <i class="right arrow icon"></i></a>
+              </div>
+            </div>
+            <div class="column">
+              <div class="terminal">
+                <header>
+                  <ul><li></li><li></li><li></li></ul>
+                </header>
+                <div class="terminal-window">
+                  <img src="https://placeholdit.imgix.net/~text?txtsize=33&txt=demo&w=550&h=325" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="ui vertical stripe segment" style="font-size: smaller;">
+    <div class="ui equal width stackable grid container">
+      <div class="center aligned row">
+        <div class="column">
+          <h3 class="ui icon header">
+            <i class="wizard icon"></i>
+            Your tools everywhere you go
+          </h3>
+          <p>
+            Many command-line utilities can now be put in the cloud, configured just as you need, and run from anywhere using SSH with no installation.
+          </p>
+        </div>
+        <div class="column">
+          <h3 class="ui icon header">
+            <i class="users icon"></i>
+            Share scripts and automation
+          </h3>
+          <p>
+            Empower your team with scripts and custom tooling that doesn't need to be set up. Just give access and others can run the command.
+          </p>
+        </div>
+        <div class="column">
+          <h3 class="ui icon header">
+            <i class="settings icon"></i>
+            Integrate with your workflow
+          </h3>
+          <p>
+            Running commands via HTTP and WebSocket open up new ways to integrate shell scripting and utilities into your internal systems.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="ui vertical stripe segment" style="font-size: smaller;">
+    <div class="ui equal width stackable grid container">
+      <div class="row">
+        <div class="column">
+          <div class="ui embed" data-source="vimeo" data-id="181089646"></div>
+        </div>
+        <div class="column">
+          <h3 class="ui header">Cmd.io is a specialized compute platform</h3>
+          <p>
+            It was made for running short lived, sometimes interactive programs made for the command-line.
+            Programs are run in their own stateless, isolated execution environment in the cloud.
+          </p>
+          <p>
+            Programs are run as commands using SSH, HTTP, or WebSocket.
+            They can be given environment variables, arguments, and <code>STDIN</code>.
+            Then they stream back the output of <code>STDOUT</code> and <code>STDERR</code>.
+            It's effectively a cloud API for POSIX tasks.
+          </p>
+          <p>
+            However, Cmd.io is not designed to run long-lived programs, programs that
+            accept network connections, or programs that require interactive access
+            to the user filesystem.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="ui vertical stripe quote segment" style="font-size: smaller;">
+    <div class="ui equal width stackable grid container">
+      <div class="center aligned row">
+        <div class="left aligned column">
+          <h3 class="ui header">Enable teams without installs or credential sharing</h3>
+          <p>
+            Assemble and share commands that use open source utilities and scripted shell to perform tasks like
+            deploying your web app. They can be run without installing a bunch of tools,
+            making sure the local environment is set up correctly, or running in a local Docker or VM.
+          </p>
+          <p>
+            Credentials can be stored in the command environment, avoiding more complicated or insecure
+            management of secrets. In many cases, credentials won't even be accessible by users of
+            the command.
+          </p>
+        </div>
+        <div class="column">
+          <img src="https://placeholdit.imgix.net/~text?txtsize=33&txt=400%C3%97200&w=400&h=200" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui vertical stripe quote segment" style="font-size: smaller;">
+    <div class="ui equal width stackable grid container">
+      <div class="center aligned row">
+        <div class="column">
+          <img src="https://placeholdit.imgix.net/~text?txtsize=33&txt=400%C3%97200&w=400&h=200" />
+        </div>
+        <div class="left aligned column">
+          <h4 style="font-size: 1.8em;">Use with <code>git push</code> to build developer workflows</h4>
+          <p>
+            SSH allows Cmd.io commands to be used as Git remotes to push to:
+            <pre>ssh://progrium@cmd.io/deploy-cmd/repository/path</pre>
+          </p>
+          <p>
+            Repository path patterns can be used to route different remotes to
+            different commands. Maybe you have a deploy remote, but also
+            a test remote that can orchestrate more complex testing
+            of your source before pushing it to the main repository.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="ui vertical stripe quote segment" style="font-size: smaller;">
+    <div class="ui equal width stackable grid container">
+      <div class="center aligned row">
+        <div class="left aligned column">
+          <h4 style="font-size: 1.8em;">Build shell-based automation into apps and internal tools</h4>
+          <p>
+            With the HTTP API, you can "shell out" in your applications like
+            using any other cloud API. Using the WebSocket API you can run
+            shell scripts and commands and stream the output right in the browser.
+          </p>
+          <p>
+            Now tools that had to be run from the command-line can be turned into
+            API endpoints. Did someone say lightweight CI platform?
+          </p>
+        </div>
+        <div class="column">
+          <img src="https://placeholdit.imgix.net/~text?txtsize=33&txt=400%C3%97200&w=400&h=200" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui vertical stripe quote segment" style="font-size: smaller;">
+    <div class="ui equal width stackable grid container">
+      <div class="center aligned row">
+        <div class="column">
+          <img src="https://placeholdit.imgix.net/~text?txtsize=33&txt=400%C3%97200&w=400&h=200" />
+        </div>
+        <div class="left aligned column">
+          <h4 style="font-size: 1.8em;">Keep tools in the cloud, and off your machine</h4>
+          <p>
+            Not only can you put convenient utilities like <code>jq</code> on Cmd.io,
+            but you can put <nobreak>...larger...</nobreak> tools like <code>latex</code>
+            up. Using <code>latex</code> locally can mean
+            taking up to a 1GB of disk space and is often a mess to compile.
+          </p>
+          <p>
+            Cmd.io commands are built once, from packages or source, and are ready
+            to use whenever you need them. Their environment configuration stays
+            the same no matter what machine you run them from.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="ui vertical stripe segment">
+    <div class="ui center aligned text container">
+      <h3 class="ui header">Most importantly, Cmd.io is a building block.</h3>
+      <p>
+        Cmd.io was intentionally built to <strong>do one thing and do it well</strong>.<br />
+        It was designed to be <strong>composable</strong> with other systems.<br />
+        Here are a few ideas to get you thinking creatively...
+      </p>
+      <div class="ui equal width stackable grid container">
+        <div class="center aligned row" style="margin: 20px;">
+          <div class="column">
+            <i class="huge history icon" style="margin: 7px;"></i>
+            <div>Cron</div>
+          </div>
+          <div class="column">
+            <img class="ui centered tiny image" style="height: 80px; width: 58px;" src="https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png" />
+            <div>CI</div>
+          </div>
+          <div class="column">
+            <img class="ui centered tiny image" src="https://a.slack-edge.com/ae7f/img/services/outgoing-webhook_512.png" />
+            <div>Webhooks</div>
+          </div>
+        </div>
+        <div class="center aligned row" style="margin: 20px;">
+          <div class="column">
+            <img class="ui centered tiny image" src="https://www.w3.org/html/logo/downloads/HTML5_Badge_512.png" />
+            <div>WebSocket</div>
+          </div>
+          <div class="column">
+            <img class="ui centered tiny image" src="https://upload.wikimedia.org/wikipedia/commons/7/76/Slack_Icon.png" />
+            <div>Slack</div>
+          </div>
+          <div class="column">
+            <img class="ui centered tiny image" src="https://web-assets.ifttt.com/images/og_ifttt_logo.png" />
+            <div>IFTTT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--div class="ui vertical stripe segment">
+    <div class="ui center aligned container">
+      <h3 class="ui header">Lastly, Cmd.io is built by the community.</h3>
+      <p>
+        Every bit of Cmd.io is <a href="http://github.com/gliderlabs/cmd">open source</a>
+        and anybody can get changes into production.
+      </p>
+      <p>
+        As a community project, our goal is to provide a reliable tool and building block.<br />
+        It's not to get acquired and shutdown. It's not to get bloated and sold to the enterprise.
+      </p>
+      <p>
+        As long as Cmd.io provides value to you, Cmd.io will be around.
+      </p>
+      <p>
+        <em>&mdash;Jeff Lindsay, aka <a href="http://progrium.com">progrium</a><br />Project Founder</em>
+      </p>
+    </div>
+  </div-->
+
+
+  <div class="ui inverted vertical footer segment">
+    <div class="ui container">
+      <div class="ui stackable inverted divided equal height stackable grid">
+        <div class="three wide column">
+          <h4 class="ui inverted header">Cmd.io</h4>
+          <div class="ui inverted link list">
+            <!--a href="#" class="item">Documentation</a-->
+            <a href="#" class="item">Community</a>
+            <a href="#" class="item">Blog</a>
+            <a href="#" class="item">Development</a>
+            <!--a href="#" class="item">Privacy Policy</a-->
+            <!--a href="#" class="item">Terms of Service</a-->
+          </div>
+        </div>
+        <div class="ten wide column">
+          <h4 class="ui inverted header">Subscribe for Updates</h4>
+          <form action="//gliderlabs.us10.list-manage.com/subscribe/post?u=49c4b06ffd30bcf49ec53c277&amp;id=5a7af54e44"
+            method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate form-inline" target="_blank" novalidate>
+          <div class="ui small right action input">
+              <input type="email" value="" name="EMAIL" class="email input" id="mce-EMAIL" placeholder="Email Address" required>
+
+              <input type="submit" value="SUBSCRIBE" name="subscribe" id="mc-embedded-subscribe" class="ui button">
+              <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_49c4b06ffd30bcf49ec53c277_5a7af54e44" tabindex="-1" value=""></div>
+          </div>
+        </form>
+        <small>Stay informed and get Cmd.io announcements.</small>
+        </div>
+        <div class="three wide column project">
+          <h3>
+            <a href="http://gliderlabs.com">
+            <img src="http://gliderlabs.com/images/dots-bw.svg" />
+            GLIDER LABS<br />
+            <span>Community Project</span>
+            </a>
+          </h3>
+          <div>
+            <h4>Originated in Austin, Texas</h4>
+            <small>The future belongs to those<br />who program it.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $('.ui.embed').embed();
+</script>
+</body>
+
+</html>
