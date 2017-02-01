@@ -20,6 +20,7 @@ func (c *Component) RootCommands() []*cmd.MetaCommand {
 		rootInstall,
 		rootUninstall,
 		rootList,
+		rootCreate,
 		tokens,
 	}
 }

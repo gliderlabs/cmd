@@ -2,6 +2,7 @@ package meta
 
 import (
 	"fmt"
+	"io/ioutil"
 
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/gliderlabs/ssh"
@@ -106,5 +107,51 @@ var rootUninstall = &cmd.MetaCommand{
 			return
 		}
 		fmt.Fprintln(sess, "Command uninstalled")
+	},
+}
+
+var rootCreate = &cmd.MetaCommand{
+	Use:   "cmd-create <name>",
+	Short: "Create a command",
+	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
+		limit := core.Plans[core.DefaultPlan].MaxCmds
+		cmds := store.Selected().List(sess.User())
+		if limit >= 0 && len(cmds) >= limit {
+			fmt.Fprintln(sess, "Unable to create command: command limit for plan reached")
+			sess.Exit(1)
+			return
+		}
+
+		if len(args) < 1 {
+			fmt.Fprintln(sess, "Must specify a name")
+			sess.Exit(1)
+			return
+		}
+
+		source, err := ioutil.ReadAll(sess)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		cmd := &core.Command{
+			Name:   args[0],
+			User:   sess.User(),
+			Source: string(source),
+		}
+
+		fmt.Fprintln(sess, "Building command...")
+		if err := cmd.Build(); err != nil {
+			log.Info(err)
+			fmt.Fprintln(sess.Stderr(), "Command unable to install:", err)
+			sess.Exit(1)
+			return
+		}
+		if err := store.Selected().Put(cmd.User, cmd.Name, cmd); err != nil {
+			log.Info(sess, cmd, err)
+			fmt.Fprintln(sess.Stderr(), err.Error())
+			sess.Exit(255)
+			return
+		}
+		fmt.Fprintln(sess, "Command installed")
 	},
 }

@@ -66,6 +66,140 @@ func TestHasAccess(t *testing.T) {
 		assert.Equal(t, test.Expected, actual)
 	}
 }
+func TestParseSource(t *testing.T) {
+	var testCases = []struct {
+		Source      []byte
+		ExpectImage string
+		ExpectPkgs  []string
+		ExpectBody  []byte
+		ExpectErr   bool
+	}{
+		{
+			Source:      []byte("#!cmd alpine"),
+			ExpectImage: "alpine",
+			ExpectErr:   true,
+		},
+		{
+			Source:      []byte("#!cmd alpine\n"),
+			ExpectImage: "alpine",
+			ExpectBody:  []byte{},
+		},
+		{
+			Source:      []byte("#!cmd alpine bash\n"),
+			ExpectImage: "alpine",
+			ExpectPkgs:  []string{"bash"},
+			ExpectBody:  []byte{},
+		},
+		{
+			Source:      []byte("#!cmd alpine bash\n#!/usr/bin/bash"),
+			ExpectImage: "alpine",
+			ExpectPkgs:  []string{"bash"},
+			ExpectBody:  []byte("#!/usr/bin/bash"),
+		},
+		{
+			Source:      []byte("#!cmd alpine bash\n#!/usr/bin/bash\necho"),
+			ExpectImage: "alpine",
+			ExpectPkgs:  []string{"bash"},
+			ExpectBody:  []byte("#!/usr/bin/bash\necho"),
+		},
+	}
+
+	for _, test := range testCases {
+		img, pkgs, body, err := parseSource(test.Source)
+		if test.ExpectErr {
+			assert.Error(t, err)
+		} else {
+			assert.NoError(t, err)
+		}
+		assert.Equal(t, test.ExpectImage, img)
+		assert.Equal(t, test.ExpectPkgs, pkgs)
+		assert.Equal(t, test.ExpectBody, body)
+	}
+}
+
+func TestMakeBuildCtx(t *testing.T) {
+	var testCases = []struct {
+		Image     string
+		Pkgs      []string
+		Body      []byte
+		ExpectCtx map[string][]byte
+		ExpectErr bool
+	}{
+		{
+			Image:     "alpine",
+			ExpectErr: true,
+			ExpectCtx: map[string][]byte{},
+		},
+		{
+			Image: "alpine",
+			Body:  []byte("#!/usr/bin/bash\n"),
+			ExpectCtx: map[string][]byte{
+				"Dockerfile": []byte("FROM alpine\nENTRYPOINT /usr/bin/bash\n"),
+			},
+		},
+		{
+			Image: "alpine",
+			Pkgs:  []string{"bash"},
+			Body:  []byte("#!/usr/bin/bash\n"),
+			ExpectCtx: map[string][]byte{
+				"Dockerfile": []byte(`FROM alpine
+RUN apk --no-cache add bash
+ENTRYPOINT /usr/bin/bash
+`),
+			},
+		},
+		{
+			Image: "alpine",
+			Body:  []byte("#!/usr/bin/bash\necho"),
+			ExpectCtx: map[string][]byte{
+				"Dockerfile": []byte(`FROM alpine
+COPY ./entrypoint ./usr/bin/entrypoint
+ENTRYPOINT /usr/bin/entrypoint
+`),
+				"entrypoint": []byte("#!/usr/bin/bash\necho"),
+			},
+		},
+	}
+
+	for _, test := range testCases {
+		ctx, err := getBuildCtx(test.Image, test.Pkgs, test.Body)
+		if test.ExpectErr {
+			assert.Error(t, err)
+		} else {
+			assert.NoError(t, err)
+		}
+
+		assert.Equal(t, test.ExpectCtx, ctx)
+
+	}
+}
+
+// func TestCmdBuild(t *testing.T) {
+// 	cmd := &Command{
+// 		Source: "#!cmd\n#!/usr/bin/terraform\n",
+// 		Name:   "alpine",
+// 		User:   "nobody",
+// 	}
+//
+// 	if err := cmd.Build(); err != nil {
+// 		t.Error(err)
+// 	}
+//
+// 	b, err := ioutil.ReadFile("./testdata/script2.sh")
+// 	if err != nil {
+// 		t.Error(err)
+// 	}
+// 	cmd = &Command{
+// 		Source: string(b),
+// 		Name:   "alpine",
+// 		User:   "nobody",
+// 	}
+//
+// 	if err := cmd.Build(); err != nil {
+// 		t.Error(err)
+// 	}
+//
+// }
 
 func TestCmdPull(t *testing.T) {
 	cmd := &Command{

@@ -1,6 +1,9 @@
 package core
 
 import (
+	"archive/tar"
+	"bufio"
+	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -185,6 +188,89 @@ func (c *Command) image() string {
 	return fmt.Sprintf("%s-%s", c.User, c.Name)
 }
 
+func parseSource(src []byte) (img string, pkgs []string, body []byte, err error) {
+	img = "alpine" // Use alpine as default image
+	adv, tok, _ := bufio.ScanLines(src, false)
+	if tok == nil {
+		err = errors.Errorf("unable to parse input")
+		return
+	}
+	body = src[adv:]
+	parts := strings.Fields(string(tok))
+	if len(parts) > 2 {
+		img = parts[1]
+		pkgs = parts[2:]
+		return
+	}
+	return
+}
+
+func getBuildCtx(img string, pkgs []string, body []byte) (ctx map[string][]byte, err error) {
+	ctx = map[string][]byte{}
+	var dockerfile bytes.Buffer
+	fmt.Fprintln(&dockerfile, "FROM", img)
+	if len(pkgs) != 0 {
+		fmt.Fprintln(&dockerfile,
+			"RUN apk --no-cache add", strings.Join(pkgs, " "))
+	}
+	adv, entrypoint, _ := bufio.ScanLines(body, false)
+	if entrypoint == nil {
+		err = errors.Errorf("unable to parse body")
+		return
+	}
+	entrypoint = bytes.TrimPrefix(entrypoint, []byte("#!"))
+	if len(body)-adv != 0 {
+		ctx["entrypoint"] = body
+		fmt.Fprintln(&dockerfile, "COPY ./entrypoint ./usr/bin/entrypoint")
+		entrypoint = []byte("/usr/bin/entrypoint")
+	}
+	fmt.Fprintln(&dockerfile, "ENTRYPOINT", string(entrypoint))
+	ctx["Dockerfile"] = dockerfile.Bytes()
+	return
+}
+
+func (c *Command) Build() error {
+	img, pkgs, body, err := parseSource([]byte(c.Source))
+	if err != nil {
+		return err
+	}
+
+	if img != "alpine" {
+		return errors.Errorf("unsupported image: currently alpine is the only supported image")
+	}
+
+	buildCtx, err := getBuildCtx(img, pkgs, body)
+	if err != nil {
+		return err
+	}
+	buf := new(bytes.Buffer)
+	tw := tar.NewWriter(buf)
+	for name, b := range buildCtx {
+		err = tw.WriteHeader(&tar.Header{
+			Name: name,
+			Mode: 0700,
+			Size: int64(len(b)),
+		})
+		if err != nil {
+			return err
+		}
+		if _, err = tw.Write(b); err != nil {
+			return err
+		}
+	}
+	if err = tw.Close(); err != nil {
+		return err
+	}
+
+	ctx := context.Background()
+	r := bytes.NewReader(buf.Bytes())
+	_, err = c.Docker().ImageBuild(ctx, r, types.ImageBuildOptions{
+		Dockerfile: "Dockerfile",
+		Tags:       []string{c.image()},
+	})
+	return err
+}
+
 // Pull and tag image for command
 func (c *Command) Pull() error {
 	ctx := context.Background()
@@ -222,11 +308,17 @@ func (c *Command) UpdateDescription() error {
 
 // Run a command in a container attaching input/output to ssh session
 func (c *Command) Run(stream *Stream, user string, args []string) int {
-	if err := c.Pull(); err != nil {
+	var err error
+	if strings.HasPrefix(c.Source, "#!") {
+		err = c.Build()
+	} else {
+		err = c.Pull()
+	}
+	if err != nil {
 		fmt.Fprintln(stream.Stderr, err.Error())
 		return 255
 	}
-	if err := c.UpdateDescription(); err != nil {
+	if err = c.UpdateDescription(); err != nil {
 		fmt.Fprintln(stream.Stderr, err.Error())
 		return 255
 	}
