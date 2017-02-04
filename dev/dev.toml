@@ -6,6 +6,9 @@ access_key = "dev"
 secret_key = "dev"
 max_retries = 1
 
+[store]
+backend = "store.dynamodb"
+
 [web]
 listen_addr = "127.0.0.1:8080"
 

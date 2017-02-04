@@ -5,6 +5,9 @@ dev:
 build:
 	go build -a -o ./build/cmd ./cmd/cmd
 
+test:
+	go test -v $(shell glide nv)
+
 image:
 	docker build -t progrium/cmd .
 

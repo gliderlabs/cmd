@@ -224,7 +224,7 @@ func getBuildCtx(img string, pkgs []string, body []byte) (ctx map[string][]byte,
 		fmt.Fprintln(&dockerfile, "COPY ./entrypoint ./usr/bin/entrypoint")
 		entrypoint = []byte("/usr/bin/entrypoint")
 	}
-	fmt.Fprintln(&dockerfile, "ENTRYPOINT", string(entrypoint))
+	fmt.Fprintln(&dockerfile, "ENTRYPOINT", `["`+string(entrypoint)+`"]`)
 	ctx["Dockerfile"] = dockerfile.Bytes()
 	return
 }

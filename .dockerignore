@@ -1,0 +1,4 @@
+.DS_STORE
+.env
+local
+npm-debug.log
