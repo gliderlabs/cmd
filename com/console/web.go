@@ -5,8 +5,11 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/progrium/cmd/com/web"
+	"github.com/progrium/cmd/pkg/access"
+	"github.com/progrium/cmd/pkg/slack"
 )
 
 func (c *Component) WebTemplateFuncMap(r *http.Request) template.FuncMap {
@@ -19,6 +22,7 @@ func (c *Component) MatchHTTP(r *http.Request) bool {
 	return strings.HasPrefix(r.URL.Path, "/console") ||
 		strings.HasPrefix(r.URL.Path, "/login") ||
 		strings.HasPrefix(r.URL.Path, "/register") ||
+		strings.HasPrefix(r.URL.Path, "/request") ||
 		r.URL.Path == "/" ||
 		r.URL.Fragment == "NotFound"
 }
@@ -36,6 +40,7 @@ func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/login", loginHandler)
 	mux.HandleFunc("/register", registerHandler)
+	mux.HandleFunc("/request", requestAccessHandler)
 	mux.HandleFunc("/console/-/billing", billingHandler)
 	mux.HandleFunc("/console/", consoleHandler)
 	mux.ServeHTTP(w, r)
@@ -47,7 +52,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		web.RenderTemplate(w, r, "login", map[string]interface{}{})
 		return
 	}
-	if user.Account.CustomerID == "" {
+	if user.Account.CustomerID == "" && access.Check(user.Nickname) {
 		web.RenderTemplate(w, r, "login-register", map[string]interface{}{
 			"Username": user.Nickname,
 		})
@@ -73,10 +78,36 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/console/", http.StatusFound)
 }
 
+func requestAccessHandler(w http.ResponseWriter, r *http.Request) {
+	user := SessionUser(r)
+	if user == nil {
+		web.RenderTemplate(w, r, "request", map[string]interface{}{})
+		return
+	}
+	if access.Check(user.Nickname) {
+		http.Redirect(w, r, "/console/", http.StatusFound)
+		return
+	}
+
+	if err := slack.InviteToTeam("gliderlabs", com.GetString("slack_token"), user.Email); err != nil {
+		log.Info(err, r, user)
+	}
+
+	web.RenderTemplate(w, r, "requested", map[string]interface{}{
+		"Username": user.Nickname,
+		"Email":    user.Email,
+	})
+
+}
+
 func consoleHandler(w http.ResponseWriter, r *http.Request) {
 	user := SessionUser(r)
 	if user == nil {
 		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+	if !access.Check(user.Nickname) {
+		http.Redirect(w, r, "/request", http.StatusFound)
 		return
 	}
 	if user.Account.CustomerID == "" {

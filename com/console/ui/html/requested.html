@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <!-- Site Properties -->
-  <title>Cmd.io Login</title>
+  <title>Cmd.io Request Access</title>
   <link rel="stylesheet" type="text/css" href="/static/semantic/semantic.min.css">
   <script
     src="https://code.jquery.com/jquery-3.1.1.min.js"
@@ -27,27 +27,31 @@
       color: gray;
       margin-top: 30px!important;
     }
+    .note {
+      font-size: 80%;
+      color: gray;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
 
   <h2 class="ui center aligned icon header">
-    <i class="sign in icon"></i>
-    Cmd.io Login
+    <i class="privacy icon"></i>
+    Request Access
   </h2>
-  <div class="ui raised very padded text container segment" style="max-width: 400px!important;">
-    <a class="fluid ui primary labeled icon button" href="javascript:auth0.login({connection:'github',state:location.toString()})">
-      <i class="large github icon"></i>
-      Login with GitHub
-    </a>
+  <div class="ui raised padded text container segment" style="max-width: 400px!important;">
+    <div class="ui success message" style="text-align: center;">
+      <p>You've requested access as <strong style="white-space: nowrap;">{{.Username}}</strong>!</p>
+    </div>
+    <div class="note">
+      <p>We'll notify <strong>{{.Email}}</strong> when you can login. In
+      the meantime, we've send you an invitation to the Glider Labs Slack community.
+      </p>
+      <p>Join the <code>#cmd</code> Slack channel to expedite your request. <i class="smile icon"></i></p>
+    </div>
   </div>
-  <div class="ui center aligned text container">
-    <h5>Don't have an account?</h5>
-    <a href="/request">Request access</a>
-  </div>
-  <script>
-    {{auth0}}
-  </script>
+
 </body>
 
 </html>

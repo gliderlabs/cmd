@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <!-- Site Properties -->
-  <title>Cmd.io Login</title>
+  <title>Cmd.io Request Access</title>
   <link rel="stylesheet" type="text/css" href="/static/semantic/semantic.min.css">
   <script
     src="https://code.jquery.com/jquery-3.1.1.min.js"
@@ -32,18 +32,18 @@
 <body>
 
   <h2 class="ui center aligned icon header">
-    <i class="sign in icon"></i>
-    Cmd.io Login
+    <i class="privacy icon"></i>
+    Request Access
   </h2>
   <div class="ui raised very padded text container segment" style="max-width: 400px!important;">
-    <a class="fluid ui primary labeled icon button" href="javascript:auth0.login({connection:'github',state:location.toString()})">
-      <i class="large github icon"></i>
-      Login with GitHub
+    <a class="fluid ui primary labeled icon button" onclick="auth0.login({connection:'github',state:location.toString()})">
+      <i class="large github icon" ></i>
+      Connect with GitHub
     </a>
   </div>
   <div class="ui center aligned text container">
-    <h5>Don't have an account?</h5>
-    <a href="/request">Request access</a>
+    <h5>Already have access?</h5>
+    <a href="/login">Login</a>
   </div>
   <script>
     {{auth0}}
