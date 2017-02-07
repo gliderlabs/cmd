@@ -18,6 +18,7 @@ import (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin:     func(r *http.Request) bool { return true },
 }
 
 func (c *Component) MatchHTTP(r *http.Request) bool {
@@ -67,6 +68,7 @@ func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	var ow io.WriteCloser
 	if ow = outputWriter(w, r); ow == nil {
+		// TODO: errors in outputWriter need to be handled
 		return
 	}
 	defer ow.Close()
@@ -81,6 +83,7 @@ func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		args = strings.Split(parts[4], "+")
 	}
 
+	// TODO: put exit status in resp headers / stream trailers
 	if status := cmd.Run(stream, token.Key, args); status != 0 {
 		fmt.Fprintf(ow, "exit status: %d", status)
 		return
