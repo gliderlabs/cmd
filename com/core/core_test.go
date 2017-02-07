@@ -134,7 +134,7 @@ func TestMakeBuildCtx(t *testing.T) {
 			Image: "alpine",
 			Body:  []byte("#!/usr/bin/bash\n"),
 			ExpectCtx: map[string][]byte{
-				"Dockerfile": []byte("FROM alpine\nENTRYPOINT [\"/usr/bin/bash\"]\n"),
+				"Dockerfile": []byte("FROM alpine\nWORKDIR /cmd\nENTRYPOINT [\"/usr/bin/bash\"]\n"),
 			},
 		},
 		{
@@ -144,6 +144,7 @@ func TestMakeBuildCtx(t *testing.T) {
 			ExpectCtx: map[string][]byte{
 				"Dockerfile": []byte(`FROM alpine
 RUN apk --no-cache add bash
+WORKDIR /cmd
 ENTRYPOINT ["/usr/bin/bash"]
 `),
 			},
@@ -153,8 +154,9 @@ ENTRYPOINT ["/usr/bin/bash"]
 			Body:  []byte("#!/usr/bin/bash\necho"),
 			ExpectCtx: map[string][]byte{
 				"Dockerfile": []byte(`FROM alpine
-COPY ./entrypoint ./usr/bin/entrypoint
-ENTRYPOINT ["/usr/bin/entrypoint"]
+COPY ./entrypoint ./bin/entrypoint
+WORKDIR /cmd
+ENTRYPOINT ["/bin/entrypoint"]
 `),
 				"entrypoint": []byte("#!/usr/bin/bash\necho"),
 			},

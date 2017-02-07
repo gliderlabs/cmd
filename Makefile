@@ -11,6 +11,9 @@ test:
 image:
 	docker build -t progrium/cmd .
 
+image-dev:
+		docker build -t progrium/cmd-dev -f Dockerfile.dev .
+
 docker: image
 	@docker rm -f cmd || true
 	docker run -d --name cmd \
