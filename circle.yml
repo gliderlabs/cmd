@@ -18,3 +18,11 @@ dependencies:
 test:
   override:
     - docker run --net=host progrium/cmd:dev /bin/sh -c 'go test -v $(glide nv)'
+
+deployment:
+  alpha:
+    branch: master
+    commands:
+      - curl -Ls https://convox.com/install/linux.zip > /tmp/convox.zip
+      - unzip /tmp/convox.zip -d /home/ubuntu/bin
+      - make deploy
