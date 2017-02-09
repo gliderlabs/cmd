@@ -14,6 +14,7 @@ RUN apk --no-cache add go git glide build-base ca-certificates \
   && apk --no-cache del go git glide build-base
 
 
+ENV LOCAL="false"
 ENV CMD_LISTEN_ADDR=":22"
 ENV CMD_CONFIG_DIR="/config"
 ENV CMD_HOSTKEY_PEM="/tmp/data/id_host"
