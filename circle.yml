@@ -1,28 +1,79 @@
-machine:
-  services:
-    - docker
-  environment:
-    _JAVA_OPTIONS: "-Xms512m -Xmx1024m"
-  java:
-    version: openjdk7
-  post:
-    - curl -k -L -o dynamodb-local.tgz https://s3-us-west-2.amazonaws.com/dynamodb-local/dynamodb_local_latest.tar.gz
-    - tar -xzf dynamodb-local.tgz
-    - java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -inMemory -sharedDb:
-        background: true
+version: 2
+executorType: docker
+containerInfo:
+  - image: alpine:3.5
+    cmd: ["/bin/sh"]
+  - image: mattaitchison/dynamodb-local
+    cmd: ["-inMemory" ,"-sharedDb"]
 
-dependencies:
-  override:
-    - docker build -t progrium/cmd:dev -f Dockerfile.dev .
-
-test:
-  override:
-    - docker run --net=host progrium/cmd:dev /bin/sh -c 'go test -v $(glide nv)'
-
-deployment:
-  alpha:
-    branch: master
-    commands:
-      - curl -Ls https://convox.com/install/linux.zip > /tmp/convox.zip
-      - unzip /tmp/convox.zip -d /home/ubuntu/bin
-      - make deploy
+stages:
+  build:
+    environment:
+      - GOPATH: "/go"
+    workDir: /go/src/github.com/progrium/cmd
+    steps:
+      - type: shell
+        shell: /bin/sh
+        pwd: /
+        name: Install ca certificates
+        command: |
+          apk -U add ca-certificates
+      - type: cache-restore
+        name: Restore apk cache
+        key: apks-{{ .Branch }}-
+      - type: shell
+        shell: /bin/sh
+        pwd: /
+        name: Install apks
+        command: |
+          mkdir -p /var/cache/apk
+          ln -s /var/cache/apk /etc/apk/cache
+          apk add docker bash git go build-base glide openssh
+      - type: cache-save
+        name: Saving apk cache
+        key:  apks-{{ .Branch }}-{{ epoch }}
+        paths:
+          - /var/cache/apk
+      - type: checkout
+      - type: cache-restore
+        name: Restore glide cache
+        key: cmd-{{ .Branch }}-{{ checksum "glide.lock" }}
+      - type: shell
+        name: Install deps
+        command: |
+          git config --global http.https://gopkg.in.followRedirects true
+          glide install --strip-vendor
+      - type: shell
+        name: Build
+        command: |
+          make build
+      - type: cache-save
+        name: Save glide cache
+        key:  cmd-{{ .Branch }}-{{ checksum "glide.lock" }}-{{ epoch }}
+        paths:
+          - /go/src/github.com/progrium/cmd/vendor
+          - ~/.glide/cache
+      - type: shell
+        name: "Install JUnit & Setup Test Path"
+        command: |
+          go get -u github.com/jstemmer/go-junit-report
+          mkdir -p /tmp/test-results
+      - type: shell
+        name: Run tests
+        command: |
+          export PATH=$GOPATH/bin:$PATH
+          go test -v $(glide nv) | go-junit-report > /tmp/test-results/unit-tests.xml
+      - type: test-results-store
+        path: /tmp/test-results
+      - type: artifacts-store
+        path: build
+        destination: build
+      - type: deploy
+        name: "Deploy to production"
+        command: |
+          set -eu
+          if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            export PATH=$GOPATH/bin:$PATH
+            go get -u github.com/convox/rack/cmd/convox
+            make deploy
+          fi
