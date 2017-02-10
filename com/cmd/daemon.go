@@ -8,8 +8,6 @@ import (
 	"github.com/honeycombio/libhoney-go"
 )
 
-var Version string
-
 func (c *Component) AppPreStart() error {
 	log.SetFieldProcessor(fieldProcessor)
 
@@ -25,8 +23,5 @@ func (c *Component) AppPreStart() error {
 	libhoney.AddField("release", os.Getenv("RELEASE"))
 
 	log.RegisterObserver(new(honeylog))
-
-	log.RegisterObserver(newRavenLogger(com.GetString("sentry_dsn"), Version))
-
 	return nil
 }

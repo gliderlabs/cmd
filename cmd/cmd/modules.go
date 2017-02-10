@@ -1,10 +1,11 @@
 package main
 
 import (
-	cmd "github.com/progrium/cmd/com/cmd"
+	_ "github.com/progrium/cmd/com/cmd"
 	_ "github.com/progrium/cmd/com/console"
 	_ "github.com/progrium/cmd/com/core"
 	_ "github.com/progrium/cmd/com/meta"
+	"github.com/progrium/cmd/com/sentry"
 	_ "github.com/progrium/cmd/com/store"
 	_ "github.com/progrium/cmd/com/store/dynamodb"
 	_ "github.com/progrium/cmd/com/store/filesystem"
@@ -18,7 +19,7 @@ import (
 var Version string
 
 func init() {
-	cmd.Version = Version
+	sentry.Release = Version
 	auth0.Register()
 	access.Register()
 }

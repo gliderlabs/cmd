@@ -2,13 +2,11 @@ package cmd
 
 import (
 	"crypto/md5"
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
 	"time"
 
-	"github.com/getsentry/raven-go"
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/gliderlabs/ssh"
 	"github.com/honeycombio/libhoney-go"
@@ -48,27 +46,6 @@ func fieldProcessor(e log.Event, o interface{}) (log.Event, bool) {
 		return e, true
 	}
 	return e, false
-}
-
-func newRavenLogger(dsn, release string) *ravenLog {
-	r, _ := raven.New(dsn)
-	r.SetRelease(release)
-	return &ravenLog{r}
-}
-
-type ravenLog struct {
-	*raven.Client
-}
-
-func (c *ravenLog) Log(e log.Event) {
-	err, ok := e.Fields["err"]
-	if !ok {
-		return
-	}
-	packet := raven.NewPacket(err,
-		&raven.User{Username: e.Fields["sess.user"]},
-		raven.NewException(errors.New(err), raven.NewStacktrace(4, 3, nil)))
-	c.Capture(packet, nil)
 }
 
 type honeylog struct{}

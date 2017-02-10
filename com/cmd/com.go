@@ -13,7 +13,6 @@ func init() {
 		com.Option("access_denied_msg",
 			"Access Denied: Visit https://goo.gl/forms/CEtAiBUoxCWidAbK2 to request access",
 			"message shown when user isn't allowed access"),
-		com.Option("sentry_dsn", "", ""),
 		com.Option("honeycomb_key", "", ""),
 		com.Option("honeycomb_dataset", "", ""),
 		com.Option("gh_team_id", "2144066", "GitHub team ID to allow access to"),
