@@ -28,7 +28,7 @@ stages:
         command: |
           mkdir -p /var/cache/apk
           ln -s /var/cache/apk /etc/apk/cache
-          apk add docker bash git go build-base glide openssh
+          apk add docker bash git go build-base glide openssh curl
       - type: cache-save
         name: Saving apk cache
         key:  apks-{{ .Branch }}-{{ epoch }}
@@ -43,16 +43,16 @@ stages:
         command: |
           git config --global http.https://gopkg.in.followRedirects true
           glide install --strip-vendor
-      - type: shell
-        name: Build
-        command: |
-          make build
       - type: cache-save
         name: Save glide cache
         key:  cmd-{{ .Branch }}-{{ checksum "glide.lock" }}-{{ epoch }}
         paths:
           - /go/src/github.com/progrium/cmd/vendor
           - ~/.glide/cache
+      - type: shell
+        name: Build cmd
+        command: |
+          make build
       - type: shell
         name: "Install JUnit & Setup Test Path"
         command: |
@@ -65,6 +65,10 @@ stages:
           go test -v $(glide nv) | go-junit-report > /tmp/test-results/unit-tests.xml
       - type: test-results-store
         path: /tmp/test-results
+      - type: shell
+        name: Build ui
+        command: |
+          make ui-build
       - type: artifacts-store
         path: build
         destination: build

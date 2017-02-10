@@ -44,10 +44,13 @@ dynamodb:
 	docker build -t dynamodb-local ./dev/dynamodb
 	docker run -p 8000:8000 dynamodb-local -inMemory -sharedDb
 
+ui-build:
+	$(MAKE) -C ui build
+
 www-build:
-	make -C www build
+	$(MAKE) -C www build
 
 www-dev:
-	make -C www dev
+	$(MAKE) -C www dev
 
 .PHONY: dev image docker deploy dynamodb build build-all www-build www-dev
