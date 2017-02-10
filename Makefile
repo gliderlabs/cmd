@@ -1,18 +1,32 @@
+GOOS := $(shell go env GOOS)
+GOARCH := $(shell go env GOARCH)
+COMMIT := $(shell git rev-parse HEAD)
+
+build: build/$(GOOS)_$(GOARCH)/cmd
+
+build-all: build/linux_amd64/cmd build/darwin_amd64/cmd
+
+os = $(shell echo $(1) | cut -d"_" -f1)
+arch = $(shell echo $(1) | cut -d"_" -f2)
+
+build/%/cmd:
+	GOOS=$(call os, $*) GOARCH=$(call arch, $*) \
+    go build -ldflags "-X main.Commit=$(COMMIT)" -o $@ ./cmd/cmd
 
 dev:
 	comlab dev
 
-build:
-	go build -a -o ./build/cmd ./cmd/cmd
+clean:
+	-rm -rf build
 
 test:
 	go test -v $(shell glide nv)
 
-image:
+image: build/linux_amd64/cmd
 	docker build -t progrium/cmd .
 
 image-dev:
-		docker build -t progrium/cmd-dev -f Dockerfile.dev .
+	docker build -t progrium/cmd-dev -f Dockerfile.dev .
 
 docker: image
 	@docker rm -f cmd || true
@@ -23,7 +37,7 @@ docker: image
 		--volume $(shell pwd)/local:/config \
 		progrium/cmd
 
-deploy:
+deploy: build/linux_amd64/cmd
 	convox deploy -a alpha-cmd-io --wait
 
 dynamodb:
@@ -36,4 +50,4 @@ www-build:
 www-dev:
 	make -C www dev
 
-.PHONY: dev image docker deploy dynamodb build www-build www-dev
+.PHONY: dev image docker deploy dynamodb build build-all www-build www-dev
