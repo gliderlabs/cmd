@@ -50,8 +50,9 @@ func fieldProcessor(e log.Event, o interface{}) (log.Event, bool) {
 	return e, false
 }
 
-func newRavenLogger(dsn string) *ravenLog {
+func newRavenLogger(dsn, release string) *ravenLog {
 	r, _ := raven.New(dsn)
+	r.SetRelease(release)
 	return &ravenLog{r}
 }
 

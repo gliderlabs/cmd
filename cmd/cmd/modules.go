@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "github.com/progrium/cmd/com/cmd"
+	cmd "github.com/progrium/cmd/com/cmd"
 	_ "github.com/progrium/cmd/com/console"
 	_ "github.com/progrium/cmd/com/core"
 	_ "github.com/progrium/cmd/com/meta"
@@ -15,7 +15,10 @@ import (
 	auth0 "github.com/progrium/cmd/pkg/auth0/com"
 )
 
+var Version string
+
 func init() {
+	cmd.Version = Version
 	auth0.Register()
 	access.Register()
 }
