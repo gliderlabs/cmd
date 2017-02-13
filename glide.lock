@@ -1,10 +1,10 @@
-hash: 8789a8acbb291d137a1d40c02fa7fa5bae03a8a5e76cdfc43289ed6ac1352fc8
-updated: 2017-01-25T21:22:55.874394301-06:00
+hash: f08d1e3b2c6b211917b7fb0aaa34bafcb36b36d2db0126891c1435022727193f
+updated: 2017-02-13T11:17:04.561396277-06:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
 - name: github.com/aws/aws-sdk-go
-  version: aa8704199ea17856a3f37852f16a6008aea97e81
+  version: f615b0905b52177eb0efa0fe59340c05c0ea0ed9
   subpackages:
   - aws
   - aws/awserr
@@ -41,7 +41,7 @@ imports:
   - digest
   - reference
 - name: github.com/docker/docker
-  version: 49bf474f9ed7ce7143a59d1964ff7b7fd9b52178
+  version: 092cba3727bb9b4a2f0e922cd6c0f93ea270e363
   subpackages:
   - api/types
   - api/types/blkiodev
@@ -67,7 +67,7 @@ imports:
   - sockets
   - tlsconfig
 - name: github.com/docker/go-units
-  version: f2145db703495b2e525c59662db69a7344b00bb8
+  version: 5d2041e26a699eaca682e2ea41c8f891e1060444
 - name: github.com/facebookgo/clock
   version: 600d898af40aa09a7a93ecb9265d87b0504b6f03
 - name: github.com/facebookgo/httpdown
@@ -98,7 +98,7 @@ imports:
 - name: github.com/gliderlabs/ssh
   version: dd02304d04da08bd215c3879af9af64d9685c3a7
 - name: github.com/go-ini/ini
-  version: 6e4869b434bd001f6983749881c7ead3545887d8
+  version: afbd495e5aaea13597b5e14fe514ddeaa4d76fc3
 - name: github.com/golang/mock
   version: bd3c8e81be01eef76d4b503f5e687d2d1354d2d9
   subpackages:
@@ -143,21 +143,29 @@ imports:
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/jmespath/go-jmespath
-  version: bd40a432e4c76585ef6b72d3fd96fb9b6dc7b68d
+  version: c01cf91b011868172fdcd9f41838e80c9d716264
+- name: github.com/kardianos/osext
+  version: 9b883c5eb462dd5cb1b0a7a104fe86bc6b9bd391
 - name: github.com/kr/fs
   version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
 - name: github.com/leekchan/accounting
   version: a35854c075934d6aa1a6c1ab3ea8a82ee0dc1a93
 - name: github.com/magiconair/properties
   version: 0723e352fa358f9322c938cc2dadda874e9151a9
+- name: github.com/maruel/panicparse
+  version: ad661195ed0e88491e0f14be6613304e3b1141d6
+  subpackages:
+  - stack
 - name: github.com/mgutz/ansi
   version: c286dcecd19ff979eeb73ea444e479b903f2cfcb
 - name: github.com/Microsoft/go-winio
   version: ce2922f643c8fd76b46cadc7f404a06282678b34
 - name: github.com/mitchellh/mapstructure
   version: 482a9fd5fa83e8c4e7817413b80f3eb8feec03ef
+- name: github.com/mitchellh/panicwrap
+  version: fce601fe55579125e1b3cb0b992287e7290f7b83
 - name: github.com/opencontainers/runc
-  version: 7be6edaa6000fc9ef448d5187861b379199349a2
+  version: 629e35666d31f743090452416c8df207d9fdbd34
   subpackages:
   - libcontainer/user
 - name: github.com/pelletier/go-buffruneio
@@ -170,12 +178,6 @@ imports:
   version: 4d0e916071f68db74f8a73926335f809396d6b42
 - name: github.com/satori/go.uuid
   version: b061729afc07e77a8aa4fad0a2fd840958f1942a
-- name: github.com/SermoDigital/jose
-  version: b10f12c5188d355a3eacc61aba9abd3eb6b3b787
-  subpackages:
-  - crypto
-  - jws
-  - jwt
 - name: github.com/Sirupsen/logrus
   version: 55eb11d21d2a31a3cc93838241d04800f52e823d
   subpackages:
@@ -196,7 +198,7 @@ imports:
 - name: github.com/spf13/viper
   version: 382f87b929b84ce13e9c8a375a4b217f224e6c65
 - name: github.com/stripe/stripe-go
-  version: 3f2707ab5115e7c54c70a77aabcb386d6f405810
+  version: 214c65695d08dd54083b60d73c009fc9ff6dc117
   subpackages:
   - account
   - balance
@@ -234,7 +236,7 @@ imports:
 - name: github.com/thejerf/suture
   version: fe1c0d795ff7a7e54fc54ef6afb36ee0adf0c276
 - name: golang.org/x/crypto
-  version: 41d678d1df78cd0410143162dff954e6dc09300f
+  version: 453249f01cfeb54c3d549ddb75ff152ca243f9d8
   subpackages:
   - curve25519
   - ed25519
@@ -251,7 +253,7 @@ imports:
   subpackages:
   - internal
 - name: golang.org/x/sys
-  version: 8f0908ab3b2457e2e15403d3697c9ef5cb4b57a9
+  version: 7a56174f0086b32866ebd746a794417edbc678a1
   subpackages:
   - unix
   - windows
@@ -273,7 +275,7 @@ imports:
 - name: gopkg.in/alexcesaro/statsd.v2
   version: 7fea3f0d2fab1ad973e641e51dba45443a311a90
 - name: gopkg.in/mailgun/mailgun-go.v1
-  version: 369a1fa57ce6fb314e627087b9fff0db5c266c0f
+  version: a4002e2df2e8ca2da6a6fbb4a72871b504e49f50
 - name: gopkg.in/yaml.v2
   version: bef53efd0c76e49e6de55ead051f886bea7e9420
 testImports:

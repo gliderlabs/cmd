@@ -40,3 +40,7 @@ import:
   version: ^19.2.0
 - package: golang.org/x/oauth2
 - package: github.com/gorilla/websocket
+- package: github.com/mitchellh/panicwrap
+- package: github.com/maruel/panicparse
+  subpackages:
+  - stack
