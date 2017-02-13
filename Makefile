@@ -1,6 +1,6 @@
 GOOS := $(shell go env GOOS)
 GOARCH := $(shell go env GOARCH)
-COMMIT := $(shell git rev-parse HEAD)
+VERSION := $(shell git rev-parse HEAD)
 
 build: build/$(GOOS)_$(GOARCH)/cmd
 
@@ -11,7 +11,7 @@ arch = $(shell echo $(1) | cut -d"_" -f2)
 
 build/%/cmd:
 	GOOS=$(call os, $*) GOARCH=$(call arch, $*) \
-    go build -ldflags "-X main.Commit=$(COMMIT)" -o $@ ./cmd/cmd
+    go build -ldflags "-X main.Version=$(VERSION)" -o $@ ./cmd/cmd
 
 dev:
 	comlab dev
