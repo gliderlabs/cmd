@@ -61,6 +61,7 @@ stages:
       - type: shell
         name: Run tests
         command: |
+          set -euo pipefail
           export PATH=$GOPATH/bin:$PATH
           go test -v $(glide nv) | go-junit-report > /tmp/test-results/unit-tests.xml
       - type: test-results-store

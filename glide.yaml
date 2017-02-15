@@ -16,7 +16,7 @@ import:
 - package: github.com/getsentry/raven-go
 - package: github.com/honeycombio/libhoney-go
 - package: github.com/docker/docker
-  version: ~1.13.0-rc7
+  version: 3a1279393faf78632bf169619d407e584da84b66
   subpackages:
   - client
 - package: github.com/gregjones/httpcache

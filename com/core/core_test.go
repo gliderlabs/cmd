@@ -226,7 +226,7 @@ func TestCmdPull(t *testing.T) {
 			Return(types.ImageInspect{Size: Plans[DefaultPlan].ImageSize + 1}, []byte{}, nil)
 		client.EXPECT().
 			ImageRemove(gomock.Any(), cmd.Source, types.ImageRemoveOptions{}).
-			Return([]types.ImageDelete{}, nil)
+			Return([]types.ImageDeleteResponseItem{}, nil)
 
 		assert.Error(t, cmd.Pull())
 	})
