@@ -2,6 +2,7 @@ package core
 
 import (
 	"io/ioutil"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -75,9 +76,16 @@ func TestParseSource(t *testing.T) {
 		ExpectErr   bool
 	}{
 		{
-			Source:      []byte("#!cmd alpine"),
-			ExpectImage: "alpine",
-			ExpectErr:   true,
+			Source:    []byte("#!cmd alpine"),
+			ExpectErr: true,
+		},
+		{
+			Source:    []byte("\n#!cmd alpine\n"), // #!cmd must be on first line
+			ExpectErr: true,
+		},
+		{
+			Source:    []byte("#!/usr/bin/bash\n"),
+			ExpectErr: true,
 		},
 		{
 			Source:      []byte("#!cmd alpine\n"),
@@ -97,23 +105,45 @@ func TestParseSource(t *testing.T) {
 			ExpectBody:  []byte("#!/usr/bin/bash"),
 		},
 		{
+			Source:      []byte("#!cmd alpine bash\n\n#!/usr/bin/bash\n"),
+			ExpectImage: "alpine",
+			ExpectPkgs:  []string{"bash"},
+			ExpectBody:  []byte("\n#!/usr/bin/bash\n"),
+		},
+		{
 			Source:      []byte("#!cmd alpine bash\n#!/usr/bin/bash\necho"),
 			ExpectImage: "alpine",
 			ExpectPkgs:  []string{"bash"},
 			ExpectBody:  []byte("#!/usr/bin/bash\necho"),
 		},
+		{
+			Source:      []byte("#!cmd nate/pandashells bash go\n"),
+			ExpectImage: "nate/pandashells",
+			ExpectPkgs:  []string{"bash", "go"},
+			ExpectBody:  []byte{},
+		},
+		{
+			Source: []byte(`#!cmd nate/pandashells
+#!/bin/bash
+/usr/local/bin/p.example_data "$@"`),
+			ExpectImage: "nate/pandashells",
+			ExpectBody: []byte(`#!/bin/bash
+/usr/local/bin/p.example_data "$@"`),
+		},
 	}
 
-	for _, test := range testCases {
-		img, pkgs, body, err := parseSource(test.Source)
-		if test.ExpectErr {
-			assert.Error(t, err)
-		} else {
-			assert.NoError(t, err)
-		}
-		assert.Equal(t, test.ExpectImage, img)
-		assert.Equal(t, test.ExpectPkgs, pkgs)
-		assert.Equal(t, test.ExpectBody, body)
+	for i, test := range testCases {
+		t.Run("Case:"+strconv.Itoa(i+1), func(t *testing.T) {
+			img, pkgs, body, err := parseSource(test.Source)
+			if test.ExpectErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+			assert.Equal(t, test.ExpectImage, img)
+			assert.Equal(t, test.ExpectPkgs, pkgs)
+			assert.Equal(t, test.ExpectBody, body)
+		})
 	}
 }
 
@@ -126,7 +156,13 @@ func TestMakeBuildCtx(t *testing.T) {
 		ExpectErr bool
 	}{
 		{
-			Image:     "alpine",
+			Image:     "alpine", // Missing body
+			ExpectErr: true,
+			ExpectCtx: map[string][]byte{},
+		},
+		{
+			Image:     "nate/pandashells", // Unsupported image
+			Body:      []byte("#!/usr/bin/bash\n"),
 			ExpectErr: true,
 			ExpectCtx: map[string][]byte{},
 		},
@@ -175,33 +211,6 @@ ENTRYPOINT ["/bin/entrypoint"]
 
 	}
 }
-
-// func TestCmdBuild(t *testing.T) {
-// 	cmd := &Command{
-// 		Source: "#!cmd\n#!/usr/bin/terraform\n",
-// 		Name:   "alpine",
-// 		User:   "nobody",
-// 	}
-//
-// 	if err := cmd.Build(); err != nil {
-// 		t.Error(err)
-// 	}
-//
-// 	b, err := ioutil.ReadFile("./testdata/script2.sh")
-// 	if err != nil {
-// 		t.Error(err)
-// 	}
-// 	cmd = &Command{
-// 		Source: string(b),
-// 		Name:   "alpine",
-// 		User:   "nobody",
-// 	}
-//
-// 	if err := cmd.Build(); err != nil {
-// 		t.Error(err)
-// 	}
-//
-// }
 
 func TestCmdPull(t *testing.T) {
 	cmd := &Command{

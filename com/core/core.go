@@ -189,7 +189,10 @@ func (c *Command) image() string {
 }
 
 func parseSource(src []byte) (img string, pkgs []string, body []byte, err error) {
-	img = "alpine" // Use alpine as default image
+	if !bytes.HasPrefix(src, []byte("#!cmd")) {
+		err = errors.Errorf("invalid source: first line must start with `#!cmd`")
+		return
+	}
 	adv, tok, _ := bufio.ScanLines(src, false)
 	if tok == nil {
 		err = errors.Errorf("unable to parse input")
@@ -197,16 +200,22 @@ func parseSource(src []byte) (img string, pkgs []string, body []byte, err error)
 	}
 	body = src[adv:]
 	parts := strings.Fields(string(tok))
-	if len(parts) > 2 {
+	if len(parts) > 1 {
 		img = parts[1]
+	}
+	if len(parts) > 2 {
 		pkgs = parts[2:]
-		return
 	}
 	return
 }
 
 func getBuildCtx(img string, pkgs []string, body []byte) (ctx map[string][]byte, err error) {
 	ctx = map[string][]byte{}
+	if img != "alpine" {
+		err = errors.Errorf("unsupported image: currently alpine is the only supported image")
+		return
+	}
+
 	var dockerfile bytes.Buffer
 	fmt.Fprintln(&dockerfile, "FROM", img)
 	if len(pkgs) != 0 {
@@ -234,10 +243,6 @@ func (c *Command) Build() error {
 	img, pkgs, body, err := parseSource([]byte(c.Source))
 	if err != nil {
 		return err
-	}
-
-	if img != "alpine" {
-		return errors.Errorf("unsupported image: currently alpine is the only supported image")
 	}
 
 	buildCtx, err := getBuildCtx(img, pkgs, body)
