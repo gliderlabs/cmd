@@ -1,10 +1,10 @@
-hash: 0a16e43e6337ffe3d6e408ad5a8b1415f65c7745290e3afa0132859ef48f9df3
-updated: 2017-02-14T14:30:20.314183016-06:00
+hash: 56f9d558b93049de3ae5c7f60b092204fa8b0b70adf40bd108fa3b77bcc61b41
+updated: 2017-02-16T16:11:24.010869029-06:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
 - name: github.com/aws/aws-sdk-go
-  version: f615b0905b52177eb0efa0fe59340c05c0ea0ed9
+  version: 7f96ce6d3bc37ec42c97a3f8d19209a134838042
   subpackages:
   - aws
   - aws/awserr
@@ -96,7 +96,7 @@ imports:
   - pkg/com
   - pkg/log
 - name: github.com/gliderlabs/ssh
-  version: f3131153bc4db6b584b40a18491d9e78cdcba314
+  version: edf30fc0aa6fcb92ad74aec24237cfe03242009f
 - name: github.com/go-ini/ini
   version: ee900ca565931451fe4e4409bcbd4316331cec1c
 - name: github.com/golang/mock

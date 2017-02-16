@@ -80,9 +80,10 @@ func HandleSSH(s ssh.Session) {
 	}
 
 	stream := &core.Stream{
-		Stdin:  s,
-		Stdout: s,
-		Stderr: s.Stderr(),
+		Stdin:   s,
+		Stdout:  s,
+		Stderr:  s.Stderr(),
+		Session: s,
 	}
 	// handle git-receive-pack by finding the first cmd which has io.cmd.git-receive == arg[1]
 	if strings.HasPrefix(args[0], "git-receive-pack") && len(args) > 1 {

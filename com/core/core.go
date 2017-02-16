@@ -17,6 +17,7 @@ import (
 	units "github.com/docker/go-units"
 	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/comlab/pkg/log"
+	"github.com/gliderlabs/ssh"
 	"github.com/pkg/errors"
 	"github.com/progrium/cmd/pkg/dune"
 )
@@ -42,9 +43,10 @@ func (t *Token) Validate() error {
 }
 
 type Stream struct {
-	Stdin  io.ReadCloser
-	Stdout io.Writer
-	Stderr io.Writer
+	Stdin   io.ReadCloser
+	Stdout  io.Writer
+	Stderr  io.Writer
+	Session ssh.Session
 }
 
 // Command is a the definition for a runnable command on cmd
@@ -341,13 +343,18 @@ func (c *Command) Run(stream *Stream, user string, args []string) int {
 // func (c *Command) run(s ssh.Session, args []string) error {
 func (c *Command) run(stream *Stream, user string, args []string) (int, error) {
 	// outputStream, errorStream, inputStream := stdout, s.Stderr(), s
+	pty, winCh, isPty := stream.Session.Pty()
 	client := c.Docker()
 	ctx := context.Background()
-	env := append(c.Env(), "USER="+user)
+	env := append(c.Env(), fmt.Sprintf("USER=%s", user))
+	if isPty {
+		env = append([]string{fmt.Sprintf("TERM=%s", pty.Term)}, env...)
+	}
 	conf := &container.Config{
 		Image:        c.image(),
 		Env:          env,
 		Cmd:          args,
+		Tty:          isPty,
 		OpenStdin:    true,
 		AttachStderr: true,
 		AttachStdin:  true,
@@ -364,6 +371,7 @@ func (c *Command) run(stream *Stream, user string, args []string) (int, error) {
 		},
 	}
 
+	// TODO: define special admin users in config
 	if c.User == "progrium" || c.User == "mattaitchison" {
 		conf.Volumes["/var/run/docker.sock"] = struct{}{}
 		hostConf.Binds = []string{"/var/run/docker.sock:/var/run/docker.sock"}
@@ -389,17 +397,18 @@ func (c *Command) run(stream *Stream, user string, args []string) (int, error) {
 	defer containerStream.Close()
 	receiveStream := make(chan error, 1)
 	go func() {
-		_, copyErr := stdcopy.StdCopy(stream.Stdout, stream.Stderr, containerStream.Reader)
-		receiveStream <- copyErr
+		var err error
+		if isPty {
+			_, err = io.Copy(stream.Stdout, containerStream.Reader)
+		} else {
+			_, err = stdcopy.StdCopy(stream.Stdout, stream.Stderr, containerStream.Reader)
+		}
+		receiveStream <- err
 	}()
 
-	inputDone := make(chan struct{})
 	go func() {
+		defer containerStream.CloseWrite()
 		io.Copy(containerStream.Conn, stream.Stdin)
-		if copyErr := containerStream.CloseWrite(); copyErr != nil {
-			log.Debug("Couldn't send EOF: %s", copyErr)
-		}
-		close(inputDone)
 	}()
 
 	statusChan := make(chan int64, 1)
@@ -413,6 +422,21 @@ func (c *Command) run(stream *Stream, user string, args []string) (int, error) {
 		return 255, err
 	}
 
+	if isPty {
+		go func() {
+			for win := range winCh {
+				err := client.ContainerResize(ctx, res.ID, types.ResizeOptions{
+					Height: uint(win.Height),
+					Width:  uint(win.Width),
+				})
+				if err != nil {
+					log.Info(errors.Wrap(err, "failed to resize pty"))
+					break
+				}
+			}
+		}()
+	}
+
 	maxDur := Plans[DefaultPlan].MaxRuntime
 	timeout := time.After(maxDur)
 	select {
@@ -421,13 +445,6 @@ func (c *Command) run(stream *Stream, user string, args []string) (int, error) {
 	case err := <-receiveStream:
 		if err != nil {
 			return 255, err
-		}
-	case <-inputDone:
-		select {
-		case err := <-receiveStream:
-			if err != nil {
-				return 255, err
-			}
 		}
 	}
 
