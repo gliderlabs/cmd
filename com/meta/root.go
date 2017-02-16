@@ -14,9 +14,10 @@ import (
 )
 
 var rootHelp = &cmd.MetaCommand{
-	Use:    "cmd-help",
-	Short:  "Print this help",
-	Hidden: true,
+	Use:     ":help",
+	Aliases: []string{"cmd-help"},
+	Short:   "Print this help",
+	Hidden:  true,
 	Run: func(cmd *cmd.MetaCommand, sess ssh.Session, args []string) {
 		for _, c := range store.Selected().List(sess.User()) {
 			cmd.Cmd.Parent().AddCommand(&cobra.Command{
@@ -30,11 +31,11 @@ var rootHelp = &cmd.MetaCommand{
 }
 
 var rootList = &cmd.MetaCommand{
-	Use:   "cmd-ls",
-	Short: "List installed commands",
+	Use:     ":ls",
+	Aliases: []string{"cmd-ls"},
+	Short:   "List installed commands",
 	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
-		fmt.Fprintln(sess, "")
-		fmt.Fprintln(sess, "Installed Commands:")
+		header(sess, "Installed Commands")
 		for _, cmd := range store.Selected().List(sess.User()) {
 			fmt.Fprintf(sess, "  %-10s  %s\n", cmd.Name, cmd.Description)
 		}
@@ -43,24 +44,26 @@ var rootList = &cmd.MetaCommand{
 }
 
 var rootInstall = &cmd.MetaCommand{
-	Use:   "cmd-add <name> <source>",
-	Short: "Install a command",
+	Use:     ":add <name> <source>",
+	Aliases: []string{"cmd-add"},
+	Short:   "Install a command",
 	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
+		statusMsg(sess, "Installing")
 		limit := core.Plans[core.DefaultPlan].MaxCmds
 		cmds := store.Selected().List(sess.User())
 		if limit >= 0 && len(cmds) >= limit {
-			fmt.Fprintln(sess, "Unable to install command: command limit for plan reached")
+			statusErr(sess.Stderr(), "Unable to install command: command limit for plan reached")
 			sess.Exit(1)
 			return
 		}
 
 		if len(args) < 1 {
-			fmt.Fprintln(sess, "Must specify a name")
+			statusErr(sess.Stderr(), "Must specify a name")
 			sess.Exit(1)
 			return
 		}
 		if len(args) < 2 {
-			fmt.Fprintln(sess, "Must specify a source")
+			statusErr(sess.Stderr(), "Must specify a source")
 			sess.Exit(1)
 			return
 		}
@@ -71,66 +74,73 @@ var rootInstall = &cmd.MetaCommand{
 		}
 		if err := cmd.Pull(); err != nil {
 			log.Info(err)
-			fmt.Fprintln(sess.Stderr(), "Command unable to install:", err)
+			statusErr(sess.Stderr(), "Command unable to install: "+err.Error())
 			sess.Exit(1)
 			return
 		}
 		if err := store.Selected().Put(cmd.User, cmd.Name, cmd); err != nil {
 			log.Info(sess, cmd, err)
-			fmt.Fprintln(sess.Stderr(), err.Error())
+			statusErr(sess.Stderr(), err.Error())
 			sess.Exit(255)
 			return
 		}
-		fmt.Fprintln(sess, "Command installed")
+		statusDone(sess)
 	},
 }
 
 var rootUninstall = &cmd.MetaCommand{
-	Use:   "cmd-rm <name>",
-	Short: "Uninstall a command",
+	Use:     ":delete <name>",
+	Aliases: []string{"cmd-rm"},
+	Short:   "Delete a command",
 	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
 		if len(args) < 1 {
-			fmt.Fprintln(sess, "Must specify a command")
+			statusErr(sess.Stderr(), "Must specify a command")
 			sess.Exit(1)
 			return
 		}
+
+		statusMsg(sess, "Deleting")
 		cmd := store.Selected().Get(sess.User(), args[0])
 		if cmd == nil {
-			fmt.Fprintln(sess, "Command not found")
+			statusErr(sess.Stderr(), "Command not found")
 			sess.Exit(1)
 			return
 		}
 		if err := store.Selected().Delete(cmd.User, cmd.Name); err != nil {
 			log.Info(sess, cmd, err)
-			fmt.Fprintln(sess.Stderr(), err.Error())
+			statusErr(sess.Stderr(), err.Error())
 			sess.Exit(255)
 			return
 		}
-		fmt.Fprintln(sess, "Command uninstalled")
+		statusDone(sess)
 	},
 }
 
 var rootCreate = &cmd.MetaCommand{
-	Use:   "cmd-create <name>",
-	Short: "Create a command",
+	Use:     ":create <name>",
+	Aliases: []string{"cmd-create"},
+	Short:   "Create a command",
 	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
+		statusMsg(sess, "Creating command")
 		limit := core.Plans[core.DefaultPlan].MaxCmds
 		cmds := store.Selected().List(sess.User())
 		if limit >= 0 && len(cmds) >= limit {
-			fmt.Fprintln(sess, "Unable to create command: command limit for plan reached")
+			statusErr(sess.Stderr(), "Unable to create command: command limit for plan reached")
 			sess.Exit(1)
 			return
 		}
 
 		if len(args) < 1 {
-			fmt.Fprintln(sess, "Must specify a name")
+			statusErr(sess.Stderr(), "Must specify a name")
 			sess.Exit(1)
 			return
 		}
 
 		source, err := ioutil.ReadAll(sess)
 		if err != nil {
-			fmt.Println(err)
+			statusErr(sess.Stderr(),
+				"Command unable to install: failed to read source: "+err.Error())
+			sess.Exit(1)
 			return
 		}
 		cmd := &core.Command{
@@ -139,19 +149,18 @@ var rootCreate = &cmd.MetaCommand{
 			Source: string(source),
 		}
 
-		fmt.Fprintln(sess, "Building command...")
 		if err := cmd.Build(); err != nil {
 			log.Info(err)
-			fmt.Fprintln(sess.Stderr(), "Command unable to install:", err)
+			statusErr(sess.Stderr(), "Command unable to install: "+err.Error())
 			sess.Exit(1)
 			return
 		}
 		if err := store.Selected().Put(cmd.User, cmd.Name, cmd); err != nil {
 			log.Info(sess, cmd, err)
-			fmt.Fprintln(sess.Stderr(), err.Error())
+			statusErr(sess.Stderr(), err.Error())
 			sess.Exit(255)
 			return
 		}
-		fmt.Fprintln(sess, "Command installed")
+		statusDone(sess)
 	},
 }

@@ -71,10 +71,10 @@ func HandleSSH(s ssh.Session) {
 
 	args := s.Command()
 	if len(args) == 0 {
-		args = []string{"cmd-help"}
+		args = []string{":help"}
 	}
 
-	if strings.HasPrefix(args[0], "cmd-") {
+	if strings.HasPrefix(args[0], ":") {
 		runRootMeta(s, args)
 		return
 	}
