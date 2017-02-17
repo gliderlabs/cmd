@@ -14,7 +14,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/pkg/stdcopy"
-	units "github.com/docker/go-units"
+	"github.com/docker/go-units"
 	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/gliderlabs/ssh"
@@ -296,9 +296,9 @@ func (c *Command) Pull() error {
 
 	if maxSize := Plans[DefaultPlan].ImageSize; img.Size > maxSize {
 		c.Docker().ImageRemove(ctx, c.Source, types.ImageRemoveOptions{}) // Do something with error
-		return errors.Errorf("image excedes plan size limit of: %s with: %s",
-			units.HumanSize(float64(maxSize)),
-			units.HumanSize(float64(img.Size)))
+		return errors.Errorf("image size excedes plan limit of: %s with: %s",
+			units.BytesSize(float64(maxSize)),
+			units.BytesSize(float64(img.Size)))
 	}
 	return c.Docker().ImageTag(ctx, c.Source, c.image())
 }
