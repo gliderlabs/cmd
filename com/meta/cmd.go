@@ -21,6 +21,7 @@ func (c *Component) RootCommands() []*cmd.MetaCommand {
 		rootUninstall,
 		rootList,
 		rootCreate,
+		rootEdit,
 		tokens,
 		wrapMeta(metaAccess),
 		wrapMeta(metaAdmins),

@@ -129,13 +129,18 @@ var rootCreate = &cmd.MetaCommand{
 			sess.Exit(1)
 			return
 		}
-
 		if len(args) < 1 {
 			statusErr(sess.Stderr(), "Must specify a name")
 			sess.Exit(1)
 			return
 		}
-
+		for _, c := range cmds {
+			if c.Name == args[0] {
+				statusErr(sess.Stderr(), fmt.Sprintf("Command %s already exists", bright(args[0])))
+				sess.Exit(1)
+				return
+			}
+		}
 		source, err := ioutil.ReadAll(sess)
 		if err != nil {
 			statusErr(sess.Stderr(),
@@ -152,6 +157,55 @@ var rootCreate = &cmd.MetaCommand{
 		if err := cmd.Build(); err != nil {
 			log.Info(err)
 			statusErr(sess.Stderr(), "Command unable to install: "+err.Error())
+			sess.Exit(1)
+			return
+		}
+		if err := store.Selected().Put(cmd.User, cmd.Name, cmd); err != nil {
+			log.Info(sess, cmd, err)
+			statusErr(sess.Stderr(), err.Error())
+			sess.Exit(255)
+			return
+		}
+		statusDone(sess)
+	},
+}
+
+var rootEdit = &cmd.MetaCommand{
+	Use:   ":edit <name> [-]",
+	Short: "Edit a command",
+	Long: `Edit source for an existing command.
+
+Source will be read from stdin when single "-" provided as last arg.`,
+	Example: `  # Edit command with name "cmd" reading source from stdin
+  echo -e '#!cmd alpine\n echo "hello world"' | ssh cmd.io :edit cmd -`,
+	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
+		cmd, err := getCmd(sess.User(), args)
+		if err != nil {
+			statusErr(sess.Stderr(), err.Error())
+			meta.Cmd.Usage()
+			sess.Exit(1)
+			return
+		}
+
+		if len(args) < 2 {
+			statusErr(sess, "Unsupported input mode: use - as last arg to read from stdin")
+			meta.Cmd.Help()
+			sess.Exit(1)
+			return
+		}
+		statusMsg(sess, "Editing command")
+		source, err := ioutil.ReadAll(sess)
+		if err != nil {
+			statusErr(sess.Stderr(),
+				"Command unable to edit: failed to read source: "+err.Error())
+			sess.Exit(1)
+			return
+		}
+
+		cmd.Source = string(source)
+		if err := cmd.Build(); err != nil {
+			log.Info(err)
+			statusErr(sess.Stderr(), "Command unable to edit: "+err.Error())
 			sess.Exit(1)
 			return
 		}
