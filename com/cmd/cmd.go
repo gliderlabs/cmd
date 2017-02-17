@@ -213,6 +213,10 @@ func HandleAuth(user string, key ssh.PublicKey) bool {
 		log.Info(user, err)
 		return false
 	}
+	if resp.StatusCode == http.StatusNotFound {
+		log.Info(fmt.Sprintf("github user for \"%s\" not found", user), key)
+		return false
+	}
 	defer resp.Body.Close()
 	scanner := bufio.NewScanner(resp.Body)
 	scanner.Split(bufio.ScanLines)
