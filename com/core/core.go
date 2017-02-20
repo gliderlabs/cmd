@@ -428,7 +428,7 @@ func (c *Command) run(sess ssh.Session, args []string) (int, error) {
 	go func() {
 		s, err := client.ContainerWait(ctx, res.ID)
 		if err != nil {
-			fmt.Println(err)
+			log.Info(errors.Wrap(err, "container wait failed"))
 		}
 		statusChan <- s
 	}()
