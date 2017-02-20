@@ -79,12 +79,6 @@ func HandleSSH(s ssh.Session) {
 		return
 	}
 
-	stream := &core.Stream{
-		Stdin:   s,
-		Stdout:  s,
-		Stderr:  s.Stderr(),
-		Session: s,
-	}
 	// handle git-receive-pack by finding the first cmd which has io.cmd.git-receive == arg[1]
 	if strings.HasPrefix(args[0], "git-receive-pack") && len(args) > 1 {
 		cmds := store.Selected().List(user)
@@ -93,7 +87,7 @@ func HandleSSH(s ssh.Session) {
 			path, ok := c.Environment["io.cmd.git-receive"]
 			if ok && strings.HasPrefix(args[1], path) {
 				cmd = c
-				c.Run(stream, s.User(), args)
+				c.Run(s, args)
 				return
 			}
 		}
@@ -131,7 +125,7 @@ func HandleSSH(s ssh.Session) {
 			return
 		}
 
-		cmd.Run(stream, s.User(), args[1:])
+		cmd.Run(s, args[1:])
 		return
 	}
 
@@ -149,7 +143,7 @@ func HandleSSH(s ssh.Session) {
 			return
 		}
 	}
-	cmd.Run(stream, s.User(), args[1:])
+	cmd.Run(s, args[1:])
 	if cmd.Changed {
 		if err := store.Selected().Put(cmd.User, cmd.Name, cmd); err != nil {
 			fmt.Fprintln(s.Stderr(), err.Error())

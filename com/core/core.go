@@ -42,13 +42,6 @@ func (t *Token) Validate() error {
 	return nil
 }
 
-type Stream struct {
-	Stdin   io.ReadCloser
-	Stdout  io.Writer
-	Stderr  io.Writer
-	Session ssh.Session
-}
-
 // Command is a the definition for a runnable command on cmd
 type Command struct {
 	Name        string
@@ -315,7 +308,7 @@ func (c *Command) UpdateDescription() error {
 }
 
 // Run a command in a container attaching input/output to ssh session
-func (c *Command) Run(stream *Stream, user string, args []string) int {
+func (c *Command) Run(sess ssh.Session, args []string) int {
 	var err error
 	if strings.HasPrefix(c.Source, "#!") {
 		err = c.Build()
@@ -323,17 +316,17 @@ func (c *Command) Run(stream *Stream, user string, args []string) int {
 		err = c.Pull()
 	}
 	if err != nil {
-		fmt.Fprintln(stream.Stderr, err.Error())
+		fmt.Fprintln(sess.Stderr(), err.Error())
 		return 255
 	}
 	if err = c.UpdateDescription(); err != nil {
-		fmt.Fprintln(stream.Stderr, err.Error())
+		fmt.Fprintln(sess.Stderr(), err.Error())
 		return 255
 	}
 
-	status, err := c.run(stream, user, args)
+	status, err := c.run(sess, args)
 	if err != nil {
-		fmt.Fprintln(stream.Stderr, err.Error())
+		fmt.Fprintln(sess.Stderr(), err.Error())
 		return status
 	}
 
@@ -341,12 +334,12 @@ func (c *Command) Run(stream *Stream, user string, args []string) int {
 }
 
 // func (c *Command) run(s ssh.Session, args []string) error {
-func (c *Command) run(stream *Stream, user string, args []string) (int, error) {
+func (c *Command) run(sess ssh.Session, args []string) (int, error) {
 	// outputStream, errorStream, inputStream := stdout, s.Stderr(), s
-	pty, winCh, isPty := stream.Session.Pty()
+	pty, winCh, isPty := sess.Pty()
 	client := c.Docker()
 	ctx := context.Background()
-	env := append(c.Env(), fmt.Sprintf("USER=%s", user))
+	env := append(c.Env(), fmt.Sprintf("USER=%s", sess.User()))
 	if isPty {
 		env = append([]string{fmt.Sprintf("TERM=%s", pty.Term)}, env...)
 	}
@@ -399,22 +392,16 @@ func (c *Command) run(stream *Stream, user string, args []string) (int, error) {
 	go func() {
 		var err error
 		if isPty {
-			_, err = io.Copy(stream.Stdout, containerStream.Reader)
+			_, err = io.Copy(sess, containerStream.Reader)
 		} else {
-			_, err = stdcopy.StdCopy(stream.Stdout, stream.Stderr, containerStream.Reader)
+			_, err = stdcopy.StdCopy(sess, sess.Stderr(), containerStream.Reader)
 		}
 		receiveStream <- err
 	}()
 
 	go func() {
 		defer containerStream.CloseWrite()
-		io.Copy(containerStream.Conn, stream.Stdin)
-	}()
-
-	statusChan := make(chan int64, 1)
-	go func() {
-		s, _ := client.ContainerWait(ctx, res.ID)
-		statusChan <- s
+		io.Copy(containerStream.Conn, sess)
 	}()
 
 	err = client.ContainerStart(ctx, res.ID, types.ContainerStartOptions{})
@@ -436,6 +423,15 @@ func (c *Command) run(stream *Stream, user string, args []string) (int, error) {
 			}
 		}()
 	}
+
+	statusChan := make(chan int64, 1)
+	go func() {
+		s, err := client.ContainerWait(ctx, res.ID)
+		if err != nil {
+			fmt.Println(err)
+		}
+		statusChan <- s
+	}()
 
 	maxDur := Plans[DefaultPlan].MaxRuntime
 	timeout := time.After(maxDur)
