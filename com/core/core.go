@@ -261,8 +261,7 @@ func (c *Command) Build() error {
 }
 
 // Pull and tag image for command
-func (c *Command) Pull() error {
-	ctx := context.Background()
+func (c *Command) Pull(ctx context.Context) error {
 	res, err := c.Docker().ImagePull(ctx, c.Source, types.ImagePullOptions{})
 	if err != nil {
 		return err
@@ -275,7 +274,7 @@ func (c *Command) Pull() error {
 		return err
 	}
 
-	if maxSize := Plans[DefaultPlan].ImageSize; img.Size > maxSize {
+	if maxSize := ContextPlan(ctx).ImageSize; img.Size > maxSize {
 		c.Docker().ImageRemove(ctx, c.Source, types.ImageRemoveOptions{}) // Do something with error
 		return errors.Errorf("image size excedes plan limit of: %s with: %s",
 			units.BytesSize(float64(maxSize)),
@@ -284,8 +283,8 @@ func (c *Command) Pull() error {
 	return c.Docker().ImageTag(ctx, c.Source, c.image())
 }
 
-func (c *Command) UpdateDescription() error {
-	res, _, err := c.Docker().ImageInspectWithRaw(context.Background(), c.image())
+func (c *Command) UpdateDescription(ctx context.Context) error {
+	res, _, err := c.Docker().ImageInspectWithRaw(ctx, c.image())
 	if err != nil {
 		return err
 	}
@@ -301,13 +300,13 @@ func (c *Command) Run(sess ssh.Session, args []string) int {
 	if strings.HasPrefix(c.Source, "#!") {
 		err = c.Build()
 	} else {
-		err = c.Pull()
+		err = c.Pull(sess.Context())
 	}
 	if err != nil {
 		fmt.Fprintln(sess.Stderr(), err.Error())
 		return 255
 	}
-	if err = c.UpdateDescription(); err != nil {
+	if err = c.UpdateDescription(sess.Context()); err != nil {
 		fmt.Fprintln(sess.Stderr(), err.Error())
 		return 255
 	}
@@ -326,7 +325,6 @@ func (c *Command) run(sess ssh.Session, args []string) (int, error) {
 	// outputStream, errorStream, inputStream := stdout, s.Stderr(), s
 	pty, winCh, isPty := sess.Pty()
 	client := c.Docker()
-	ctx := context.Background()
 	env := append(c.Env(), fmt.Sprintf("USER=%s", sess.User()))
 	if isPty {
 		env = append([]string{fmt.Sprintf("TERM=%s", pty.Term)}, env...)
@@ -343,21 +341,20 @@ func (c *Command) run(sess ssh.Session, args []string) (int, error) {
 		StdinOnce:    true,
 		Volumes:      make(map[string]struct{}),
 	}
+	ctx := sess.Context()
+	p := ContextPlan(ctx)
 
 	hostConf := &container.HostConfig{
 		Resources: container.Resources{
-			CPUPeriod: Plans[DefaultPlan].CPUPeriod,
-			CPUQuota:  Plans[DefaultPlan].CPUQuota,
-			Memory:    Plans[DefaultPlan].Memory,
+			CPUPeriod: p.CPUPeriod,
+			CPUQuota:  p.CPUQuota,
+			Memory:    p.Memory,
 		},
 	}
-
-	// TODO: define special admin users in config
-	if c.User == "progrium" || c.User == "mattaitchison" {
+	if p.DinD {
+		// TODO: actual feature, maybe: https://github.com/gliderlabs/cmd/issues/40
 		conf.Volumes["/var/run/docker.sock"] = struct{}{}
 		hostConf.Binds = []string{"/var/run/docker.sock:/var/run/docker.sock"}
-		hostConf.Privileged = true
-		hostConf.UsernsMode = "host"
 	}
 
 	res, err := client.ContainerCreate(ctx, conf, hostConf, nil, "")
@@ -421,8 +418,7 @@ func (c *Command) run(sess ssh.Session, args []string) (int, error) {
 		statusChan <- s
 	}()
 
-	maxDur := Plans[DefaultPlan].MaxRuntime
-	timeout := time.After(maxDur)
+	timeout := time.After(p.MaxRuntime)
 	select {
 	case <-timeout:
 		return 255, ErrMaxRuntimeExceded

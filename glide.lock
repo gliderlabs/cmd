@@ -1,10 +1,10 @@
-hash: 56f9d558b93049de3ae5c7f60b092204fa8b0b70adf40bd108fa3b77bcc61b41
-updated: 2017-02-16T16:11:24.010869029-06:00
+hash: 3297d7acb8b11fc63fecd29e38b3c93e57f0aa8103fb40d4055010822a1215bf
+updated: 2017-02-22T12:44:03.082440319-06:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
 - name: github.com/aws/aws-sdk-go
-  version: 7f96ce6d3bc37ec42c97a3f8d19209a134838042
+  version: f90ce72ad5a986b9026c27ca31c2845c93d9e7ce
   subpackages:
   - aws
   - aws/awserr
@@ -96,7 +96,7 @@ imports:
   - pkg/com
   - pkg/log
 - name: github.com/gliderlabs/ssh
-  version: edf30fc0aa6fcb92ad74aec24237cfe03242009f
+  version: 0e5e510c8ec5e09d257226a74daac41e53fee8ee
 - name: github.com/go-ini/ini
   version: ee900ca565931451fe4e4409bcbd4316331cec1c
 - name: github.com/golang/mock
@@ -168,6 +168,8 @@ imports:
   version: fce601fe55579125e1b3cb0b992287e7290f7b83
 - name: github.com/opencontainers/go-digest
   version: aa2ec055abd10d26d539eb630a92241b781ce4bc
+- name: github.com/patrickmn/go-cache
+  version: e7a9def80f35fe1b170b7b8b68871d59dea117e1
 - name: github.com/pelletier/go-buffruneio
   version: df1e16fde7fc330a0ca68167c23bf7ed6ac31d6d
 - name: github.com/pelletier/go-toml
@@ -193,7 +195,7 @@ imports:
 - name: github.com/spf13/viper
   version: 5ed0fc31f7f453625df314d8e66b9791e8d13003
 - name: github.com/stripe/stripe-go
-  version: d0f3d68166920cfaf4e3f23ac8f40ba9dcdbbe91
+  version: 556c98ad880d50e58002ae0cdd1fc101ec1305fc
   subpackages:
   - account
   - balance

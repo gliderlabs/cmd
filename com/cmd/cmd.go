@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -10,8 +11,10 @@ import (
 	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/gliderlabs/ssh"
-	uuid "github.com/satori/go.uuid"
+	"github.com/patrickmn/go-cache"
+	"github.com/satori/go.uuid"
 
+	"github.com/progrium/cmd/com/console"
 	"github.com/progrium/cmd/com/core"
 	"github.com/progrium/cmd/com/store"
 	"github.com/progrium/cmd/pkg/access"
@@ -50,6 +53,16 @@ Additional help topics:{{range .Commands}}{{if .IsHelpCommand}}
 Use "[command] --help" for help about a meta command.{{end}}
 
 `
+
+// Default expiry of 5 min and expiry purge every 5 min.
+// Would be nice to find a good cache with size limit as well.
+var authCache = cache.New(5*time.Minute, 5*time.Minute)
+
+// TODO: make this more integrated with console?
+type cachedUser struct {
+	user console.User
+	keys []ssh.PublicKey
+}
 
 func HandleSSH(s ssh.Session) {
 	var (
@@ -131,7 +144,7 @@ func HandleSSH(s ssh.Session) {
 
 	cmd = store.Selected().Get(user, args[0])
 	if cmd == nil {
-		if cmd = LazyLoad(user, args[0]); cmd == nil {
+		if cmd = LazyLoad(user, args[0], s.Context()); cmd == nil {
 			msg = "command not found"
 			fmt.Fprintln(s.Stderr(), "Command not found: "+args[0])
 			s.Exit(1)
@@ -193,7 +206,8 @@ func runCmdMeta(s ssh.Session, cmdName string, args []string) {
 	}
 }
 
-func HandleAuth(user string, key ssh.PublicKey) bool {
+func HandleAuth(ctx ssh.Context, key ssh.PublicKey) bool {
+	user := ctx.User()
 	if tok := uuid.FromStringOrNil(user); tok != uuid.Nil {
 		token, _ := store.Selected().GetToken(tok.String())
 		if token != nil && token.Key == user {
@@ -202,25 +216,46 @@ func HandleAuth(user string, key ssh.PublicKey) bool {
 		log.Info("no match found for token: " + user)
 	}
 
-	resp, err := http.Get(fmt.Sprintf("https://github.com/%s.keys", user))
-	if err != nil {
-		log.Info(user, err)
-		return false
-	}
-	if resp.StatusCode == http.StatusNotFound {
-		log.Info(fmt.Sprintf("github user for \"%s\" not found", user), key)
-		return false
-	}
-	defer resp.Body.Close()
-	scanner := bufio.NewScanner(resp.Body)
-	scanner.Split(bufio.ScanLines)
-	for scanner.Scan() {
-		k, _, _, _, err := ssh.ParseAuthorizedKey(scanner.Bytes())
+	var u cachedUser
+	cu, ok := authCache.Get(user)
+	if ok {
+		u = cu.(cachedUser)
+	} else {
+		resp, err := http.Get(fmt.Sprintf("https://github.com/%s.keys", user))
 		if err != nil {
 			log.Info(user, err)
-			continue
+			return false
 		}
+		if resp.StatusCode == http.StatusNotFound {
+			log.Info(fmt.Sprintf("github user for \"%s\" not found", user), key)
+			return false
+		}
+		defer resp.Body.Close()
+		scanner := bufio.NewScanner(resp.Body)
+		scanner.Split(bufio.ScanLines)
+		var keys []ssh.PublicKey
+		for scanner.Scan() {
+			k, _, _, _, err := ssh.ParseAuthorizedKey(scanner.Bytes())
+			if err != nil {
+				log.Info(user, err)
+				continue
+			}
+			keys = append(keys, k)
+		}
+		usr, err := console.LookupNickname(user)
+		if err != nil {
+			// just log, don't care yet if they haven't made account
+			log.Info(user, err)
+		}
+		u = cachedUser{
+			user: usr,
+			keys: keys,
+		}
+		authCache.Set(user, u, cache.DefaultExpiration)
+	}
+	ctx.SetValue("plan", u.user.Account.Plan)
 
+	for _, k := range u.keys {
 		if ssh.KeysEqual(key, k) {
 			return true
 		}
@@ -229,13 +264,13 @@ func HandleAuth(user string, key ssh.PublicKey) bool {
 	return false
 }
 
-func LazyLoad(user, name string) *core.Command {
+func LazyLoad(user, name string, ctx context.Context) *core.Command {
 	cmd := &core.Command{
 		Name:   name,
 		User:   user,
 		Source: fmt.Sprintf("%s/cmd-%s", user, name),
 	}
-	if err := cmd.Pull(); err != nil {
+	if err := cmd.Pull(ctx); err != nil {
 		log.Debug(cmd, err)
 		return nil
 	}

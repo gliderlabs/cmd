@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	usersEndpoint      = "https://%s/api/v2/users/%s"
+	usersEndpoint      = "https://%s/api/v2/users"
+	userEndpoint       = "https://%s/api/v2/users/%s"
 	authorizeEndpoint  = "https://%s/authorize"
 	userInfoEndpoint   = "https://%s/userinfo"
 	tokenEndpoint      = "https://%s/oauth/token"
@@ -145,7 +146,7 @@ func (c *Client) DelegationToken(token *oauth2.Token, apiType string) (string, e
 }
 
 func (c *Client) User(id string) (User, error) {
-	url := fmt.Sprintf(usersEndpoint, c.Domain, id)
+	url := fmt.Sprintf(userEndpoint, c.Domain, id)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -165,6 +166,32 @@ func (c *Client) User(id string) (User, error) {
 		return nil, err
 	}
 	return user, nil
+}
+
+func (c *Client) SearchUsers(q string) ([]User, error) {
+	url := fmt.Sprintf(usersEndpoint, c.Domain)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	params := req.URL.Query()
+	params.Add("q", q)
+	req.URL.RawQuery = params.Encode()
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.Token))
+	resp, err := new(http.Client).Do(req)
+	if err != nil {
+		return nil, err
+	}
+	raw, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+	var users []User
+	if err := json.Unmarshal(raw, &users); err != nil {
+		return nil, err
+	}
+	return users, nil
 }
 
 func (c *Client) PatchUser(id string, user User) error {

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/gliderlabs/ssh"
 	"github.com/gorilla/websocket"
+	"github.com/progrium/cmd/com/console"
 	"github.com/progrium/cmd/com/store"
 )
 
@@ -95,12 +97,18 @@ func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			wc = &flushWriter{nil, w}
 		}
 	}
+	ctx := context.Background()
+	u, err := console.LookupNickname(token.User)
+	if err == nil {
+		context.WithValue(ctx, "plan", u.Account.Plan)
+	}
 	session := &httpSession{
 		req:         r,
 		wc:          wc,
 		stdin:       ioutil.NopCloser(strings.NewReader("")),
 		token:       token.Key,
 		isWebSocket: isWebSocket,
+		ctx:         ctx,
 	}
 	defer session.Close()
 
@@ -117,6 +125,7 @@ type httpSession struct {
 	stdin       io.ReadCloser
 	token       string
 	isWebSocket bool
+	ctx         context.Context
 }
 
 func (sess *httpSession) Write(p []byte) (n int, err error) {
@@ -130,6 +139,12 @@ func (sess *httpSession) PublicKey() ssh.PublicKey {
 }
 func (sess *httpSession) Exit(code int) error {
 	return nil
+}
+func (sess *httpSession) Permissions() ssh.Permissions {
+	return ssh.Permissions{}
+}
+func (sess *httpSession) Context() context.Context {
+	return sess.ctx
 }
 func (sess *httpSession) User() string {
 	return sess.token

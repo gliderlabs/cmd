@@ -1,6 +1,7 @@
 package core
 
 import (
+	"context"
 	"io/ioutil"
 	"strconv"
 	"strings"
@@ -236,7 +237,7 @@ func TestCmdPull(t *testing.T) {
 			ImageRemove(gomock.Any(), cmd.Source, types.ImageRemoveOptions{}).
 			Return([]types.ImageDeleteResponseItem{}, nil)
 
-		assert.Error(t, cmd.Pull())
+		assert.Error(t, cmd.Pull(context.Background()))
 	})
 
 	t.Run("WithinLimit", func(t *testing.T) {
@@ -255,7 +256,7 @@ func TestCmdPull(t *testing.T) {
 			ImageTag(gomock.Any(), cmd.Source, cmd.image()).
 			Return(nil)
 
-		assert.NoError(t, cmd.Pull())
+		assert.NoError(t, cmd.Pull(context.Background()))
 	})
 
 }

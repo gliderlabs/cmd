@@ -185,6 +185,7 @@ func subscribeHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	err = auth0.DefaultClient().PatchUser(user.ID, auth0.User{
 		"app_metadata": map[string]interface{}{
 			"subscription_id": sub.ID,
+			"plan":            "plus",
 		},
 	})
 	if err != nil {
@@ -197,7 +198,7 @@ func subscribeHandler(w http.ResponseWriter, r *http.Request, user *User) {
 		"Jeff Lindsay <jeff@gliderlabs.com>",
 		"Cmd.io Plus Upgrade",
 		fmt.Sprintf(`Hello, %s!
-      
+
 Thanks for upgrading and supporting our work. Be sure to join our
 Slack community if you haven't already:
 

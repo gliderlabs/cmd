@@ -24,6 +24,7 @@ type User struct {
 type Account struct {
 	CustomerID     string `mapstructure:"customer_id"`
 	SubscriptionID string `mapstructure:"subscription_id"`
+	Plan           string
 }
 
 type AppMetadata struct {
@@ -52,6 +53,23 @@ func LookupUser(uid string) (User, error) {
 	}
 	var user User
 	err = mapstructure.Decode(data, &user)
+	if err != nil {
+		return User{}, err
+	}
+	return user, nil
+}
+
+func LookupNickname(nickname string) (User, error) {
+	users, err := auth0.DefaultClient().SearchUsers(
+		fmt.Sprintf("nickname:%s", nickname))
+	if err != nil {
+		return User{}, err
+	}
+	if len(users) < 1 {
+		return User{}, fmt.Errorf("nickname not found")
+	}
+	var user User
+	err = mapstructure.Decode(users[0], &user)
 	if err != nil {
 		return User{}, err
 	}

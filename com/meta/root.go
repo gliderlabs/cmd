@@ -49,7 +49,7 @@ var rootInstall = &cmd.MetaCommand{
 	Short:   "Install a command",
 	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
 		statusMsg(sess, "Installing")
-		limit := core.Plans[core.DefaultPlan].MaxCmds
+		limit := core.ContextPlan(sess.Context()).MaxCmds
 		cmds := store.Selected().List(sess.User())
 		if limit >= 0 && len(cmds) >= limit {
 			statusErr(sess.Stderr(), "Unable to install command: command limit for plan reached")
@@ -72,7 +72,7 @@ var rootInstall = &cmd.MetaCommand{
 			User:   sess.User(),
 			Source: args[1],
 		}
-		if err := cmd.Pull(); err != nil {
+		if err := cmd.Pull(sess.Context()); err != nil {
 			log.Info(err)
 			statusErr(sess.Stderr(), "Command unable to install: "+err.Error())
 			sess.Exit(1)
@@ -122,7 +122,7 @@ var rootCreate = &cmd.MetaCommand{
 	Short:   "Create a command",
 	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
 		statusMsg(sess, "Creating command")
-		limit := core.Plans[core.DefaultPlan].MaxCmds
+		limit := core.ContextPlan(sess.Context()).MaxCmds
 		cmds := store.Selected().List(sess.User())
 		if limit >= 0 && len(cmds) >= limit {
 			statusErr(sess.Stderr(), "Unable to create command: command limit for plan reached")
