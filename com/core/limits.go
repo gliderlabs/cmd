@@ -47,8 +47,10 @@ var Plans = map[string]Plan{
 }
 
 func ContextPlan(ctx context.Context) Plan {
-	if cp := ctx.Value("plan"); cp != nil {
-		return Plans[cp.(string)]
+	if name := ctx.Value("plan"); name != nil {
+		if plan, ok := Plans[name.(string)]; ok {
+			return plan
+		}
 	}
 	return Plans[DefaultPlan]
 }
