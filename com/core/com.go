@@ -5,8 +5,7 @@ import (
 )
 
 func init() {
-	com.Register("core", &Component{},
-		com.Option("host", "", ""))
+	com.Register("core", &Component{})
 }
 
 type Component struct{}

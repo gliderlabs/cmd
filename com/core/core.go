@@ -13,13 +13,13 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/docker/go-units"
-	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/gliderlabs/ssh"
 	"github.com/pkg/errors"
-	"github.com/progrium/cmd/pkg/dune"
+	"github.com/progrium/cmd/com/docker"
 )
 
 // Token used to provide access to non-github users
@@ -54,25 +54,13 @@ type Command struct {
 
 	Changed bool
 
-	docker *dune.Client
+	docker client.APIClient
 }
 
 // Docker will return a configured docker client
-func (c *Command) Docker() *dune.Client {
-	if c.docker != nil {
-		return c.docker
-	}
-	var err error
-	c.docker, err = dune.NewClient(com.GetString("host"))
-	if err != nil {
-		log.Info(errors.Wrap(err, "failed to create new dune client"))
-	}
-	if c.docker != nil {
-		return c.docker
-	}
-	c.docker, err = dune.NewEnvClient()
-	if err != nil {
-		log.Fatal(errors.Wrap(err, "failed to create docker env client"))
+func (c *Command) Docker() client.APIClient {
+	if c.docker == nil {
+		c.docker = docker.Client()
 	}
 	return c.docker
 }

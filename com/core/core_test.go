@@ -8,7 +8,6 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/golang/mock/gomock"
-	"github.com/progrium/cmd/pkg/dune"
 	mock_client "github.com/progrium/cmd/pkg/mock/docker/docker/client"
 	"github.com/stretchr/testify/assert"
 )
@@ -223,7 +222,7 @@ func TestCmdPull(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		client := mock_client.NewMockAPIClient(ctrl)
-		cmd.docker = &dune.Client{APIClient: client}
+		cmd.docker = client
 		pullRes := ioutil.NopCloser(strings.NewReader(""))
 		client.EXPECT().
 			ImagePull(gomock.Any(), cmd.Source, types.ImagePullOptions{}).
@@ -244,7 +243,7 @@ func TestCmdPull(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		client := mock_client.NewMockAPIClient(ctrl)
-		cmd.docker = &dune.Client{APIClient: client}
+		cmd.docker = client
 		pullRes := ioutil.NopCloser(strings.NewReader(""))
 		client.EXPECT().
 			ImagePull(gomock.Any(), cmd.Source, types.ImagePullOptions{}).
