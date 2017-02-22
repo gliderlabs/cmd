@@ -199,7 +199,7 @@ func (c *Client) PatchUser(id string, user User) error {
 	if err != nil {
 		return err
 	}
-	url := fmt.Sprintf(usersEndpoint, c.Domain, id)
+	url := fmt.Sprintf(userEndpoint, c.Domain, id)
 	req, err := http.NewRequest("PATCH", url, bytes.NewBuffer(body))
 	if err != nil {
 		return err
