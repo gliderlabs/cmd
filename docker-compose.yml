@@ -3,7 +3,7 @@ services:
   app:
     build: .
     labels:
-      - convox.port.443.protocol=https
+      - convox.port.443.protocol=tls
       - convox.health.timeout=60
     ports:
       - 22:22
