@@ -62,7 +62,7 @@ var tokensNew = &cmd.MetaCommand{
 			sess.Exit(255)
 			return
 		}
-		fmt.Fprintln(sess, "Token created:", token.Key)
+		fmt.Fprintln(sess, token.Key)
 	},
 }
 
