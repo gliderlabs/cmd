@@ -253,11 +253,18 @@ func (c *Command) Build() error {
 
 	ctx := context.Background()
 	r := bytes.NewReader(buf.Bytes())
-	_, err = c.Docker().ImageBuild(ctx, r, types.ImageBuildOptions{
+	resp, err := c.Docker().ImageBuild(ctx, r, types.ImageBuildOptions{
 		Dockerfile: "Dockerfile",
 		Tags:       []string{c.image()},
 	})
-	return err
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	// read and discard all output to ensure we don't return before the image
+	// is built and tagged
+	io.Copy(ioutil.Discard, resp.Body)
+	return nil
 }
 
 // Pull and tag image for command
