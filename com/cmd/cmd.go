@@ -227,7 +227,7 @@ func HandleAuth(ctx ssh.Context, key ssh.PublicKey) bool {
 			return false
 		}
 		if resp.StatusCode == http.StatusNotFound {
-			log.Info(fmt.Sprintf("github user for \"%s\" not found", user), key)
+			log.Info(fmt.Sprintf("github user '%s' not found", user), key)
 			return false
 		}
 		defer resp.Body.Close()
@@ -260,7 +260,7 @@ func HandleAuth(ctx ssh.Context, key ssh.PublicKey) bool {
 			return true
 		}
 	}
-	log.Info("auth: no matching keys for: "+user, key)
+	log.Info(fmt.Sprintf("no matching keys of %d for '%s'", len(u.keys), user), key)
 	return false
 }
 
