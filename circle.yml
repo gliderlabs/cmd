@@ -1,39 +1,16 @@
 version: 2
 executorType: docker
 containerInfo:
-  - image: alpine:3.5
+  - image: mattaitchison/base
     cmd: ["/bin/sh"]
   - image: mattaitchison/dynamodb-local
     cmd: ["-inMemory" ,"-sharedDb"]
-
 stages:
   build:
     environment:
       - GOPATH: "/go"
     workDir: /go/src/github.com/progrium/cmd
     steps:
-      - type: shell
-        shell: /bin/sh
-        pwd: /
-        name: Install ca certificates
-        command: |
-          apk -U add ca-certificates
-      - type: cache-restore
-        name: Restore apk cache
-        key: apks-{{ .Branch }}-
-      - type: shell
-        shell: /bin/sh
-        pwd: /
-        name: Install apks
-        command: |
-          mkdir -p /var/cache/apk
-          ln -s /var/cache/apk /etc/apk/cache
-          apk add docker bash git go build-base glide openssh curl
-      - type: cache-save
-        name: Saving apk cache
-        key:  apks-{{ .Branch }}-{{ epoch }}
-        paths:
-          - /var/cache/apk
       - type: checkout
       - type: cache-restore
         name: Restore glide cache
@@ -56,7 +33,6 @@ stages:
       - type: shell
         name: "Install JUnit & Setup Test Path"
         command: |
-          go get -u github.com/jstemmer/go-junit-report
           mkdir -p /tmp/test-results
       - type: shell
         name: Run tests
@@ -70,9 +46,28 @@ stages:
         name: Build ui
         command: |
           make ui-build
+      - type: setup-docker-engine
+      - type: shell
+        name: Build Image
+        command: |
+          set -euo pipefail
+          make image
+      - type: shell
+        name: Push Image
+        command: |
+          eval $(aws ecr get-login --region us-east-1)
+          docker tag progrium/cmd 055471703963.dkr.ecr.us-east-1.amazonaws.com/cmd:$CIRCLE_BUILD_NUM
+          docker push 055471703963.dkr.ecr.us-east-1.amazonaws.com/cmd:$CIRCLE_BUILD_NUM
       - type: artifacts-store
         path: build
         destination: build
+      - type: deploy
+        name: "Deploy beta channel"
+        command: |
+          set -euo pipefail
+          mkdir -p ~/.kube
+          echo $KUBE_CONFIG | base64 --decode --ignore-garbage > ~/.kube/config
+          make deploy-beta BUILD_NUM=$CIRCLE_BUILD_NUM
       - type: deploy
         name: "Deploy to production"
         command: |

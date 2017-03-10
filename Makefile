@@ -40,6 +40,10 @@ docker: image
 deploy: build/linux_amd64/cmd
 	convox deploy -a alpha-cmd-io --wait
 
+deploy-beta: build/linux_amd64/cmd
+	sigil -p -f run/channels/beta.yaml build=$(BUILD_NUM) | kubectl apply -f -
+	kubectl rollout status deployment/beta-cmd-io --watch
+
 dynamodb:
 	docker build -t dynamodb-local ./dev/dynamodb
 	docker run -p 8000:8000 dynamodb-local -inMemory -sharedDb
