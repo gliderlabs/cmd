@@ -1,9 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: cmd-beta
+  name: cmd-alpha
 data:
   config.toml: |-
+    [cmd]
+    honeycomb_dataset = "alpha.cmd.io"
+
     [docker]
     name = "_docker._tcp.sandbox.infra.gl"
 
@@ -11,16 +14,16 @@ data:
     backend = "store.dynamodb"
 
     [dynamodb]
-    table = "beta.cmd.io_cmds"
-    token_table = "beta.cmd.io_tokens"
+    table = "alpha.cmd.io_config"
+    token_table = "alpha.cmd.io_tokens"
 
     [sentry]
-    environment = "beta"
+    environment = "alpha"
 
     [auth0]
     domain = "gl-cmd.auth0.com"
-    callback_url = "https://beta.cmd.io/_auth/callback"
-    logout_url = "https://beta.cmd.io/_auth/logout"
+    callback_url = "https://alpha.cmd.io/_auth/callback"
+    logout_url = "https://alpha.cmd.io/_auth/logout"
 
     [mailgun]
     domain = "gliderlabs.com"
@@ -29,7 +32,7 @@ data:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: cmd-beta
+  name: cmd-alpha
 spec:
   replicas: 2
   revisionHistoryLimit: 4
@@ -38,18 +41,18 @@ spec:
     metadata:
       labels:
         app: cmd
-        channel: beta
+        channel: alpha
     spec:
       volumes:
         - name: host-key
           secret:
-            secretName: cmd-beta
+            secretName: cmd-alpha
             items:
             - key: id_host
               path: id_host
         - name: config-volume
           configMap:
-            name: cmd-beta
+            name: cmd-alpha
       containers:
         - name: cmd
           image: ${image}
@@ -78,34 +81,59 @@ spec:
             - name: SENTRY_DSN
               valueFrom:
                 secretKeyRef:
-                  name: cmd-beta
+                  name: cmd-alpha
                   key: sentry-dsn
             - name: DYNAMODB_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: cmd-beta
+                  name: cmd-alpha
                   key: aws-access-key
             - name: DYNAMODB_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: cmd-beta
+                  name: cmd-alpha
                   key: aws-secret-key
             - name: AUTH0_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: cmd-beta
+                  name: cmd-alpha
                   key: auth0-client-id
             - name: AUTH0_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: cmd-beta
+                  name: cmd-alpha
                   key: auth0-client-secret
+            - name: AUTH0_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cmd-alpha
+                  key: auth0-api-token
+            - name: CMD_HONEYCOMB_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cmd-alpha
+                  key: honeycomb-key
+            - name: MAILGIN_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cmd-alpha
+                  key: mailgun-api-key
+            - name: STRIPE_PUB_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cmd-alpha
+                  key: stripe-pub-key
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cmd-alpha
+                  key: stripe-secret-key
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: cmd-beta
+  name: cmd-alpha
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:055471703963:certificate/5ce76820-c1b6-4bf3-b462-01bafa699232"
@@ -114,7 +142,7 @@ spec:
   type: LoadBalancer
   selector:
     app: cmd
-    channel: beta
+    channel: alpha
   ports:
     - name: http
       targetPort: http

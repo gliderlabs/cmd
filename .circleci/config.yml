@@ -1,0 +1,61 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: gliderlabs/ci:build-64
+        command: ["/bin/bash"]
+      - image: mattaitchison/dynamodb-local
+        cmd: ["-inMemory" ,"-sharedDb"]
+    working_directory: /go/src/github.com/progrium/cmd
+    steps:
+      - checkout
+      - restore_cache:
+          key: cmd-{{ .Branch }}-{{ checksum "glide.lock" }}
+      - run:
+          name: Install deps
+          command: glide install --strip-vendor
+      - save_cache:
+          key:  cmd-{{ .Branch }}-{{ checksum "glide.lock" }}-{{ epoch }}
+          paths:
+            - /go/src/github.com/progrium/cmd/vendor
+            - ~/.glide/cache
+      - run:
+          name: Build cmd
+          command: make build
+      - run:
+          name: Run tests
+          command: go test -v $(glide nv) | go-junit-report > /tmp/test-results/unit-tests.xml
+      - store_test_results:
+          path: /tmp/test-results
+      - run:
+          name: Build ui
+          command: make ui-build
+      - setup_docker_engine
+      - run:
+          name: Build Image
+          command: make image
+      - run:
+          name: Push Image
+          command: ecr-push progrium/cmd $(infra-query -r ".modules[0].outputs.repos.value.cmd")
+      - store_artifacts:
+          path: build
+          destination: build
+      - deploy:
+          name: Deploy beta channel
+          command: |
+            if is-branch "master"; then
+              make deploy-beta IMAGE=$(infra-query -r ".modules[0].outputs.repos.value.cmd"):build-$CIRCLE_BUILD_NUM
+            fi
+      - deploy:
+          name: Deploy alpha channel
+          command: |
+            if is-branch "master"; then
+              make deploy-alpha IMAGE=$(infra-query -r ".modules[0].outputs.repos.value.cmd"):build-$CIRCLE_BUILD_NUM
+            fi
+      - deploy:
+          name: Deploy to production
+          command: |
+            if is-branch "master"; then
+              go get -u github.com/convox/rack/cmd/convox
+              make deploy
+            fi

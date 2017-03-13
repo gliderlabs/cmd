@@ -40,9 +40,13 @@ docker: image
 deploy: build/linux_amd64/cmd
 	convox deploy -a alpha-cmd-io --wait
 
+deploy-alpha: build/linux_amd64/cmd
+	sigil -p -f run/channels/alpha.yaml image=$(IMAGE) | kubectl apply --namespace cmd -f -
+	kubectl rollout status deployment/cmd-alpha --namespace cmd --watch
+
 deploy-beta: build/linux_amd64/cmd
-	sigil -p -f run/channels/beta.yaml build=$(BUILD_NUM) | kubectl apply -f -
-	kubectl rollout status deployment/beta-cmd-io --watch
+	sigil -p -f run/channels/beta.yaml image=$(IMAGE) | kubectl apply --namespace cmd -f -
+	kubectl rollout status deployment/cmd-beta --namespace cmd --watch
 
 dynamodb:
 	docker build -t dynamodb-local ./dev/dynamodb
