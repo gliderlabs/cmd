@@ -16,6 +16,7 @@ import (
 
 	"github.com/progrium/cmd/com/console"
 	"github.com/progrium/cmd/com/core"
+	"github.com/progrium/cmd/com/maintenance"
 	"github.com/progrium/cmd/com/store"
 	"github.com/progrium/cmd/pkg/access"
 )
@@ -74,6 +75,13 @@ func HandleSSH(s ssh.Session) {
 	defer func() {
 		log.Info(s, cmd, time.Since(start), msg)
 	}()
+
+	// restrict access when maintenance mode is active
+	if maintenance.Active() && !maintenance.IsAllowed(user) {
+		msg = "maintenance"
+		fmt.Fprintln(s, maintenance.Notice())
+		return
+	}
 
 	// check for channel access when user is not a token
 	if tok := uuid.FromStringOrNil(user); tok == uuid.Nil && !access.Check(user) {

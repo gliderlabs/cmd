@@ -7,6 +7,7 @@ import (
 
 	"github.com/facebookgo/httpdown"
 	"github.com/gorilla/context"
+	"github.com/progrium/cmd/com/maintenance"
 
 	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/comlab/pkg/log"
@@ -21,6 +22,11 @@ func (c *Component) Serve() {
 				t := time.Now()
 				lw := log.WrapResponseWriter(w)
 				defer log.Info(r, lw, time.Now().Sub(t))
+
+				if maintenance.Active() {
+					http.Error(w, maintenance.Notice(), http.StatusServiceUnavailable)
+					return
+				}
 
 				// serve static
 				staticPrefix := com.GetString("static_path") + "/"

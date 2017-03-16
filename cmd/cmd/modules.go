@@ -4,6 +4,7 @@ import (
 	_ "github.com/progrium/cmd/com/cmd"
 	_ "github.com/progrium/cmd/com/console"
 	_ "github.com/progrium/cmd/com/core"
+	_ "github.com/progrium/cmd/com/maintenance"
 	_ "github.com/progrium/cmd/com/meta"
 	"github.com/progrium/cmd/com/sentry"
 	_ "github.com/progrium/cmd/com/store"
