@@ -24,7 +24,7 @@ func (c *Component) Serve() {
 				defer log.Info(r, lw, time.Now().Sub(t))
 
 				if maintenance.Active() {
-					http.Error(w, maintenance.Notice(), http.StatusServiceUnavailable)
+					http.Error(lw, maintenance.Notice(), http.StatusServiceUnavailable)
 					return
 				}
 
