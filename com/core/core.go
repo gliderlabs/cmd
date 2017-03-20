@@ -20,6 +20,7 @@ import (
 	"github.com/gliderlabs/ssh"
 	"github.com/pkg/errors"
 	"github.com/progrium/cmd/com/docker"
+	"github.com/progrium/cmd/pkg/agentproxy"
 )
 
 // Token used to provide access to non-github users
@@ -327,14 +328,33 @@ func (c *Command) Run(sess ssh.Session, args []string) int {
 	return status
 }
 
-// func (c *Command) run(s ssh.Session, args []string) error {
 func (c *Command) run(sess ssh.Session, args []string) (int, error) {
-	// outputStream, errorStream, inputStream := stdout, s.Stderr(), s
 	pty, winCh, isPty := sess.Pty()
 	client := c.Docker()
 	env := append(c.Env(), fmt.Sprintf("USER=%s", sess.User()))
 	if isPty {
 		env = append([]string{fmt.Sprintf("TERM=%s", pty.Term)}, env...)
+	}
+	ctx := sess.Context()
+	p := ContextPlan(ctx)
+	hostConf := &container.HostConfig{
+		Resources: container.Resources{
+			CPUPeriod: p.CPUPeriod,
+			CPUQuota:  p.CPUQuota,
+			Memory:    p.Memory,
+		},
+	}
+	if ssh.AgentRequested(sess) {
+		proxy, err := agentproxy.NewAgentProxy(client, sess)
+		if err != nil {
+			return 255, err
+		}
+		if err := proxy.Start(); err != nil {
+			return 255, err
+		}
+		defer proxy.Shutdown()
+		env = append(env, fmt.Sprintf("SSH_AUTH_SOCK=%s", proxy.SocketPath))
+		hostConf.VolumesFrom = []string{proxy.ContainerID}
 	}
 	conf := &container.Config{
 		Image:        c.image(),
@@ -348,16 +368,7 @@ func (c *Command) run(sess ssh.Session, args []string) (int, error) {
 		StdinOnce:    true,
 		Volumes:      make(map[string]struct{}),
 	}
-	ctx := sess.Context()
-	p := ContextPlan(ctx)
 
-	hostConf := &container.HostConfig{
-		Resources: container.Resources{
-			CPUPeriod: p.CPUPeriod,
-			CPUQuota:  p.CPUQuota,
-			Memory:    p.Memory,
-		},
-	}
 	if p.DinD {
 		// TODO: actual feature, maybe: https://github.com/gliderlabs/cmd/issues/40
 		conf.Volumes["/var/run/docker.sock"] = struct{}{}
