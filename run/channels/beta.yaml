@@ -4,6 +4,10 @@ metadata:
   name: cmd-beta
 data:
   config.toml: |-
+    [maintenance]
+    active = true
+    allow = "mattaitchison"
+
     [docker]
     name = "_docker._tcp.sandbox.infra.gl"
 

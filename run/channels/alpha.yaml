@@ -8,7 +8,7 @@ data:
     honeycomb_dataset = "alpha.cmd.io"
 
     [maintenance]
-    active = true
+    active = false
     allow = "mattaitchison"
 
     [docker]
