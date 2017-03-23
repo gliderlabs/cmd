@@ -1,10 +1,10 @@
-hash: e5af4a37a13ab898478e4cb4d724eb03bf79e0d27b5c84590ca78898e92e1c44
-updated: 2017-03-18T21:44:25.779361389-05:00
+hash: afc8bed2f8c1c9e48c2e2c6607c086678437eb2b45bf4f7f2ca0c54a653c2076
+updated: 2017-03-23T12:57:09.79801404-05:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
 - name: github.com/aws/aws-sdk-go
-  version: 695fe24acaf9afe80b0ce261d4637f42ba0b4c7d
+  version: 72df63b404d3f9820db08c73176c1b277d9f614f
   subpackages:
   - aws
   - aws/awserr
@@ -29,10 +29,11 @@ imports:
   - private/protocol/query/queryutil
   - private/protocol/rest
   - private/protocol/xml/xmlutil
-  - private/waiter
   - service/dynamodb
   - service/dynamodb/dynamodbattribute
   - service/sts
+- name: github.com/cenkalti/backoff
+  version: 3db60c813733fce657c114634171689bbf1f8dee
 - name: github.com/certifi/gocertifi
   version: 03be5e6bb9874570ea7fb0961225d193cbc374c5
 - name: github.com/docker/distribution
@@ -199,7 +200,7 @@ imports:
 - name: github.com/spf13/viper
   version: 5ed0fc31f7f453625df314d8e66b9791e8d13003
 - name: github.com/stripe/stripe-go
-  version: 4c90b459cd4d681a0d8540a6ec7cae54eb0f3d0f
+  version: 2d37caed8dcd0cc92866634effaed1fa033d7fd5
   subpackages:
   - account
   - balance
@@ -238,7 +239,7 @@ imports:
 - name: github.com/thejerf/suture
   version: 0ac47afae95ad5bc5184ed346bc945168e883f5d
 - name: golang.org/x/crypto
-  version: 453249f01cfeb54c3d549ddb75ff152ca243f9d8
+  version: 459e26527287adbc2adcc5d0d49abff9a5f315a7
   subpackages:
   - curve25519
   - ed25519

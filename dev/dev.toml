@@ -1,7 +1,7 @@
 [dynamodb]
 table = "cmd-dev"
 token_table = "cmd-dev-tokens"
-endpoint = "http://localhost:8000"
+region = "local"
 access_key = "dev"
 secret_key = "dev"
 max_retries = 1

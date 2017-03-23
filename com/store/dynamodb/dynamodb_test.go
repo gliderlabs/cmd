@@ -19,7 +19,7 @@ func TestStore(t *testing.T) {
 
 	os.Setenv("DYNAMODB_TABLE", "cmd-test-table")
 	os.Setenv("DYNAMODB_TOKEN_TABLE", "cmd-test-tokens-table")
-	os.Setenv("DYNAMODB_ENDPOINT", "http://localhost:8000")
+	os.Setenv("DYNAMODB_REGION", "local")
 	os.Setenv("DYNAMODB_ACCESS_KEY", "test")
 	os.Setenv("DYNAMODB_SECRET_KEY", "test")
 	os.Setenv("DYNAMODB_MAX_RETRIES", "1")

@@ -27,14 +27,14 @@ func TestMigrateApply(t *testing.T) {
 		},
 	}
 
-	_, err := testMigrations.Apply(latestVesion, cmd)
+	_, err := testMigrations.Apply(latestVesion, false, cmd)
 	assert.Error(t, err,
 		"expected apply to fail with error about missing version")
 
 	cmd[schemaAttr] = &dynamodb.AttributeValue{
 		N: aws.String("0"),
 	}
-	res, err := testMigrations.Apply(latestVesion, cmd)
+	res, err := testMigrations.Apply(latestVesion, false, cmd)
 	assert.Error(t, err,
 		"expected apply to fail with err = \"err\"")
 	assert.NotNil(t, res)
@@ -117,7 +117,7 @@ func TestSchemaV2(t *testing.T) {
 }
 
 func assertMigrationApply(t *testing.T, target int, item map[string]*dynamodb.AttributeValue) map[string]*dynamodb.AttributeValue {
-	res, err := migrations.Apply(target, item)
+	res, err := migrations.Apply(target, false, item)
 	assert.NoError(t, err,
 		"failed to apply migrations")
 	assert.NotNil(t, res)

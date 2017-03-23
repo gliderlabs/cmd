@@ -20,20 +20,34 @@ func init() {
 		com.Option("token_table", "", "dynamodb table name for token storage"),
 		com.Option("access_key", "", "aws access key for dynamodb store"),
 		com.Option("secret_key", "", "aws secret key for dynamodb store"),
-		com.Option("region", "us-east-1", "aws region for dynamodb store"),
 		com.Option("endpoint", "", "alternate dynamodb endpoint. eg: http://localhost:8000"),
+		com.Option("region", "us-east-1", "aws region for dynamodb store, NOTE: use 'local' for dynamodb-local"),
 	)
 }
 
 type Component struct{}
 
+// AppPreStart attempts to create any missing dynamodb tables and ensures
+// cmd table has the latest schema, optionally applying migrations when
+// maintenance is active and `-migrate` flag passed.
+//
+// Note that an error will be returned if a hard migration is required and
+// maintenance is NOT active.
 func (c *Component) AppPreStart() error {
-	err := ensureTableExists(c.client(), com.GetString("table"), 5, 5)
-	if err != nil {
-		return errors.Wrapf(err, "dynamodb table '%s' setup failed", com.GetString("table"))
+	var (
+		cmdTable   = com.GetString("table")
+		tokenTable = com.GetString("token_table")
+	)
+
+	if err := ensureTableExists(c.client(), cmdTable, 5, 5); err != nil {
+		return errors.Wrapf(err, "dynamodb table %q setup failed", cmdTable)
 	}
-	err = ensureTokenTableExists(c.client(), com.GetString("token_table"), 5, 5)
-	return errors.Wrapf(err, "dynamodb table '%s' setup failed", com.GetString("token_table"))
+
+	if err := ensureTokenTableExists(c.client(), tokenTable, 5, 5); err != nil {
+		return errors.Wrapf(err, "dynamodb table %q setup failed", tokenTable)
+	}
+
+	return ensureTableSchema(c.client(), cmdTable)
 }
 
 func (c *Component) client() *dynamodb.DynamoDB {
@@ -80,7 +94,7 @@ func (c *Component) List(user string) []*core.Command {
 
 	cmds := make([]*core.Command, 0, len(res.Items))
 	for _, item := range res.Items {
-		migrated, err := migrations.Apply(latestVesion, item)
+		migrated, err := migrations.Apply(latestVesion, false, item)
 		if err != nil {
 			log.Info(errors.Wrapf(err,
 				"failed migrating commands for user: %s to version: %d",
@@ -118,7 +132,7 @@ func (c *Component) Get(user, name string) *core.Command {
 	if res.Item == nil {
 		return nil
 	}
-	migrated, err := migrations.Apply(latestVesion, res.Item)
+	migrated, err := migrations.Apply(latestVesion, false, res.Item)
 	if err != nil {
 		log.Info(errors.Wrapf(err,
 			"failed migrating cmd: %s from user: %s to version: %s",

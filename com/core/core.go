@@ -47,13 +47,13 @@ func (t *Token) Validate() error {
 type Command struct {
 	Name        string
 	User        string
-	Environment map[string]string
-	ACL         []string
-	Admins      []string
-	Description string
 	Source      string
+	Environment map[string]string `dynamodbav:",omitempty"`
+	ACL         []string          `dynamodbav:",stringset,omitempty"`
+	Admins      []string          `dynamodbav:",stringset,omitempty"`
+	Description string            `dynamodbav:",omitempty"`
 
-	Changed bool
+	Changed bool `dynamodbav:"-"`
 
 	docker client.APIClient
 }
