@@ -52,10 +52,3 @@ jobs:
             if is-branch "master"; then
               make deploy-alpha IMAGE=$(infra-query -r ".modules[0].outputs.repos.value.cmd"):build-$CIRCLE_BUILD_NUM
             fi
-      - deploy:
-          name: Deploy to production
-          command: |
-            if is-branch "master"; then
-              go get -u github.com/convox/rack/cmd/convox
-              make deploy
-            fi
