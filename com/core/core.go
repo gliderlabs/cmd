@@ -291,17 +291,6 @@ func (c *Command) Pull(ctx context.Context) error {
 	return c.Docker().ImageTag(ctx, c.Source, c.image())
 }
 
-func (c *Command) UpdateDescription(ctx context.Context) error {
-	res, _, err := c.Docker().ImageInspectWithRaw(ctx, c.image())
-	if err != nil {
-		return err
-	}
-	desc := res.ContainerConfig.Labels["io.cmd.description"]
-	c.Description = strings.Trim(desc, "\n")
-	c.Changed = true
-	return nil
-}
-
 // Run a command in a container attaching input/output to ssh session
 func (c *Command) Run(sess ssh.Session, args []string) int {
 	var err error
@@ -311,10 +300,6 @@ func (c *Command) Run(sess ssh.Session, args []string) int {
 		err = c.Pull(sess.Context())
 	}
 	if err != nil {
-		fmt.Fprintln(sess.Stderr(), err.Error())
-		return 255
-	}
-	if err = c.UpdateDescription(sess.Context()); err != nil {
 		fmt.Fprintln(sess.Stderr(), err.Error())
 		return 255
 	}

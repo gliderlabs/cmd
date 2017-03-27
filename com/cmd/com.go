@@ -11,7 +11,7 @@ func init() {
 		com.Option("listen_addr", "127.0.0.1:2223", "port to bind on"),
 		com.Option("hostkey_pem", "com/cmd/data/dev_host", "private key for host verification"),
 		com.Option("access_denied_msg",
-			"Access Denied: Visit https://goo.gl/forms/CEtAiBUoxCWidAbK2 to request access",
+			"Access Denied: Visit https://alpha.cmd.io/request to request access",
 			"message shown when user isn't allowed access"),
 		com.Option("honeycomb_key", "", ""),
 		com.Option("honeycomb_dataset", "", ""),
@@ -23,28 +23,4 @@ func init() {
 type Component struct {
 	running  bool
 	listener net.Listener
-}
-
-func MetaCommands() []*MetaCommand {
-	var cmds []*MetaCommand
-	for _, com := range com.Enabled(new(MetaCommandProvider), nil) {
-		cmds = append(cmds, com.(MetaCommandProvider).MetaCommands()...)
-	}
-	return cmds
-}
-
-func RootCommands() []*MetaCommand {
-	var cmds []*MetaCommand
-	for _, com := range com.Enabled(new(MetaRootProvider), nil) {
-		cmds = append(cmds, com.(MetaRootProvider).RootCommands()...)
-	}
-	return cmds
-}
-
-type MetaCommandProvider interface {
-	MetaCommands() []*MetaCommand
-}
-
-type MetaRootProvider interface {
-	RootCommands() []*MetaCommand
 }

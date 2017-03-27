@@ -1,37 +1,35 @@
-package meta
+package builtin
 
 import (
 	"fmt"
 
 	"github.com/gliderlabs/comlab/pkg/log"
-	"github.com/gliderlabs/ssh"
 	uuid "github.com/satori/go.uuid"
+	"github.com/spf13/cobra"
 
-	"github.com/progrium/cmd/com/cmd"
+	"github.com/progrium/cmd/com/cli"
 	"github.com/progrium/cmd/com/core"
 	"github.com/progrium/cmd/com/store"
 )
 
-var tokens = &cmd.MetaCommand{
-	Use:     ":tokens",
-	Aliases: []string{"cmd-tokens"},
-	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
-		meta.Cmd.Help()
+var tokensCmd = cli.Command{
+	Use:   "tokens",
+	Short: "Manage access tokens",
+	Run: func(c *cobra.Command, args []string) {
+		c.Help()
 	},
-	Setup: func(meta *cmd.MetaCommand) {
-		meta.Add(tokensList, tokensNew, tokensDelete)
-	},
-}
+}.Init(nil)
 
-var tokensList = &cmd.MetaCommand{
+var tokensListCmd = cli.Command{
 	Use:   "ls",
 	Short: "List tokens",
-	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
-		header(sess, "Tokens")
+	Run: func(c *cobra.Command, args []string) {
+		sess := cli.ContextSession(c)
+		cli.Header(sess, "Tokens")
 		tokens, err := store.Selected().ListTokens(sess.User())
 		if err != nil {
-			statusErr(sess.Stderr(), err.Error())
-			sess.Exit(255)
+			fmt.Fprintf(sess.Stderr(), err.Error())
+			sess.Exit(cli.StatusInternalError)
 			return
 		}
 		for _, token := range tokens {
@@ -39,12 +37,13 @@ var tokensList = &cmd.MetaCommand{
 		}
 		fmt.Fprintln(sess, "")
 	},
-}
+}.Init(tokensCmd)
 
-var tokensNew = &cmd.MetaCommand{
+var tokensNew = cli.Command{
 	Use:   "new <description>",
 	Short: "Create a token",
-	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
+	Run: func(c *cobra.Command, args []string) {
+		sess := cli.ContextSession(c)
 		var desc string
 		if len(args) > 1 {
 			desc = args[0]
@@ -58,36 +57,37 @@ var tokensNew = &cmd.MetaCommand{
 
 		if err := store.Selected().PutToken(token); err != nil {
 			log.Info(sess, token, err)
-			statusErr(sess.Stderr(), err.Error())
-			sess.Exit(255)
+			fmt.Fprintf(sess.Stderr(), err.Error())
+			sess.Exit(cli.StatusInternalError)
 			return
 		}
 		fmt.Fprintln(sess, token.Key)
 	},
-}
+}.Init(tokensCmd)
 
-var tokensDelete = &cmd.MetaCommand{
+var tokensDelete = cli.Command{
 	Use:   "rm <key>",
 	Short: "Delete a token",
-	Run: func(meta *cmd.MetaCommand, sess ssh.Session, args []string) {
+	Run: func(c *cobra.Command, args []string) {
+		sess := cli.ContextSession(c)
 		if len(args) < 1 {
-			statusErr(sess.Stderr(), "Must specify a key")
-			sess.Exit(1)
+			fmt.Fprintf(sess.Stderr(), "Key name is required")
+			sess.Exit(cli.StatusUsageError)
 			return
 		}
 		token, _ := store.Selected().GetToken(args[0])
 		if token == nil || token.User != sess.User() {
-			statusErr(sess.Stderr(), "Token not found")
-			sess.Exit(1)
+			fmt.Fprintf(sess.Stderr(), "Token not found")
+			sess.Exit(cli.StatusError)
 			return
 		}
 
 		if err := store.Selected().DeleteToken(token.Key); err != nil {
 			log.Info(sess, token, err)
-			statusErr(sess.Stderr(), err.Error())
-			sess.Exit(255)
+			fmt.Fprintf(sess.Stderr(), err.Error())
+			sess.Exit(cli.StatusInternalError)
 			return
 		}
 		fmt.Fprintln(sess, "Token removed")
 	},
-}
+}.Init(tokensCmd)
