@@ -18,9 +18,6 @@ data:
     table = "beta.cmd.io_cmds"
     token_table = "beta.cmd.io_tokens"
 
-    [sentry]
-    environment = "beta"
-
     [auth0]
     domain = "gl-cmd.auth0.com"
     callback_url = "https://beta.cmd.io/_auth/callback"
@@ -69,6 +66,8 @@ spec:
             - mountPath: /config
               name: config-volume
           env:
+            - name: CHANNEL
+              value: beta
             - name: CONSOLE_SLACK_TOKEN
               valueFrom:
                 secretKeyRef:

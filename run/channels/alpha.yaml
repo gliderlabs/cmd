@@ -4,8 +4,8 @@ metadata:
   name: cmd-alpha
 data:
   config.toml: |-
-    [cmd]
-    honeycomb_dataset = "alpha.cmd.io"
+    [honeycomb]
+    dataset = "alpha.cmd.io"
 
     [maintenance]
     active = false
@@ -20,9 +20,6 @@ data:
     [dynamodb]
     table = "alpha.cmd.io_config"
     token_table = "alpha.cmd.io_tokens"
-
-    [sentry]
-    environment = "alpha"
 
     [auth0]
     domain = "gl-cmd.auth0.com"
@@ -72,6 +69,8 @@ spec:
             - mountPath: /config
               name: config-volume
           env:
+            - name: CHANNEL
+              value: alpha
             - name: CONSOLE_SLACK_TOKEN
               valueFrom:
                 secretKeyRef:
@@ -112,7 +111,7 @@ spec:
                 secretKeyRef:
                   name: cmd-alpha
                   key: auth0-api-token
-            - name: CMD_HONEYCOMB_KEY
+            - name: HONEYCOMB_KEY
               valueFrom:
                 secretKeyRef:
                   name: cmd-alpha
