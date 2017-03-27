@@ -46,7 +46,7 @@ func addr() string {
 	if release.Channel() == "stable" {
 		return "cmd.io"
 	}
-	return fmt.Sprintf("%s.cmd.io", release.Channel)
+	return fmt.Sprintf("%s.cmd.io", release.Channel())
 }
 
 func replace(old, new, str string) string {
