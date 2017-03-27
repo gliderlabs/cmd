@@ -8,9 +8,5 @@ COPY ./com /app/com
 WORKDIR /app
 
 ENV LOCAL="false"
-ENV CMD_LISTEN_ADDR=":22"
-ENV CMD_CONFIG_DIR="/config"
-ENV CMD_HOSTKEY_PEM="/tmp/data/id_host"
-ENV WEB_LISTEN_ADDR=":80"
 EXPOSE 22 80
 CMD ["/usr/local/bin/cmd"]
