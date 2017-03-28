@@ -182,6 +182,40 @@ func (c *Client) SearchUsers(q string) ([]User, error) {
 	if err != nil {
 		return nil, err
 	}
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf(resp.Status)
+	}
+	raw, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+	var users []User
+	if err := json.Unmarshal(raw, &users); err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
+func (c *Client) Users(params map[string]string) ([]User, error) {
+	url := fmt.Sprintf(usersEndpoint, c.Domain)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	p := req.URL.Query()
+	for k, v := range params {
+		p.Add(k, v)
+	}
+	req.URL.RawQuery = p.Encode()
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.Token))
+	resp, err := new(http.Client).Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf(resp.Status)
+	}
 	raw, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	if err != nil {
