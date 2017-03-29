@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gliderlabs/comlab/pkg/events"
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/goware/emailx"
 	"github.com/leekchan/accounting"
@@ -210,5 +211,6 @@ http://slack.gliderlabs.com
 		web.SessionSet(r, w, "error", err.Error())
 		return
 	}
+	events.Emit(events.Signal(EventNewSubscriber))
 	web.SessionSet(r, w, "success", "Congrats! You now have a Plus account.")
 }

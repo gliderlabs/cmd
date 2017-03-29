@@ -40,13 +40,7 @@ func version() string {
 }
 
 func addr() string {
-	if release.Channel() == "dev" {
-		return "localhost"
-	}
-	if release.Channel() == "stable" {
-		return "cmd.io"
-	}
-	return fmt.Sprintf("%s.cmd.io", release.Channel())
+	return release.Hostname()
 }
 
 func replace(old, new, str string) string {

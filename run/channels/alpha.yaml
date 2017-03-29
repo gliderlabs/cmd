@@ -78,7 +78,7 @@ spec:
           env:
             - name: CHANNEL
               value: alpha
-            - name: CONSOLE_SLACK_TOKEN
+            - name: SLACK_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: gliderlabs

@@ -47,3 +47,4 @@ import:
   - stack
 - package: github.com/patrickmn/go-cache
 - package: github.com/cenkalti/backoff
+- package: github.com/nlopes/slack

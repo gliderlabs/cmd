@@ -18,12 +18,14 @@ import (
 	"github.com/progrium/cmd/app/core"
 	"github.com/progrium/cmd/app/store"
 	"github.com/progrium/cmd/lib/access"
+	"github.com/progrium/cmd/lib/cli"
 	"github.com/progrium/cmd/lib/maint"
+	"github.com/progrium/cmd/lib/release"
 )
 
-// Default expiry of 5 min and expiry purge every 5 min.
+// Default expiry of 30 sec and expiry purge every 5 min.
 // Would be nice to find a good cache with size limit as well.
-var authCache = cache.New(5*time.Minute, 5*time.Minute)
+var authCache = cache.New(30*time.Second, 5*time.Minute)
 
 // TODO: make this more integrated with console?
 type cachedUser struct {
@@ -49,6 +51,20 @@ func (c *Component) HandleSSH(s ssh.Session) {
 		msg = "maintenance"
 		fmt.Fprintln(s, maint.Notice())
 		return
+	}
+
+	// check for first time user
+	if user := console.ContextUser(s.Context()); user != nil {
+		if user.Account.CustomerID == "" {
+			fmt.Fprintf(s, cli.Bright("\nWelcome, %s!\n\n"), s.User())
+			fmt.Fprintln(s, "We noticed this is your first login. So far so good!")
+			fmt.Fprintln(s, "Would you mind logging in via the web interface?")
+			fmt.Fprintln(s, "This way we can properly set up your account:\n")
+			fmt.Fprintf(s, cli.Bright("https://%s/login\n\n"), release.Hostname())
+			fmt.Fprintln(s, "Then you can come back and use SSH as usual. Thanks!\n")
+			authCache.Delete(s.User())
+			return
+		}
 	}
 
 	// check for channel access when user is not a token
@@ -140,17 +156,14 @@ func (c *Component) HandleAuth(ctx ssh.Context, key ssh.PublicKey) bool {
 			}
 			keys = append(keys, k)
 		}
-		usr, err := console.LookupNickname(user)
-		if err != nil {
-			// just log, don't care yet if they haven't made account
-			log.Info(user, err)
-		}
+		usr, _ := console.LookupNickname(user)
 		u = cachedUser{
 			user: usr,
 			keys: keys,
 		}
 		authCache.Set(user, u, cache.DefaultExpiration)
 	}
+	ctx.SetValue("user", &(u.user))
 	ctx.SetValue("plan", u.user.Account.Plan)
 
 	for _, k := range u.keys {

@@ -1,9 +1,11 @@
 package console
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
+	"github.com/gliderlabs/comlab/pkg/events"
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/mitchellh/mapstructure"
 	"github.com/progrium/cmd/lib/stripe"
@@ -44,6 +46,18 @@ func SessionUser(r *http.Request) *User {
 		return nil
 	}
 	return &user
+}
+
+func ContextUser(ctx context.Context) *User {
+	u := ctx.Value("user")
+	if u == nil {
+		return nil
+	}
+	user, ok := u.(*User)
+	if !ok {
+		return nil
+	}
+	return user
 }
 
 func LookupUser(uid string) (User, error) {
@@ -98,5 +112,6 @@ func RegisterUser(user *User) error {
 	if err != nil {
 		return err
 	}
+	events.Emit(events.Signal(EventFirstLogin))
 	return nil
 }

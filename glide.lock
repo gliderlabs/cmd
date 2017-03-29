@@ -1,10 +1,10 @@
-hash: afc8bed2f8c1c9e48c2e2c6607c086678437eb2b45bf4f7f2ca0c54a653c2076
-updated: 2017-03-23T12:57:09.79801404-05:00
+hash: 2fd032f4d3a7e18f0a1cfcb6a78b8e133eb935424842997670621499ff715c28
+updated: 2017-03-29T11:47:15.258034304-07:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
 - name: github.com/aws/aws-sdk-go
-  version: 72df63b404d3f9820db08c73176c1b277d9f614f
+  version: 069aafcbf0db604407291f9acc76c6b69fc99e0e
   subpackages:
   - aws
   - aws/awserr
@@ -33,7 +33,7 @@ imports:
   - service/dynamodb/dynamodbattribute
   - service/sts
 - name: github.com/cenkalti/backoff
-  version: 3db60c813733fce657c114634171689bbf1f8dee
+  version: 5d150e7eec023ce7a124856b37c68e54b4050ac7
 - name: github.com/certifi/gocertifi
   version: 03be5e6bb9874570ea7fb0961225d193cbc374c5
 - name: github.com/docker/distribution
@@ -89,6 +89,7 @@ imports:
   - lib/daemon
   - pkg/com
   - pkg/com/viper
+  - pkg/events
   - pkg/log
 - name: github.com/gliderlabs/gosper
   version: 74658b93b58feb38af020cfcd13caf5bab03befb
@@ -171,6 +172,8 @@ imports:
   version: db1efb556f84b25a0a13a04aad883943538ad2e0
 - name: github.com/mitchellh/panicwrap
   version: fce601fe55579125e1b3cb0b992287e7290f7b83
+- name: github.com/nlopes/slack
+  version: 3e8aa5655be613e1d4ce0b740993bb734a2b0f7b
 - name: github.com/opencontainers/go-digest
   version: aa2ec055abd10d26d539eb630a92241b781ce4bc
 - name: github.com/patrickmn/go-cache
@@ -200,7 +203,7 @@ imports:
 - name: github.com/spf13/viper
   version: 5ed0fc31f7f453625df314d8e66b9791e8d13003
 - name: github.com/stripe/stripe-go
-  version: 2d37caed8dcd0cc92866634effaed1fa033d7fd5
+  version: 52316de96ca8c9120739b13cca17e36eb02c8737
   subpackages:
   - account
   - balance
@@ -251,6 +254,7 @@ imports:
   - context
   - context/ctxhttp
   - proxy
+  - websocket
 - name: golang.org/x/oauth2
   version: de0725b330ab43c1a3d6c84d961cf01183783f1e
   subpackages:
