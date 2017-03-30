@@ -25,6 +25,13 @@ data:
 
     [mailgun]
     domain = "gliderlabs.com"
+    
+    [ssh]
+    listen_addr = ":22"
+    hostkey_pem = "/tmp/data/id_host"
+
+    [web]
+    listen_addr = ":80"
 
 ---
 apiVersion: extensions/v1beta1
