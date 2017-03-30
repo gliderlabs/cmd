@@ -61,6 +61,10 @@ spec:
               containerPort: 80
             - name: ssh
               containerPort: 22
+          readinessProbe:
+            tcpSocket:
+              port: ssh
+            initialDelaySeconds: 5
           volumeMounts:
             - mountPath: /tmp/data/
               name: host-key
