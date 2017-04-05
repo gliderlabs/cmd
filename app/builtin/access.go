@@ -2,6 +2,7 @@ package builtin
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/progrium/cmd/app/store"
 	"github.com/progrium/cmd/lib/cli"
@@ -74,9 +75,9 @@ var accessGrantCmd = cli.Command{
 			return
 		}
 		cli.Status(sess, fmt.Sprintf(
-			"Granting %s access to %s", cli.Bright(args[1]), cli.Bright(cmd.Name)))
-		cmd.AddAccess(args[1])
-		if err := store.Selected().Put(cmd.User, cmd.Name, cmd); err != nil {
+			"Granting %s access to %s",
+			cli.Bright(strings.Join(args[1:], ", ")), cli.Bright(cmd.Name)))
+		if err := store.Selected().GrantAccess(cmd.User, cmd.Name, args[1:]...); err != nil {
 			cli.StatusErr(sess.Stderr(), err.Error())
 			sess.Exit(70)
 			return
@@ -108,9 +109,9 @@ var accessRevokeCmd = cli.Command{
 			return
 		}
 		cli.Status(sess, fmt.Sprintf(
-			"Revoking %s access to %s", cli.Bright(args[1]), cli.Bright(cmd.Name)))
-		cmd.RemoveAccess(args[1])
-		if err := store.Selected().Put(cmd.User, cmd.Name, cmd); err != nil {
+			"Revoking %s access to %s",
+			cli.Bright(strings.Join(args[1:], ", ")), cli.Bright(cmd.Name)))
+		if err := store.Selected().RevokeAccess(cmd.User, cmd.Name, args[1:]...); err != nil {
 			cli.StatusErr(sess.Stderr(), err.Error())
 			sess.Exit(70)
 			return

@@ -29,6 +29,10 @@ type CmdBackend interface {
 	Get(user, name string) *core.Command
 	Put(user, name string, cmd *core.Command) error
 	Delete(user, name string) error
+	GrantAccess(owner, name string, subject ...string) error
+	RevokeAccess(owner, name string, subject ...string) error
+	GrantAdmin(owner, name string, subject ...string) error
+	RevokeAdmin(owner, name string, subject ...string) error
 }
 
 type TokenBackend interface {

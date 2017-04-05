@@ -48,3 +48,6 @@ import:
 - package: github.com/patrickmn/go-cache
 - package: github.com/cenkalti/backoff
 - package: github.com/nlopes/slack
+- package: github.com/guregu/dynamo
+  version: master
+  repo: https://github.com/mattaitchison/dynamo.git

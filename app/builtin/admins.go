@@ -2,6 +2,7 @@ package builtin
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/progrium/cmd/app/store"
 	"github.com/progrium/cmd/lib/cli"
@@ -71,9 +72,9 @@ var adminsGrantCmd = cli.Command{
 			return
 		}
 		cli.Status(sess, fmt.Sprintf(
-			"Granting %s admin to %s", cli.Bright(args[1]), cli.Bright(cmd.Name)))
-		cmd.AddAdmin(args[1])
-		if err := store.Selected().Put(cmd.User, cmd.Name, cmd); err != nil {
+			"Granting %s admin to %s",
+			cli.Bright(strings.Join(args[1:], ", ")), cli.Bright(cmd.Name)))
+		if err := store.Selected().GrantAdmin(cmd.User, cmd.Name, args[1:]...); err != nil {
 			cli.StatusErr(sess.Stderr(), err.Error())
 			sess.Exit(cli.StatusInternalError)
 			return
@@ -105,9 +106,9 @@ var adminsRevokeCmd = cli.Command{
 			return
 		}
 		cli.Status(sess, fmt.Sprintf(
-			"Revoking %s admin to %s", cli.Bright(args[1]), cli.Bright(cmd.Name)))
-		cmd.RemoveAdmin(args[1])
-		if err := store.Selected().Put(cmd.User, cmd.Name, cmd); err != nil {
+			"Revoking %s admin to %s",
+			cli.Bright(strings.Join(args[1:], ", ")), cli.Bright(cmd.Name)))
+		if err := store.Selected().RevokeAdmin(cmd.User, cmd.Name, args[1:]...); err != nil {
 			cli.StatusErr(sess.Stderr(), err.Error())
 			sess.Exit(cli.StatusInternalError)
 			return

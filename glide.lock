@@ -1,10 +1,10 @@
-hash: 2fd032f4d3a7e18f0a1cfcb6a78b8e133eb935424842997670621499ff715c28
-updated: 2017-03-29T11:47:15.258034304-07:00
+hash: ec47f82d74d5c27836e5830f20638b3dba23481eedd6e7207af7c790de919f6a
+updated: 2017-04-05T13:45:02.355940422-05:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
 - name: github.com/aws/aws-sdk-go
-  version: 069aafcbf0db604407291f9acc76c6b69fc99e0e
+  version: 3a4119172097bf8725eb7c1b96b7957cfe2d92dc
   subpackages:
   - aws
   - aws/awserr
@@ -33,7 +33,7 @@ imports:
   - service/dynamodb/dynamodbattribute
   - service/sts
 - name: github.com/cenkalti/backoff
-  version: 5d150e7eec023ce7a124856b37c68e54b4050ac7
+  version: 3db60c813733fce657c114634171689bbf1f8dee
 - name: github.com/certifi/gocertifi
   version: 03be5e6bb9874570ea7fb0961225d193cbc374c5
 - name: github.com/docker/distribution
@@ -129,6 +129,11 @@ imports:
   version: 8d8152488187485a81764618de67ec1c61ffe55e
 - name: github.com/gregjones/httpcache
   version: d02018f006d98f58512bf3adfc171d88d17626df
+- name: github.com/guregu/dynamo
+  version: fe5a473f84183957b457029329684928d20384c9
+  repo: https://github.com/mattaitchison/dynamo.git
+  subpackages:
+  - internal/exprs
 - name: github.com/hashicorp/hcl
   version: 372e8ddaa16fd67e371e9323807d056b799360af
   subpackages:
@@ -173,7 +178,7 @@ imports:
 - name: github.com/mitchellh/panicwrap
   version: fce601fe55579125e1b3cb0b992287e7290f7b83
 - name: github.com/nlopes/slack
-  version: 3e8aa5655be613e1d4ce0b740993bb734a2b0f7b
+  version: 6519657c021b7add19c4ef48220140cca0b1657b
 - name: github.com/opencontainers/go-digest
   version: aa2ec055abd10d26d539eb630a92241b781ce4bc
 - name: github.com/patrickmn/go-cache

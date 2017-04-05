@@ -178,3 +178,7 @@ func ensureTableSchema(client *dynamodb.DynamoDB, table string) error {
 	}
 	return nil
 }
+
+func stringSet(item ...string) *dynamodb.AttributeValue {
+	return &dynamodb.AttributeValue{SS: aws.StringSlice(item)}
+}

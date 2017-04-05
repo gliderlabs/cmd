@@ -87,11 +87,6 @@ func (c *Command) Env() (env []string) {
 	return
 }
 
-// MakePrivate by setting ACL to an empty string slice
-func (c *Command) MakePrivate() {
-	c.ACL = []string{}
-}
-
 func (c *Command) HasAccess(user string) bool {
 	if c.User == user {
 		return true
@@ -109,30 +104,6 @@ func (c *Command) HasAccess(user string) bool {
 	return false
 }
 
-// AddAccess for user to command
-func (c *Command) AddAccess(user string) {
-	if c.HasAccess(user) {
-		return
-	}
-	c.ACL = append(c.ACL, user)
-}
-
-// RemoveAccess from user to command
-func (c *Command) RemoveAccess(user string) {
-	var i int
-	var u string
-	var found bool
-	for i, u = range c.ACL {
-		if u == user {
-			found = true
-			break
-		}
-	}
-	if found {
-		c.ACL = append(c.ACL[:i], c.ACL[i+1:]...)
-	}
-}
-
 func (c *Command) IsAdmin(user string) bool {
 	if c.User == user {
 		return true
@@ -143,31 +114,6 @@ func (c *Command) IsAdmin(user string) bool {
 		}
 	}
 	return false
-}
-
-func (c *Command) AddAdmin(user string) {
-	if c.IsAdmin(user) {
-		return
-	}
-	if c.HasAccess(user) {
-		c.RemoveAccess(user)
-	}
-	c.Admins = append(c.Admins, user)
-}
-
-func (c *Command) RemoveAdmin(user string) {
-	var i int
-	var u string
-	var found bool
-	for i, u = range c.Admins {
-		if u == user {
-			found = true
-			break
-		}
-	}
-	if found {
-		c.Admins = append(c.Admins[:i], c.Admins[i+1:]...)
-	}
 }
 
 func (c *Command) image() string {
