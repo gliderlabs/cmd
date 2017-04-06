@@ -1,19 +1,21 @@
 package cli
 
 import (
-	"context"
+	"errors"
 	"fmt"
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 )
 
-var Version string
-
-var noArgs = []string{"--noargs"}
+const (
+	noArgsFlag     = "--noargs"
+	argCmdTmplName = "__argcmd"
+)
 
 type Command cobra.Command
+
+type CommandFactory func(Session) *cobra.Command
 
 type Flag struct {
 	Name      string
@@ -23,7 +25,8 @@ type Flag struct {
 	Kind      string
 }
 
-func addFlag(flags *pflag.FlagSet, flag Flag) {
+func AddFlag(cmd *cobra.Command, flag Flag) {
+	flags := cmd.Flags()
 	switch flag.Kind {
 	// TODO: more non-string Kinds
 	case "bool":
@@ -34,93 +37,137 @@ func addFlag(flags *pflag.FlagSet, flag Flag) {
 	}
 }
 
-func (cmd Command) Init(parent *cobra.Command, flags ...Flag) *cobra.Command {
-	cobraCmd := cobra.Command(cmd)
-	cobraCmd.SetHelpFunc(helpFunc)
-	cobraCmd.SetUsageFunc(usageFunc)
-	cobraCmd.SetUsageTemplate(usageTemplate)
-	cobraCmd.SetHelpTemplate(helpTemplate)
-	cobraCmd.DisableFlagParsing = true
-	if parent != nil {
-		parent.AddCommand(&cobraCmd)
-	}
-	wrappedRun := cobraCmd.Run
-	cobraCmd.Run = func(c *cobra.Command, args []string) {
-		sess := ContextSession(c)
-		if sess != nil {
-			c.SetOutput(sess)
-		}
-		for _, flag := range flags {
-			addFlag(c.Flags(), flag)
-		}
-		if len(args) == 1 && args[0] == noArgs[0] {
-			args = []string{}
-		}
-		err := c.Flags().Parse(args)
+type Error struct {
+	Err    error
+	Status int
+}
+
+func (e Error) Error() string {
+	return e.Err.Error()
+}
+
+func AddCommand(parent *cobra.Command, factory CommandFactory, sess Session) *cobra.Command {
+	cmd := factory(sess)
+	cmd.SetOutput(sess)
+	cmd.SetHelpFunc(helpFunc)
+	cmd.SetUsageFunc(usageFunc)
+	cmd.SetUsageTemplate(usageTemplate)
+	cmd.SetHelpTemplate(helpTemplate)
+	cmd.DisableFlagParsing = true
+	cmd.SilenceUsage = true
+	cmd.SilenceErrors = true
+	cmd.PreRunE = func(c *cobra.Command, args []string) error {
+		err := c.Flags().Parse(popArgFix(args))
 		if err != nil {
-			fmt.Fprintln(sess.Stderr(), err)
-			sess.Exit(StatusUsageError)
-			return
+			copyAnyArgCmdChildren(c)
+			return Error{err, StatusUsageError}
 		}
 		// only show help if NArgs < 2 (argcmd will have 1, parent will have 2)
 		if help, _ := c.Flags().GetBool("help"); help && c.Flags().NArg() < 2 {
+			copyAnyArgCmdChildren(c)
 			c.Help()
-			return
+			return Error{errors.New(""), -1} // cancel run
 		}
-		wrappedRun(c, args)
+		return nil
 	}
-	return &cobraCmd
+	if cmd.Annotations[argCmdTmplName] != "" {
+		cmd.RunE = argCmdWrapper(cmd.RunE, sess)
+	}
+	parent.AddCommand(cmd)
+	return cmd
 }
 
-type commandHandler func(*cobra.Command, []string)
+func ArgumentCommand(cmd *cobra.Command, sess Session) *cobra.Command {
+	if cmd.Annotations == nil {
+		cmd.Annotations = map[string]string{}
+	}
+	cmd.Annotations[argCmdTmplName] = argCmdTmplName
+	return addArgCmd(cmd, sess, argCmdTmplName)
+}
 
-var ArgCmd = func(handle commandHandler) commandHandler {
-	return func(cmd *cobra.Command, args []string) {
-		sess := ContextSession(cmd)
+func fixArgCmdArgs(cmd *cobra.Command, args []string) []string {
+	newargs := []string{args[0]}
+	if len(args) > 1 {
+		newargs = append(newargs, []string{args[1], args[0]}...)
+	}
+	if len(args) > 2 {
+		newargs = append(newargs, args[2:]...)
+	}
+	return append(strings.Split(cmd.CommandPath(), " ")[1:], newargs...)
+}
+
+func argCmdWrapper(handle func(*cobra.Command, []string) error, sess Session) func(*cobra.Command, []string) error {
+	return func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
-			cmd.Usage()
-			sess.Exit(StatusUsageError)
-			return
+			copyAnyArgCmdChildren(cmd)
+			return Error{fmt.Errorf("Usage error"), StatusUsageError}
 		}
-		argCmd := Command{
-			Use:    args[0],
-			Hidden: true,
-			Run: func(c *cobra.Command, a []string) {
-				a = append([]string{args[0]}, a...)
-				handle(c, a)
-			},
-		}.Init(nil)
-		for _, sub := range cmd.Commands() {
-			subCopy := *sub
-			argCmd.AddCommand(&subCopy)
+		if len(args) < 2 {
+			return handle(cmd, args)
 		}
-		cmd.AddCommand(argCmd)
-		newargs := []string{args[0]}
-		if len(args) > 1 {
-			newargs = append(newargs, []string{args[1], args[0]}...)
-		}
-		if len(args) > 2 {
-			newargs = append(newargs, args[2:]...)
-		}
-		cmd.Root().SetArgs(append(strings.Split(cmd.CommandPath(), " ")[1:], newargs...))
-		cmd.Root().Execute()
+		argCmdTmpl := cmd.Commands()[0]
+		argCmd := addArgCmd(cmd, sess, args[0])
+		copyChildren(argCmd, argCmdTmpl)
+		cmd.Root().SetArgs(fixArgCmdArgs(cmd, args))
+		return argCmd.Execute()
 	}
 }
 
-func Execute(cmd cobra.Command, cmds []*cobra.Command, ctx context.Context, args []string) error {
-	root := cmd
-	key := defaultCtxRegistry.Add(ctx)
-	root.Annotations = map[string]string{
-		"_ctx": key,
+func addArgCmd(cmd *cobra.Command, sess Session, name string) *cobra.Command {
+	argCmdFactory := func(sess Session) *cobra.Command {
+		argCmd := &cobra.Command{
+			Use:    name,
+			Hidden: true,
+		}
+		return argCmd
 	}
-	defer defaultCtxRegistry.Clear(key)
-	for _, sub := range cmds {
+	argCmd := AddCommand(cmd, argCmdFactory, sess)
+	return argCmd
+}
+
+func copyChildren(to, from *cobra.Command) {
+	for _, sub := range from.Commands() {
 		subCopy := *sub
-		root.AddCommand(&subCopy)
+		to.AddCommand(&subCopy)
 	}
+}
+
+func copyAnyArgCmdChildren(cmd *cobra.Command) {
+	if cmd.Annotations[argCmdTmplName] != "" {
+		copyChildren(cmd, cmd.Commands()[0]) // from argCmdTmpl
+	}
+}
+
+// if cobra gets empty args, it loads from os.Args
+// and we never want this.
+func pushArgFix(args []string) []string {
 	if len(args) == 0 {
-		args = noArgs
+		return []string{noArgsFlag}
 	}
-	root.SetArgs(args)
-	return root.Execute()
+	return args
+}
+
+func popArgFix(args []string) []string {
+	if len(args) == 1 && args[0] == noArgsFlag {
+		return []string{}
+	}
+	return args
+}
+
+func Execute(cmd *cobra.Command, sess Session, args []string) error {
+	root := *cmd // copy
+	root.SilenceUsage = true
+	root.SilenceErrors = true
+	root.SetArgs(pushArgFix(args))
+	cmd, err := root.ExecuteC()
+	if cliErr, ok := err.(Error); ok {
+		if cliErr.Status == -1 {
+			return nil
+		}
+		if cliErr.Status == StatusUsageError {
+			cmd.Help()
+			return nil
+		}
+	}
+	return err
 }

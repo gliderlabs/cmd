@@ -32,12 +32,6 @@ Use "{{.UseLine|replace "cmd " ":"}} [subcommand] --help" to learn more about a 
 `
 
 func usageFunc(c *cobra.Command) error {
-	//c.mergePersistentFlags()
-	//c.ParseFlags()
-	sess := ContextSession(c)
-	if sess != nil {
-		c.SetOutput(sess)
-	}
 	err := Template(c.OutOrStderr(), c.UsageTemplate(), c)
 	if err != nil {
 		c.Println(err)
@@ -46,10 +40,6 @@ func usageFunc(c *cobra.Command) error {
 }
 
 func helpFunc(cmd *cobra.Command, args []string) {
-	sess := ContextSession(cmd)
-	if sess != nil {
-		cmd.SetOutput(sess)
-	}
 	if len(args) < 1 {
 		err := Template(cmd.OutOrStdout(), cmd.HelpTemplate(), cmd)
 		if err != nil {
@@ -57,6 +47,7 @@ func helpFunc(cmd *cobra.Command, args []string) {
 		}
 		return
 	}
+	// TODO: is this necessary any more??
 	argCmd := &cobra.Command{
 		Use:    args[1],
 		Hidden: true,

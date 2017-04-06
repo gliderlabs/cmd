@@ -1,13 +1,12 @@
 package cli
 
 import (
+	"context"
 	"io"
 	"os"
 	"os/user"
 	"regexp"
 	"strings"
-
-	"github.com/spf13/cobra"
 )
 
 var NoColorsVar = "NOCOLORS"
@@ -21,11 +20,8 @@ type Session interface {
 	Environ() []string
 	Stderr() io.Writer
 	Colors() bool
+	Context() context.Context
 	User() string
-}
-
-func ContextSession(cmd *cobra.Command) Session {
-	return Context(cmd).Value("session").(Session)
 }
 
 type localSession struct{}
@@ -60,6 +56,10 @@ func (ls *localSession) Stderr() io.Writer {
 
 func (ls *localSession) Colors() bool {
 	return getEnv(ls.Environ(), NoColorsVar) == ""
+}
+
+func (ls *localSession) Context() context.Context {
+	return context.Background()
 }
 
 func (ls *localSession) User() string {

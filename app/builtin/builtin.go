@@ -1,7 +1,6 @@
 package builtin
 
 import (
-	"context"
 	"io"
 	"regexp"
 	"strings"
@@ -17,8 +16,17 @@ func Execute(sess ssh.Session) error {
 	if len(args) > 0 {
 		args[0] = strings.TrimLeft(args[0], ":")
 	}
-	ctx := context.WithValue(sess.Context(), "session", &session{sess})
-	return cli.Execute(*rootCmd, Commands(), ctx, args)
+	cliSession := &session{sess}
+	root := rootCmd(cliSession)
+	root.SetOutput(sess)
+	root.SetHelpTemplate(helpTemplate)
+	root.SetUsageTemplate(usageTemplate)
+	root.SetUsageFunc(rootUsageFunc)
+	root.DisableFlagParsing = true
+	for _, cmd := range Commands() {
+		cli.AddCommand(root, cmd, cliSession)
+	}
+	return cli.Execute(root, cliSession, args)
 }
 
 type session struct {

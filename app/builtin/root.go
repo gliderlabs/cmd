@@ -7,12 +7,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func init() {
-	rootCmd.SetHelpTemplate(`{{"\u2318"|gray}} {{"Cmd"|bright}} by Glider Labs
+const (
+	helpTemplate = `{{"\u2318"|gray}} {{"Cmd"|bright}} by Glider Labs
   {{"version:"|gray}} {{version|gray}}
 
-{{.UsageString}}`)
-	rootCmd.SetUsageTemplate(`{{"\u25ba"|gray}} {{"Usage"|bright}}{{if .Runnable}}
+{{.UsageString}}`
+	usageTemplate = `{{"\u25ba"|gray}} {{"Usage"|bright}}{{if .Runnable}}
   ssh {{addr}} [ command | builtin ]{{end}}
 {{if .HasExample}}
 {{"\u2605"|gray}} {{"Examples"|bright}}
@@ -31,15 +31,10 @@ Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
   {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}
 {{end}}{{if .HasAvailableSubCommands}}
 Use "ssh {{addr}} [builtin] --help" to learn more about a builtin.{{end}}
-`)
-	rootCmd.SetUsageFunc(rootUsageFunc)
-}
+`
+)
 
 func rootUsageFunc(c *cobra.Command) error {
-	sess := cli.ContextSession(c)
-	if sess != nil {
-		c.SetOutput(sess)
-	}
 	err := cli.Template(c.OutOrStderr(), c.UsageTemplate(), &rootCmdView{c})
 	if err != nil {
 		c.Println(err)
@@ -47,19 +42,25 @@ func rootUsageFunc(c *cobra.Command) error {
 	return err
 }
 
-var rootCmd = cli.Command{
-	Use:    "cmd",
-	Hidden: true,
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
-	},
-}.Init(nil)
+var rootCmd = func(sess cli.Session) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:    "cmd",
+		Hidden: true,
+		RunE: func(c *cobra.Command, args []string) error {
+			c.Help()
+			return nil
+		},
+	}
+	cmd.Annotations = map[string]string{
+		"user": sess.User(),
+	}
+	return cmd
+}
 
 type rootCmdView struct {
 	*cobra.Command
 }
 
 func (cmd *rootCmdView) UserCommands() []*core.Command {
-	sess := cli.ContextSession(cmd.Command)
-	return store.Selected().List(sess.User())
+	return store.Selected().List(cmd.Annotations["user"])
 }

@@ -9,25 +9,27 @@ import (
 	"github.com/progrium/cmd/lib/cli"
 )
 
-var listCmd = cli.Command{
-	Use:   "ls",
-	Short: "List available commands",
-	Run: func(c *cobra.Command, args []string) {
-		sess := cli.ContextSession(c)
-		if ok, _ := c.Flags().GetBool("json"); ok {
-			var names []string
-			for _, cmd := range store.Selected().List(sess.User()) {
-				names = append(names, cmd.Name)
+var listCmd = func(sess cli.Session) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "ls",
+		Short: "List available commands",
+		RunE: func(c *cobra.Command, args []string) error {
+			if ok, _ := c.Flags().GetBool("json"); ok {
+				var names []string
+				for _, cmd := range store.Selected().List(sess.User()) {
+					names = append(names, cmd.Name)
+				}
+				cli.JSON(sess, names)
+				return nil
 			}
-			cli.JSON(sess, names)
-			return
-		}
-		cli.Header(sess, "Your Commands")
-		for _, cmd := range store.Selected().List(sess.User()) {
-			fmt.Fprintf(sess, "  %-10s  %s\n", cmd.Name, cmd.Description)
-		}
-		fmt.Fprintln(sess, "")
-	},
-}.Init(nil,
-	cli.Flag{"json", false, "output in JSON", "j", "bool"},
-)
+			cli.Header(sess, "Your Commands")
+			for _, cmd := range store.Selected().List(sess.User()) {
+				fmt.Fprintf(sess, "  %-10s  %s\n", cmd.Name, cmd.Description)
+			}
+			fmt.Fprintln(sess, "")
+			return nil
+		},
+	}
+	cli.AddFlag(cmd, cli.Flag{"json", false, "output in JSON", "j", "bool"})
+	return cmd
+}

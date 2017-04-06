@@ -2,7 +2,7 @@ package builtin
 
 import (
 	"github.com/gliderlabs/comlab/pkg/com"
-	"github.com/spf13/cobra"
+	"github.com/progrium/cmd/lib/cli"
 )
 
 func init() {
@@ -11,8 +11,8 @@ func init() {
 
 type Component struct{}
 
-func (c *Component) BuiltinCommands() []*cobra.Command {
-	return []*cobra.Command{
+func (c *Component) BuiltinCommands() []cli.CommandFactory {
+	return []cli.CommandFactory{
 		envCmd,
 		listCmd,
 		createCmd,
@@ -25,8 +25,8 @@ func (c *Component) BuiltinCommands() []*cobra.Command {
 	}
 }
 
-func Commands() []*cobra.Command {
-	var cmds []*cobra.Command
+func Commands() []cli.CommandFactory {
+	var cmds []cli.CommandFactory
 	for _, com := range com.Enabled(new(Provider), nil) {
 		cmds = append(cmds, com.(Provider).BuiltinCommands()...)
 	}
@@ -34,5 +34,5 @@ func Commands() []*cobra.Command {
 }
 
 type Provider interface {
-	BuiltinCommands() []*cobra.Command
+	BuiltinCommands() []cli.CommandFactory
 }
