@@ -1,6 +1,6 @@
-package: github.com/progrium/cmd
+package: github.com/gliderlabs/cmd
 ignore:
-- github.com/progrium/cmd
+- github.com/gliderlabs/cmd
 import:
 - package: github.com/spf13/cobra
 - package: github.com/thejerf/suture

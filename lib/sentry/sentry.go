@@ -10,7 +10,7 @@ import (
 	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/maruel/panicparse/stack"
-	"github.com/progrium/cmd/lib/release"
+	"github.com/gliderlabs/cmd/lib/release"
 )
 
 func init() {

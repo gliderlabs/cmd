@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gliderlabs/comlab/pkg/com"
-	"github.com/progrium/cmd/pkg/auth0"
+	"github.com/gliderlabs/cmd/pkg/auth0"
 	"golang.org/x/oauth2"
 )
 

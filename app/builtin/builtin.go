@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/gliderlabs/ssh"
-	"github.com/progrium/cmd/lib/cli"
+	"github.com/gliderlabs/cmd/lib/cli"
 )
 
 var ansiColorCodes = regexp.MustCompile(`\x1b\[[^m]+m`)

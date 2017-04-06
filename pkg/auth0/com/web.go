@@ -7,7 +7,7 @@ import (
 	"text/template"
 
 	"github.com/gliderlabs/comlab/pkg/com"
-	"github.com/progrium/cmd/pkg/auth0"
+	"github.com/gliderlabs/cmd/pkg/auth0"
 )
 
 func (c *Component) WebTemplateFuncMap(r *http.Request) template.FuncMap {

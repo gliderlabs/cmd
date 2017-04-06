@@ -7,8 +7,8 @@ import (
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/spf13/cobra"
 
-	"github.com/progrium/cmd/app/store"
-	"github.com/progrium/cmd/lib/cli"
+	"github.com/gliderlabs/cmd/app/store"
+	"github.com/gliderlabs/cmd/lib/cli"
 )
 
 var editCmd = func(sess cli.Session) *cobra.Command {

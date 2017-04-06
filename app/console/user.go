@@ -8,9 +8,9 @@ import (
 	"github.com/gliderlabs/comlab/pkg/events"
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/mitchellh/mapstructure"
-	"github.com/progrium/cmd/lib/stripe"
-	"github.com/progrium/cmd/lib/web"
-	"github.com/progrium/cmd/pkg/auth0"
+	"github.com/gliderlabs/cmd/lib/stripe"
+	"github.com/gliderlabs/cmd/lib/web"
+	"github.com/gliderlabs/cmd/pkg/auth0"
 	stripelib "github.com/stripe/stripe-go"
 )
 

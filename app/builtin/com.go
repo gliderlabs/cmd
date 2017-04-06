@@ -2,7 +2,7 @@ package builtin
 
 import (
 	"github.com/gliderlabs/comlab/pkg/com"
-	"github.com/progrium/cmd/lib/cli"
+	"github.com/gliderlabs/cmd/lib/cli"
 )
 
 func init() {

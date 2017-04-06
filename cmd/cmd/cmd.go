@@ -4,9 +4,9 @@ import (
 	"os"
 
 	"github.com/mitchellh/panicwrap"
-	"github.com/progrium/cmd/lib/daemon"
-	"github.com/progrium/cmd/lib/release"
-	"github.com/progrium/cmd/lib/sentry"
+	"github.com/gliderlabs/cmd/lib/daemon"
+	"github.com/gliderlabs/cmd/lib/release"
+	"github.com/gliderlabs/cmd/lib/sentry"
 )
 
 var (

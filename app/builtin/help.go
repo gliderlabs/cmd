@@ -1,7 +1,7 @@
 package builtin
 
 import (
-	"github.com/progrium/cmd/lib/cli"
+	"github.com/gliderlabs/cmd/lib/cli"
 	"github.com/spf13/cobra"
 )
 
