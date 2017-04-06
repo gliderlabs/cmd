@@ -1,6 +1,8 @@
 package access
 
 import (
+	"context"
+
 	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/google/go-github/github"
@@ -21,7 +23,7 @@ type Component struct {
 // TODO: this component is unnecessary, but is around from first pass
 // at consolidating into single package from two
 func (c *Component) Check(name string) bool {
-	isMember, res, err := c.client.Organizations.IsTeamMember(c.teamID, name)
+	isMember, res, err := c.client.Organizations.IsTeamMember(context.Background(), c.teamID, name)
 	if err != nil {
 		log.Info(err)
 		return isMember
