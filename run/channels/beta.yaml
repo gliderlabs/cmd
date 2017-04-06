@@ -25,7 +25,7 @@ data:
 
     [mailgun]
     domain = "gliderlabs.com"
-    
+
     [ssh]
     listen_addr = ":22"
     hostkey_pem = "/tmp/data/id_host"
@@ -42,7 +42,6 @@ spec:
   replicas: 2
   revisionHistoryLimit: 4
   progressDeadlineSeconds: 90
-  minReadySeconds: 60
   template:
     metadata:
       labels:

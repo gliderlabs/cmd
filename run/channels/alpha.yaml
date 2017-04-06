@@ -45,7 +45,6 @@ spec:
   replicas: 2
   revisionHistoryLimit: 4
   progressDeadlineSeconds: 90
-  minReadySeconds: 60
   template:
     metadata:
       labels:
