@@ -7,9 +7,9 @@ import (
 
 	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/comlab/pkg/log"
-	"github.com/progrium/cmd/lib/access"
-	"github.com/progrium/cmd/lib/slack"
-	"github.com/progrium/cmd/lib/web"
+	"github.com/gliderlabs/cmd/lib/access"
+	"github.com/gliderlabs/cmd/lib/slack"
+	"github.com/gliderlabs/cmd/lib/web"
 )
 
 func (c *Component) WebTemplateFuncMap(r *http.Request) template.FuncMap {

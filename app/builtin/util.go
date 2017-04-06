@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/progrium/cmd/app/core"
-	"github.com/progrium/cmd/app/store"
+	"github.com/gliderlabs/cmd/app/core"
+	"github.com/gliderlabs/cmd/app/store"
 )
 
 func LookupCmd(owner, name string) (*core.Command, error) {

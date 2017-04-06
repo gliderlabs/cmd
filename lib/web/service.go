@@ -7,7 +7,7 @@ import (
 
 	"github.com/facebookgo/httpdown"
 	"github.com/gorilla/context"
-	"github.com/progrium/cmd/lib/maint" // TODO: remove dep via hook
+	"github.com/gliderlabs/cmd/lib/maint" // TODO: remove dep via hook
 
 	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/comlab/pkg/log"

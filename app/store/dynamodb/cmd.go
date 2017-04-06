@@ -9,7 +9,7 @@ import (
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/guregu/dynamo"
 	"github.com/pkg/errors"
-	"github.com/progrium/cmd/app/core"
+	"github.com/gliderlabs/cmd/app/core"
 )
 
 // List all commands for a given user.

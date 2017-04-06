@@ -9,10 +9,10 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/golang/mock/gomock"
-	mock_client "github.com/progrium/cmd/lib/mock/docker/docker/client"
+	mock_client "github.com/gliderlabs/cmd/lib/mock/docker/docker/client"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/progrium/cmd/app/billing"
+	"github.com/gliderlabs/cmd/app/billing"
 )
 
 func TestHasAccess(t *testing.T) {
@@ -216,7 +216,7 @@ ENTRYPOINT ["/bin/entrypoint"]
 
 func TestCmdPull(t *testing.T) {
 	cmd := &Command{
-		Source: "progrium/cmd",
+		Source: "gliderlabs/cmd",
 		Name:   "alpine",
 		User:   "nobody",
 	}

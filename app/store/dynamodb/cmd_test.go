@@ -10,8 +10,8 @@ import (
 	"github.com/gliderlabs/comlab/pkg/com/viper"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/progrium/cmd/app/core"
-	"github.com/progrium/cmd/app/store"
+	"github.com/gliderlabs/cmd/app/core"
+	"github.com/gliderlabs/cmd/app/store"
 )
 
 func TestCmdBackend(t *testing.T) {

@@ -10,8 +10,8 @@ import (
 	"sync"
 
 	"github.com/gorilla/websocket"
-	"github.com/progrium/cmd/app/console"
-	"github.com/progrium/cmd/app/store"
+	"github.com/gliderlabs/cmd/app/console"
+	"github.com/gliderlabs/cmd/app/store"
 )
 
 const runPrefix = "/run/"

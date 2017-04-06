@@ -13,14 +13,14 @@ import (
 	"github.com/patrickmn/go-cache"
 	"github.com/satori/go.uuid"
 
-	"github.com/progrium/cmd/app/builtin"
-	"github.com/progrium/cmd/app/console"
-	"github.com/progrium/cmd/app/core"
-	"github.com/progrium/cmd/app/store"
-	"github.com/progrium/cmd/lib/access"
-	"github.com/progrium/cmd/lib/cli"
-	"github.com/progrium/cmd/lib/maint"
-	"github.com/progrium/cmd/lib/release"
+	"github.com/gliderlabs/cmd/app/builtin"
+	"github.com/gliderlabs/cmd/app/console"
+	"github.com/gliderlabs/cmd/app/core"
+	"github.com/gliderlabs/cmd/app/store"
+	"github.com/gliderlabs/cmd/lib/access"
+	"github.com/gliderlabs/cmd/lib/cli"
+	"github.com/gliderlabs/cmd/lib/maint"
+	"github.com/gliderlabs/cmd/lib/release"
 )
 
 // Default expiry of 30 sec and expiry purge every 5 min.

@@ -23,10 +23,10 @@ test:
 	go test -v $(shell glide nv)
 
 image: build/linux_amd64/cmd
-	docker build -t progrium/cmd .
+	docker build -t gliderlabs/cmd .
 
 image-dev:
-	docker build -t progrium/cmd-dev -f Dockerfile.dev .
+	docker build -t gliderlabs/cmd-dev -f Dockerfile.dev .
 
 docker: image
 	@docker rm -f cmd || true
@@ -35,7 +35,7 @@ docker: image
 		--volume /var/run/docker.sock:/var/run/docker.sock \
 		--volume $(shell pwd)/com/cmd/data/dev_host:/tmp/data/id_host \
 		--volume $(shell pwd)/local:/config \
-		progrium/cmd
+		gliderlabs/cmd
 
 deploy: build/linux_amd64/cmd
 	convox deploy -a alpha-cmd-io --wait

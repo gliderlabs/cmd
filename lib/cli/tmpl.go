@@ -9,7 +9,7 @@ import (
 	"text/template"
 	"unicode"
 
-	"github.com/progrium/cmd/lib/release"
+	"github.com/gliderlabs/cmd/lib/release"
 	"github.com/spf13/cobra"
 )
 

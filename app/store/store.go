@@ -1,7 +1,7 @@
 package store
 
 import (
-	"github.com/progrium/cmd/app/core"
+	"github.com/gliderlabs/cmd/app/core"
 
 	"github.com/gliderlabs/comlab/pkg/com"
 )

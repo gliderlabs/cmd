@@ -1,7 +1,7 @@
 package dynamodb
 
 import (
-	"github.com/progrium/cmd/app/core"
+	"github.com/gliderlabs/cmd/app/core"
 )
 
 // ListTokens for a user.

@@ -10,7 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/gliderlabs/comlab/pkg/log"
-	maintenance "github.com/progrium/cmd/lib/maint"
+	maintenance "github.com/gliderlabs/cmd/lib/maint"
 )
 
 // ensureTableExists creates a DynamoDB table with a given

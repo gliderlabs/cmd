@@ -3,8 +3,8 @@ package cmd
 import (
 	"github.com/gliderlabs/comlab/pkg/events"
 	"github.com/gliderlabs/comlab/pkg/log"
-	"github.com/progrium/cmd/app/console"
-	"github.com/progrium/cmd/lib/slack"
+	"github.com/gliderlabs/cmd/app/console"
+	"github.com/gliderlabs/cmd/lib/slack"
 )
 
 func init() {

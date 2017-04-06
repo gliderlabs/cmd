@@ -3,8 +3,8 @@ package console
 import (
 	"net/http"
 
-	"github.com/progrium/cmd/lib/web"
-	"github.com/progrium/cmd/pkg/auth0"
+	"github.com/gliderlabs/cmd/lib/web"
+	"github.com/gliderlabs/cmd/pkg/auth0"
 	"golang.org/x/oauth2"
 )
 

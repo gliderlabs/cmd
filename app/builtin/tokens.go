@@ -7,9 +7,9 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
 
-	"github.com/progrium/cmd/app/core"
-	"github.com/progrium/cmd/app/store"
-	"github.com/progrium/cmd/lib/cli"
+	"github.com/gliderlabs/cmd/app/core"
+	"github.com/gliderlabs/cmd/app/store"
+	"github.com/gliderlabs/cmd/lib/cli"
 )
 
 var tokensCmd = func(sess cli.Session) *cobra.Command {

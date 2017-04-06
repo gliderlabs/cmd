@@ -6,7 +6,7 @@ jobs:
         command: ["/bin/bash"]
       - image: mattaitchison/dynamodb-local
         cmd: ["-inMemory" ,"-sharedDb"]
-    working_directory: /go/src/github.com/progrium/cmd
+    working_directory: /go/src/github.com/gliderlabs/cmd
     steps:
       - checkout
       - restore_cache:
@@ -17,7 +17,7 @@ jobs:
       - save_cache:
           key:  cmd-{{ .Branch }}-{{ checksum "glide.lock" }}-{{ epoch }}
           paths:
-            - /go/src/github.com/progrium/cmd/vendor
+            - /go/src/github.com/gliderlabs/cmd/vendor
             - ~/.glide/cache
       - run:
           name: Build cmd
@@ -36,7 +36,7 @@ jobs:
           command: make image
       - run:
           name: Push Image
-          command: ecr-push progrium/cmd $(infra-query -r ".modules[0].outputs.repos.value.cmd")
+          command: ecr-push gliderlabs/cmd $(infra-query -r ".modules[0].outputs.repos.value.cmd")
       - store_artifacts:
           path: build
           destination: build

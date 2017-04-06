@@ -20,9 +20,9 @@ import (
 	"github.com/gliderlabs/ssh"
 	"github.com/pkg/errors"
 
-	"github.com/progrium/cmd/app/billing"
-	"github.com/progrium/cmd/lib/agentproxy"
-	"github.com/progrium/cmd/lib/docker"
+	"github.com/gliderlabs/cmd/app/billing"
+	"github.com/gliderlabs/cmd/lib/agentproxy"
+	"github.com/gliderlabs/cmd/lib/docker"
 )
 
 // Token used to provide access to non-github users

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/progrium/cmd/app/store"
-	"github.com/progrium/cmd/lib/cli"
+	"github.com/gliderlabs/cmd/app/store"
+	"github.com/gliderlabs/cmd/lib/cli"
 	"github.com/spf13/cobra"
 )
 

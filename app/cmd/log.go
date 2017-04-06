@@ -11,7 +11,7 @@ import (
 	"github.com/gliderlabs/ssh"
 	"github.com/spf13/cast"
 
-	"github.com/progrium/cmd/app/core"
+	"github.com/gliderlabs/cmd/app/core"
 )
 
 func fieldProcessor(e log.Event, o interface{}) (log.Event, bool) {
