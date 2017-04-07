@@ -7,15 +7,17 @@ import (
 	"strings"
 
 	raven "github.com/getsentry/raven-go"
+	"github.com/gliderlabs/cmd/lib/release"
 	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/maruel/panicparse/stack"
-	"github.com/gliderlabs/cmd/lib/release"
 )
 
 func init() {
 	com.Register("sentry", &Component{},
-		com.Option("dsn", "", "dsn for sentry project"))
+		com.Option("dsn", "", "dsn for sentry project"),
+		com.Option("endpoint", "/_sentry", "webhook endpoint"),
+	)
 	log.RegisterObserver(&Component{})
 }
 
