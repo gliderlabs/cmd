@@ -57,7 +57,7 @@ func init() {
 		EventName: github.EventStatus,
 		Handler: func(event events.Event) {
 			status := event.(github.StatusEvent)
-			branches := []string{}
+			branches := []string{"master"}
 			foundBranch := ""
 			for _, branch := range status.Branches {
 				if len(branches) == 0 {
@@ -73,9 +73,9 @@ func init() {
 			if foundBranch == "" {
 				return
 			}
-			/*if String(status.State) == "pending" {
+			if String(status.State) == "pending" {
 				return
-			}*/
+			}
 			colors := map[string]string{
 				"success": "good",
 				"failure": "danger",
