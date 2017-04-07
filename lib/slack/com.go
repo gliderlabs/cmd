@@ -10,6 +10,7 @@ func init() {
 		com.Option("username", "gliderbot", "Username to post as"),
 		com.Option("icon", "http://i.imgur.com/9P6bSVv.png", "Default icon to use"),
 		com.Option("channel", "cmd", "Channel to post to"),
+		com.Option("endpoint", "/_slack", "API endpoint"),
 	)
 }
 

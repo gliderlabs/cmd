@@ -13,14 +13,24 @@ func Post(text string) error {
 	}
 	attachment := slack.Attachment{
 		Text: text,
-		/*Fields: []slack.AttachmentField{
-			slack.AttachmentField{
-				Title: "Feeling",
-				Value: "Grateful",
-			},
-		},*/
 	}
 	params.Attachments = []slack.Attachment{attachment}
 	_, _, err := api.PostMessage(com.GetString("channel"), "", params)
+	return err
+}
+
+func PostAttachment(attachment slack.Attachment, params *slack.PostMessageParameters) error {
+	api := slack.New(com.GetString("token"))
+	if params == nil {
+		params = &slack.PostMessageParameters{}
+	}
+	if params.Username == "" {
+		params.Username = com.GetString("username")
+	}
+	if params.IconURL == "" {
+		params.IconURL = com.GetString("icon")
+	}
+	params.Attachments = []slack.Attachment{attachment}
+	_, _, err := api.PostMessage(com.GetString("channel"), "", *params)
 	return err
 }
