@@ -46,6 +46,9 @@ func Decrypt(box string) string {
 	if err != nil {
 		return ""
 	}
+	if len(enc) < 25 {
+		return ""
+	}
 	var nonce [24]byte
 	copy(nonce[:], enc[:24])
 	decrypted, ok := secretbox.Open([]byte{}, enc[24:], &nonce, &secretKey)
