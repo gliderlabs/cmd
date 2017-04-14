@@ -7,7 +7,7 @@ data:
     [honeycomb]
     dataset = "alpha.cmd.io"
 
-    [maintenance]
+    [maint]
     active = true
     allow = "mattaitchison"
 
