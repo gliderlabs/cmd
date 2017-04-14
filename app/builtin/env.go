@@ -6,6 +6,7 @@ import (
 
 	"github.com/gliderlabs/cmd/app/store"
 	"github.com/gliderlabs/cmd/lib/cli"
+	"github.com/gliderlabs/cmd/lib/crypto"
 	"github.com/spf13/cobra"
 )
 
@@ -32,7 +33,7 @@ var envListFn = func(sess cli.Session, c *cobra.Command, args []string) error {
 	}
 	fields := map[string]interface{}{}
 	for k, v := range cmd.Environment {
-		fields[cli.Bright(k)] = v
+		fields[cli.Bright(k)] = crypto.Decrypt(v)
 	}
 	cli.PrintFields(sess, fields, true)
 	return nil
@@ -93,7 +94,8 @@ var envSetCmd = func(sess cli.Session) *cobra.Command {
 					continue
 				}
 				keys = append(keys, cli.Bright(parts[0]))
-				cmd.SetEnv(parts[0], parts[1])
+				box, _ := crypto.Encrypt(parts[1])
+				cmd.SetEnv(parts[0], box)
 			}
 			cli.Status(sess, fmt.Sprintf(
 				"Setting %s on %s", strings.Join(keys, ", "), cli.Bright(cmd.Name)))

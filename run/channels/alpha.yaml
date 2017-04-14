@@ -8,7 +8,7 @@ data:
     dataset = "alpha.cmd.io"
 
     [maintenance]
-    active = false
+    active = true
     allow = "mattaitchison"
 
     [docker]
@@ -92,6 +92,11 @@ spec:
                 secretKeyRef:
                   name: gliderlabs
                   key: github-token
+            - name: CRYPTO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cmd-alpha
+                  key: crypto-secret-key
             - name: SENTRY_DSN
               valueFrom:
                 secretKeyRef:

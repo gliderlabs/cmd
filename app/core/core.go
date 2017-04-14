@@ -22,6 +22,7 @@ import (
 
 	"github.com/gliderlabs/cmd/app/billing"
 	"github.com/gliderlabs/cmd/lib/agentproxy"
+	"github.com/gliderlabs/cmd/lib/crypto"
 	"github.com/gliderlabs/cmd/lib/docker"
 )
 
@@ -82,7 +83,7 @@ func (c *Command) Env() (env []string) {
 		if strings.HasPrefix(k, "io.cmd") {
 			continue
 		}
-		env = append(env, fmt.Sprintf("%s=%s", k, v))
+		env = append(env, fmt.Sprintf("%s=%s", k, crypto.Decrypt(v)))
 	}
 	return
 }
