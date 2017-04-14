@@ -8,7 +8,7 @@ data:
     dataset = "alpha.cmd.io"
 
     [maint]
-    active = true
+    active = false
     allow = "mattaitchison"
 
     [docker]
