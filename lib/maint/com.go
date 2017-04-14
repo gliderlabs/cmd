@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	com.Register("maintenance", &Component{},
+	com.Register("maint", &Component{},
 		com.Option("active", false, ""),
 		com.Option("notice", "cmd.io is currently down for maintenance", "displayed when maintenance active"),
 		com.Option("allow", "", "comma separated list of users to allow during maintenance"))

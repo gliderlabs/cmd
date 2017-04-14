@@ -4,7 +4,7 @@ metadata:
   name: cmd-beta
 data:
   config.toml: |-
-    [maintenance]
+    [maint]
     active = true
     allow = "mattaitchison"
 
