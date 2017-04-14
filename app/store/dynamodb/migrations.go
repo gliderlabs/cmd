@@ -12,6 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/cenkalti/backoff"
+	"github.com/gliderlabs/cmd/lib/crypto"
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/pkg/errors"
 )
@@ -19,7 +20,7 @@ import (
 const (
 	schemaAttr     = "_schema"
 	tableSchemaKey = "cmd:_schema"
-	latestVesion   = 3
+	latestVesion   = 4
 
 	// maxBatchSize dynamodb allows in a single request
 	maxBatchSize = 25
@@ -90,6 +91,30 @@ var migrations = Migrations{
 				return nil, err
 			}
 
+			return dynamodbattribute.MarshalMap(cmd)
+		},
+	},
+	4: {
+		version:     4,
+		description: "encrypt cmd env",
+		hard:        true,
+		apply: func(in map[string]*dynamodb.AttributeValue) (map[string]*dynamodb.AttributeValue, error) {
+			var cmd struct {
+				Name        string
+				User        string
+				Source      string
+				Environment map[string]string `dynamodbav:",omitempty"`
+				ACL         []string          `dynamodbav:",stringset,omitempty"`
+				Admins      []string          `dynamodbav:",stringset,omitempty"`
+				Description string            `dynamodbav:",omitempty"`
+			}
+			if err := dynamodbattribute.UnmarshalMap(in, &cmd); err != nil {
+				return nil, err
+			}
+			for k, v := range cmd.Environment {
+				box, _ := crypto.Encrypt(v)
+				cmd.Environment[k] = box
+			}
 			return dynamodbattribute.MarshalMap(cmd)
 		},
 	},
