@@ -5,7 +5,7 @@ metadata:
 data:
   config.toml: |-
     [maint]
-    active = true
+    active = false
     allow = "mattaitchison"
 
     [docker]
