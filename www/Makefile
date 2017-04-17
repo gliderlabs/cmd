@@ -20,7 +20,10 @@ publisher:
 publish-local:
 	cd .. && tar -cf - . | docker run --rm -i progrium/cmd-publisher -
 
-$(BUILD_DIR)www:
+../ui/static/semantic:
+	$(MAKE) -C ../ui static/semantic
+
+$(BUILD_DIR)www: ../ui/static/semantic
 	mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && hugo new site www > /dev/null
 	cp -r ../ui/static/semantic $(BUILD_DIR)www/static/semantic

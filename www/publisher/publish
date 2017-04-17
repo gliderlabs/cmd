@@ -1,7 +1,7 @@
 #!/bin/bash
 
-REPO_NAME="progrium/cmd"
-BASE_URL="https://progrium.github.io/cmd"
+REPO_NAME="gliderlabs/cmd"
+BASE_URL="https://gliderlabs.github.io/cmd"
 BUILD_CMD="make www-build"
 BUILD_DIR="build/www/public"
 DOCS_DIR="docs"
