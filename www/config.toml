@@ -1,4 +1,4 @@
-baseurl = "https://gliderlabs.com/cmd/" # "https://www.cmd.io/"
+baseurl = "https://www.cmd.io/"
 languageCode = "en-us"
 title = "Cmd Documentation"
 theme = "www"

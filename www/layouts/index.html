@@ -182,11 +182,12 @@
 
   </style>
 
+  <link rel="shortcut icon" href="/favicon.ico" />
   <script
     src="https://code.jquery.com/jquery-3.1.1.min.js"
     integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
     crossorigin="anonymous"></script>
-  <script src="https://gliderlabs.io/static/semantic/semantic.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
 </head>
 <body>
 
@@ -196,7 +197,7 @@
 
     <div class="ui container">
       <div class="ui large secondary pointing inverted menu">
-        <a class="active item">Cmd.io</a>
+        <a class="active item">&#8984; Cmd</a>
         <!--a href="/docs" class="item"><i class="icon book"></i> Documentation</a-->
         <a href="https://medium.com/cmd-io" class="item"><i class="icon medium"></i>Blog</a>
         <a href="https://slack.gliderlabs.com" class="item"><i class="icon slack"></i>Community</a>
@@ -226,7 +227,7 @@
                   <ul><li></li><li></li><li></li></ul>
                 </header>
                 <div class="terminal-window">
-                  <img src="https://placeholdit.imgix.net/~text?txtsize=33&txt=demo&w=550&h=325" />
+                  <img src="/CmdMain.gif" />
                 </div>
               </div>
             </div>
@@ -272,14 +273,14 @@
   </div>
 
 
-  <div class="ui vertical stripe segment" style="font-size: smaller;">
+  <div class="ui vertical stripe segment inverted blue" style="font-size: smaller;">
     <div class="ui equal width stackable grid container">
       <div class="row">
         <div class="column">
           <div class="ui embed" data-source="vimeo" data-id="181089646"></div>
         </div>
         <div class="column">
-          <h3 class="ui header">Cmd.io is a specialized compute platform</h3>
+          <h3 class="ui inverted header">Cmd.io is a specialized compute platform</h3>
           <p>
             It was made for running short lived, sometimes interactive programs made for the command-line.
             Programs are run in their own stateless, isolated execution environment in the cloud.
@@ -291,7 +292,7 @@
             It's effectively a cloud API for POSIX tasks.
           </p>
           <p>
-            However, Cmd.io is not designed to run long-lived programs, programs that
+            However, Cmd is not designed to run long-lived programs, programs that
             accept network connections, or programs that require interactive access
             to the user filesystem.
           </p>
@@ -301,7 +302,7 @@
     </div>
   </div>
 
-
+<!--
   <div class="ui vertical stripe quote segment" style="font-size: smaller;">
     <div class="ui equal width stackable grid container">
       <div class="center aligned row">
@@ -395,14 +396,16 @@
       </div>
     </div>
   </div>
-
+-->
   <div class="ui vertical stripe segment">
     <div class="ui center aligned text container">
       <h3 class="ui header">Most importantly, Cmd.io is a building block.</h3>
       <p>
-        Cmd.io was intentionally built to <strong>do one thing and do it well</strong>.<br />
+        Cmd was built to <strong>do one thing and do it well</strong>.<br />
         It was designed to be <strong>composable</strong> with other systems.<br />
-        Here are a few ideas to get you thinking creatively...
+      </p>
+      <p>
+        <small>Here are a few ideas to spark inspiration...</small>
       </p>
       <div class="ui equal width stackable grid container">
         <div class="center aligned row" style="margin: 20px;">
@@ -462,12 +465,12 @@
     <div class="ui container">
       <div class="ui stackable inverted divided equal height stackable grid">
         <div class="three wide column">
-          <h4 class="ui inverted header">Cmd.io</h4>
+          <h4 class="ui inverted header">&#8984; Cmd</h4>
           <div class="ui inverted link list">
             <!--a href="#" class="item">Documentation</a-->
-            <a href="#" class="item">Community</a>
-            <a href="#" class="item">Blog</a>
-            <a href="#" class="item">Development</a>
+            <a href="https://medium.com/cmd-io" class="item">Blog</a>
+            <a href="https://slack.gliderlabs.com" class="item">Community</a>
+            <a href="https://github.com/gliderlabs/cmd" class="item">Development</a>
             <!--a href="#" class="item">Privacy Policy</a-->
             <!--a href="#" class="item">Terms of Service</a-->
           </div>
@@ -487,8 +490,8 @@
         </div>
         <div class="three wide column project">
           <h3>
-            <a href="http://gliderlabs.com">
-            <img src="http://gliderlabs.com/images/dots-bw.svg" />
+            <a href="https://gliderlabs.com">
+            <img src="https://gliderlabs.com/images/dots-bw.svg" />
             GLIDER LABS<br />
             <span>Community Project</span>
             </a>
@@ -505,6 +508,16 @@
 
 <script type="text/javascript">
   $('.ui.embed').embed();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-58928488-4', 'auto');
+  ga('send', 'pageview');
+
 </script>
 </body>
 
