@@ -5,11 +5,11 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/gliderlabs/comlab/pkg/com"
-	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/gliderlabs/cmd/lib/access"
 	"github.com/gliderlabs/cmd/lib/slack"
 	"github.com/gliderlabs/cmd/lib/web"
+	"github.com/gliderlabs/comlab/pkg/com"
+	"github.com/gliderlabs/comlab/pkg/log"
 )
 
 func (c *Component) WebTemplateFuncMap(r *http.Request) template.FuncMap {
@@ -30,7 +30,7 @@ func (c *Component) MatchHTTP(r *http.Request) bool {
 func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/" || r.URL.Fragment == "NotFound" {
 		// temporary handler for notfound
-		http.Redirect(w, r, "http://gliderlabs.com/devlog/2016/announcing-cmd-io/", http.StatusFound)
+		http.Redirect(w, r, "https://www.cmd.io/", http.StatusFound)
 		return
 	}
 	if r.URL.Path == "/console" {
