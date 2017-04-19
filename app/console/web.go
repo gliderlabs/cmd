@@ -8,7 +8,6 @@ import (
 	"github.com/gliderlabs/cmd/lib/access"
 	"github.com/gliderlabs/cmd/lib/slack"
 	"github.com/gliderlabs/cmd/lib/web"
-	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/comlab/pkg/log"
 )
 
@@ -89,7 +88,7 @@ func requestAccessHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := slack.InviteToTeam("gliderlabs", com.GetString("slack_token"), user.Email); err != nil {
+	if err := slack.InviteToTeam("gliderlabs", user.Email); err != nil {
 		log.Info(err, r, user)
 	}
 
