@@ -7,13 +7,15 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+
+	"github.com/gliderlabs/comlab/pkg/com"
 )
 
-// InviteToTeam a user by email using a token with admin privileges
-func InviteToTeam(team, token, email string) error {
+// InviteToTeam a user by email
+func InviteToTeam(team, email string) error {
 	resp, err := http.PostForm(
 		fmt.Sprintf("https://%s.slack.com/api/users.admin.invite", team),
-		url.Values{"email": {email}, "token": {token}})
+		url.Values{"email": {email}, "token": {com.GetString("token")}})
 	if err != nil {
 		return err
 	}
