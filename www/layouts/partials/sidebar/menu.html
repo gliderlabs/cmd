@@ -1,0 +1,13 @@
+{{ $.Scratch.Add "menu" (index .Site.Menus .Type) }}
+{{ if $.Scratch.Get "menu" }}
+{{ if gt (len ($.Scratch.Get "menu")) 0 }}
+<h3>Navigation:</h3>
+<ul>
+	{{ range $.Scratch.Get "menu" }}
+	<li class="toctree-l1">
+		<a class="reference internal" href="{{ .URL }}">{{ .Name }}</a>
+	</li>
+	{{ end }}
+</ul>
+{{ end }}
+{{ end }}
