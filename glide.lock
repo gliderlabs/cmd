@@ -1,10 +1,10 @@
-hash: 232de394dcb252565cbdd518edc4bb7d09148d24d7c7f255977a991151ca47b2
-updated: 2017-04-06T11:32:55.38289254-07:00
+hash: d87a14ff6ff2e92bfac3e15c1af36a6074f58819adddc2c3bbb72414174dcc23
+updated: 2017-04-29T15:25:41.427887008-04:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
 - name: github.com/aws/aws-sdk-go
-  version: d643bdf04f2cc6f95424f9f4e69037a563fc0736
+  version: 0dbc446aca87aebb6e0a24509b59bafc0e3ec0ae
   subpackages:
   - aws
   - aws/awserr
@@ -98,7 +98,7 @@ imports:
   - pkg/com
   - pkg/log
 - name: github.com/gliderlabs/ssh
-  version: 60e94da4cc34b0c78eb1ef616089db314343a12f
+  version: bbb28830b0470b600305f16ca7c39be4a71bfe10
 - name: github.com/go-ini/ini
   version: e7fea39b01aea8d5671f6858f0532f56e8bff3a5
 - name: github.com/golang/mock
@@ -208,7 +208,7 @@ imports:
 - name: github.com/spf13/viper
   version: 84f94806c67f59dd7ae87bc5351f7a9c94a4558d
 - name: github.com/stripe/stripe-go
-  version: 52316de96ca8c9120739b13cca17e36eb02c8737
+  version: b4624161e25b0d4d6b153f13bf5f9090cf3ec4b8
   subpackages:
   - account
   - balance
@@ -233,6 +233,7 @@ imports:
   - orderitem
   - orderreturn
   - paymentsource
+  - payout
   - plan
   - product
   - recipient
@@ -247,11 +248,14 @@ imports:
 - name: github.com/thejerf/suture
   version: 0ac47afae95ad5bc5184ed346bc945168e883f5d
 - name: golang.org/x/crypto
-  version: c2303dcbe84172e0c0da4c9f083eeca54c06f298
+  version: c7af5bf2638a1164f2eb5467c39c6cffbd13a02e
   subpackages:
   - curve25519
   - ed25519
   - ed25519/internal/edwards25519
+  - nacl/secretbox
+  - poly1305
+  - salsa20/salsa
   - ssh
 - name: golang.org/x/net
   version: 4876518f9e71663000c348837735820161a42df7
