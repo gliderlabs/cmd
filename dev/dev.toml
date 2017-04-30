@@ -19,6 +19,3 @@ logout_url = "http://localhost:8080/_auth/logout"
 
 [mailgun]
 domain = "gliderlabs.com"
-
-[crypto]
-secret_key = "somesupersecrettextorsomething"
