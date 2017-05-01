@@ -5,8 +5,6 @@ import:
 - package: github.com/spf13/cobra
 - package: github.com/thejerf/suture
   version: ^2.0.0
-- package: github.com/gliderlabs/ssh
-  version: origin/forwarding
 - package: github.com/gliderlabs/comlab
   subpackages:
   - pkg/log
@@ -53,3 +51,4 @@ import:
 - package: github.com/guregu/dynamo
   version: master
   repo: https://github.com/mattaitchison/dynamo.git
+- package: github.com/gliderlabs/ssh
