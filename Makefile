@@ -22,7 +22,7 @@ clean:
 test:
 	go test -v $(shell glide nv)
 
-image: build/linux_amd64/cmd
+image: build/linux_amd64/cmd ui-build
 	docker build -t gliderlabs/cmd .
 
 image-dev:
