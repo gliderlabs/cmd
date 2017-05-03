@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"path"
 	"sync"
@@ -12,13 +13,18 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
+	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/ssh"
 	"github.com/inconshreveable/muxado"
 	gossh "golang.org/x/crypto/ssh"
 )
 
-var TmpDir = "/tmp/sock"
-var Image = "gliderlabs/ssh-agent-proxy"
+func init() {
+	com.Register("agentproxy", &AgentProxy{},
+		com.Option("tmpdir", "/tmp/sock", "auth-agent socket directory"),
+		com.Option("image", "gliderlabs/ssh-agent-proxy", "Docker image to use for the agent proxy"),
+	)
+}
 
 type AgentProxy struct {
 	SocketPath  string
@@ -29,10 +35,49 @@ type AgentProxy struct {
 	stream *types.HijackedResponse
 }
 
+// ImageExists and InspectImage taken from libcompose
+// Exists return whether or not the service image already exists
+func Exists(ctx context.Context, clt client.ImageAPIClient, image string) (bool, error) {
+	_, err := InspectImage(ctx, clt, image)
+	if err != nil {
+		if client.IsErrImageNotFound(err) {
+			return false, nil
+		}
+		return false, err
+	}
+	return true, nil
+}
+
+// InspectImage inspect the specified image (can be a name, an id or a digest)
+// with the specified client.
+func InspectImage(ctx context.Context, client client.ImageAPIClient, image string) (types.ImageInspect, error) {
+	imageInspect, _, err := client.ImageInspectWithRaw(ctx, image)
+	return imageInspect, err
+}
+
 func NewAgentProxy(docker client.APIClient, sess ssh.Session) (*AgentProxy, error) {
+	var (
+		TmpDir = com.GetString("tmpdir")
+		Image  = com.GetString("image")
+	)
 	sessID := sess.Context().Value(ssh.ContextKeySessionID).(string)[:12]
 	socketPath := path.Join(TmpDir, fmt.Sprintf("auth-agent.%s", sessID), "listener.sock")
-	res, err := docker.ContainerCreate(context.Background(), &container.Config{
+	ctx := context.Background()
+
+	exists, err := Exists(ctx, docker, Image)
+	if err != nil {
+		return nil, err
+	}
+	if !exists {
+		res, err := docker.ImagePull(ctx, Image, types.ImagePullOptions{})
+		if err != nil {
+			return nil, err
+		}
+		io.Copy(ioutil.Discard, res)
+		res.Close()
+	}
+
+	res, err := docker.ContainerCreate(ctx, &container.Config{
 		Image:        Image,
 		Cmd:          []string{socketPath},
 		OpenStdin:    true,

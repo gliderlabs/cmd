@@ -8,3 +8,4 @@
 /ui/static/semantic
 /ui/static/bundle*
 npm-debug.log
+/lib/agentproxy/build
