@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: sandbox
+spec:
+  template:
+    metadata:
+      labels:
+        app: sandbox
+    spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: sandbox
+      containers:
+        - name: sandbox
+          image: docker:1.11.2-dind
+          args: ["--storage-driver", "overlay"]
+          ports:
+            - name: http
+              containerPort: 2375
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 10
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: docker
+              mountPath: /var/lib/docker
+      volumes:
+        - name: docker
+          emptyDir: {}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: sandbox
+spec:
+  clusterIP: None
+  selector:
+    app: sandbox
+  ports:
+    - name: http
+      targetPort: http
+      port: 2375
