@@ -13,8 +13,8 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
-	"github.com/gliderlabs/ssh"
 	"github.com/gliderlabs/comlab/pkg/com"
+	"github.com/gliderlabs/ssh"
 	"github.com/inconshreveable/muxado"
 	gossh "golang.org/x/crypto/ssh"
 )
@@ -68,7 +68,7 @@ func NewAgentProxy(docker client.APIClient, sess ssh.Session) (*AgentProxy, erro
 	if err != nil {
 		return nil, err
 	}
-	if ! exists {
+	if !exists {
 		res, err := docker.ImagePull(ctx, Image, types.ImagePullOptions{})
 		if err != nil {
 			return nil, err
