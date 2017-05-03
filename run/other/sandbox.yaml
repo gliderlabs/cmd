@@ -20,7 +20,7 @@ spec:
           readinessProbe:
             tcpSocket:
               port: http
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
           securityContext:
             privileged: true
           volumeMounts:

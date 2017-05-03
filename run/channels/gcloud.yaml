@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: cmd-gcloud
+  name: cmd-config
 data:
   config.toml: |-
     [maint]
     active = false
-    allow = "mattaitchison"
+    allow = "andyshinn"
 
     [docker]
-    name = "_docker._tcp.sandbox.postaldemo.com"
+    name = "_http._tcp.sandbox.default"
     version = "1.23"
 
     [store]
@@ -22,7 +22,7 @@ data:
     region = "local"
 
     [auth0]
-    domain = "gl-cmd.auth0.com"
+    domain = "postaldemo.auth0.com"
     callback_url = "http://postaldemo.com/_auth/callback"
     logout_url = "http://postaldemo.com/_auth/logout"
 
@@ -36,14 +36,16 @@ data:
     [web]
     listen_addr = ":80"
 
+    [access]
+    gh_team_id = "2348978"
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: cmd-gcloud
+  name: cmd
 spec:
   replicas: 2
-  revisionHistoryLimit: 4
+  revisionHistoryLimit: 5
   progressDeadlineSeconds: 90
   template:
     metadata:
@@ -51,21 +53,23 @@ spec:
         app: cmd
         channel: gcloud
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: default-pool
       volumes:
         - name: host-key
           secret:
-            secretName: cmd-gcloud
+            secretName: cmd-config
             items:
             - key: id_host
               path: id_host
         - name: config-volume
           configMap:
-            name: cmd-gcloud
+            name: cmd-config
       imagePullSecrets:
         - name: andyshinn-cmd-pull-secret
       containers:
         - name: cmd
-          image: quay.io/andyshinn/cmd:v1
+          image: quay.io/andyshinn/cmd:v21
           command: ["/usr/local/bin/cmd", "-d", "/config/config.toml"]
           ports:
             - name: http
@@ -84,52 +88,74 @@ spec:
           env:
             - name: CHANNEL
               value: gcloud
+            - name: VERSION
+              value: v22
             - name: SLACK_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: gliderlabs
+                  name: cmd-config
                   key: slack-token
             - name: ACCESS_GH_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: gliderlabs
+                  name: cmd-config
                   key: github-token
             - name: CRYPTO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: cmd-gcloud
+                  name: cmd-config
                   key: crypto-secret-key
             - name: SENTRY_DSN
               valueFrom:
                 secretKeyRef:
-                  name: cmd-gcloud
+                  name: cmd-config
                   key: sentry-dsn
             - name: DYNAMODB_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: cmd-gcloud
+                  name: cmd-config
                   key: aws-access-key
             - name: DYNAMODB_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: cmd-gcloud
+                  name: cmd-config
                   key: aws-secret-key
             - name: AUTH0_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: cmd-gcloud
+                  name: cmd-config
                   key: auth0-client-id
             - name: AUTH0_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: cmd-gcloud
+                  name: cmd-config
                   key: auth0-client-secret
+            - name: WEB_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: cmd-config
+                  key: web-cookie-secret
+            - name: AUTH0_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cmd-config
+                  key: auth0-api-token
+            - name: STRIPE_PUB_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cmd-config
+                  key: stripe-pub-key
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cmd-config
+                  key: stripe-secret-key
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: cmd-gcloud
+  name: cmd
   # annotations:
   #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
   #   service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:055471703963:certificate/5ce76820-c1b6-4bf3-b462-01bafa699232"
