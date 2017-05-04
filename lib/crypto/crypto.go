@@ -8,21 +8,27 @@ import (
 
 	"golang.org/x/crypto/nacl/secretbox"
 
+	"github.com/gliderlabs/cmd/lib/daemon"
 	"github.com/gliderlabs/comlab/pkg/com"
 )
 
+const LocalDevKey = "localdev"
+
 func init() {
 	com.Register("crypto", &Component{},
-		com.Option("secret_key", "", "key used to encrypt and decrypt secrets"))
+		com.Option("secret_key", LocalDevKey, "key used to encrypt and decrypt secrets"))
 }
 
 type Component struct {
 }
 
 func (Component) AppPreStart() error {
-	var key string
-	if key = com.GetString("secret_key"); key == "" {
+	key := com.GetString("secret_key")
+	if key == "" {
 		return errors.New("crypto: secret_key missing")
+	}
+	if key == LocalDevKey && !daemon.LocalMode() {
+		return errors.New("crypto: secret_key must not be default")
 	}
 	copy(secretKey[:], []byte(key))
 
