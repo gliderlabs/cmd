@@ -272,6 +272,7 @@ func (c *Command) run(sess ssh.Session, args []string) (int, error) {
 	ctx := sess.Context()
 	p := billing.ContextPlan(ctx)
 	hostConf := &container.HostConfig{
+		AutoRemove: true,
 		Resources: container.Resources{
 			CPUPeriod: p.CPUPeriod,
 			CPUQuota:  p.CPUQuota,
@@ -308,12 +309,11 @@ func (c *Command) run(sess ssh.Session, args []string) (int, error) {
 		conf.Volumes["/var/run/docker.sock"] = struct{}{}
 		hostConf.Binds = []string{"/var/run/docker.sock:/var/run/docker.sock"}
 	}
-
 	res, err := client.ContainerCreate(ctx, conf, hostConf, nil, "")
 	if err != nil {
 		return 255, err
 	}
-
+	defer client.ContainerRemove(ctx, res.ID, types.ContainerRemoveOptions{Force: true})
 	containerStream, err := client.ContainerAttach(ctx, res.ID,
 		types.ContainerAttachOptions{
 			Stdin:  true,
@@ -381,6 +381,5 @@ func (c *Command) run(sess ssh.Session, args []string) (int, error) {
 	}
 
 	status := <-statusChan
-	client.ContainerRemove(ctx, res.ID, types.ContainerRemoveOptions{})
 	return int(status), nil
 }
