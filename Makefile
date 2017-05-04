@@ -1,6 +1,6 @@
 ## PHONY
 
-.PHONY: help setup clean clobber dev image docker deploy build build-all www-build www-dev test test-env test-go test-all deps-update deps-go
+.PHONY: help setup clean clobber dev image docker deploy build build-all www-build www-dev test test-env test-go test-all deps-update deps-go services
 
 ## VARIABLES
 
@@ -24,9 +24,11 @@ build/%/cmd:
 	GOOS=$(call os, $*) GOARCH=$(call arch, $*) \
     go build -ldflags "-X main.Version=$(VERSION)" -o $@ ./cmd/cmd
 
-dev: deps-update ## run dev harness
-	docker-compose -f dev/services.yml up -d
+dev: services deps-update ## run dev harness
 	comlab dev
+
+services: ## run backing services
+	docker-compose -f dev/services.yml up -d
 
 setup: deps-update ## setup development environment
 	go get -u github.com/gliderlabs/comlab/...
@@ -35,6 +37,7 @@ clean: ## delete typical build artifacts
 	-rm -rf build
 
 clobber: clean ## reset dev environment
+	docker-compose -f dev/services.yml down
 	-rm -rf vendor
 	-rm -f .git/deps-*
 
@@ -58,12 +61,12 @@ test-all: test-go test-env ## run ALL tests
 test-go: ## run golang tests
 	go test -v $(shell glide nv)
 
-test-env: ## test dev environment
+test-env: services ## test dev environment
 	docker build -t cmd-env -f dev/setup/Dockerfile .
 	docker run --rm \
 		--volume /var/run/docker.sock:/var/run/docker.sock:ro \
 		--volume $(shell pwd)/.env:/usr/local/src/github.com/gliderlabs/cmd/.env:ro \
-		--env DYNAMODB_ENDPOINT=http://172.19.0.2:8000 \
+		--env DYNAMODB_ENDPOINT=http://$(shell docker inspect dev_dynamodb_1 --format '{{ .NetworkSettings.Networks.dev_default.IPAddress }}'):8000 \
 		cmd-env
 	-docker rmi cmd-env
 
