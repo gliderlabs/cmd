@@ -41,7 +41,7 @@ clobber: clean ## reset dev environment
 	-rm -rf vendor
 	-rm -f .git/deps-*
 
-image: build/linux_amd64/cmd ## build docker image
+image: ui-build build/linux_amd64/cmd ## build docker image
 	docker build -t gliderlabs/cmd .
 
 deploy-alpha: build/linux_amd64/cmd ## deploy to alpha channel
