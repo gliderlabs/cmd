@@ -44,9 +44,28 @@ func (sess *httpSession) RemoteAddr() net.Addr {
 	return &net.IPAddr{IP: net.ParseIP(sess.req.RemoteAddr)}
 }
 func (sess *httpSession) Environ() []string {
-	// TODO
-	return []string{}
+	common := []string{
+		"SERVER_SOFTWARE=cmd.io",
+		"REMOTE_ADDR=" + string(sess.RemoteAddr())}
+
+	if sess.req == nil {
+		return common
+	}
+	return append(common, []string{
+		"SERVER_NAME=" + sess.req.Host,
+		"SERVER_PROTOCOL=HTTP/1.1",
+		"HTTP_HOST=" + sess.req.Host,
+		"GATEWAY_INTERFACE=CGI/1.1",
+		"REQUEST_METHOD=" + sess.req.Method,
+		"QUERY_STRING=" + sess.req.URL.RawQuery,
+		"REQUEST_URI=" + sess.req.URL.RequestURI(),
+		"PATH_INFO=" + pathInfo,
+		"SCRIPT_NAME=" + sess.Command(),
+		"SCRIPT_FILENAME=" + "",
+		"SERVER_PORT=" + port,
+	})
 }
+
 func (sess *httpSession) Command() []string {
 	// TODO
 	return []string{}
