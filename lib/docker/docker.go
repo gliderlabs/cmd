@@ -15,7 +15,8 @@ import (
 
 func init() {
 	com.Register("docker", &Component{},
-		com.Option("name", "", "srv record for docker host discovery"))
+		com.Option("name", "", "srv record for docker host discovery"),
+		com.Option("version", client.DefaultVersion, "Docker client API version"))
 }
 
 var clients []client.APIClient
@@ -59,7 +60,8 @@ func discoverHosts(name string) ([]client.APIClient, error) {
 	for _, addr := range addrs {
 		target := strings.TrimSuffix(addr.Target, ".")
 		host := fmt.Sprintf("tcp://%s:%v", target, addr.Port)
-		c, err := client.NewClient(host, client.DefaultVersion, nil, nil)
+		apiversion := com.GetString("version")
+		c, err := client.NewClient(host, apiversion, nil, nil)
 		if err != nil {
 			log.Info("failed to create docker client for: "+addr.Target, err)
 			continue
