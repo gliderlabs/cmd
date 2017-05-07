@@ -34,28 +34,14 @@ func parseToken(r *http.Request) string {
 	return user
 }
 
-func parseArgs(r *http.Request) (string, string, []string) {
+func parseArgs(r *http.Request) (string, string) {
 	path := strings.TrimPrefix(r.URL.Path, runPrefix)
 	parts := strings.SplitN(path, "/", 3)
 	if len(parts) < 2 {
 		// not enough parts
-		return "", "", []string{}
+		return "", ""
 	}
-	if r.URL.Query().Get("args") != "" {
-		// args in query param
-		return parts[0], parts[1], strings.Split(r.URL.Query().Get("args"), " ")
-	}
-	if len(parts) > 2 {
-		if strings.Contains(parts[2], "/") {
-			// args via path parts
-			args := strings.Split(strings.Replace(parts[2], "+", " ", -1), "/")
-			return parts[0], parts[1], args
-		}
-		// args as single path part
-		return parts[0], parts[1], strings.Split(parts[2], "+")
-	}
-	// no args
-	return parts[0], parts[1], []string{}
+	return parts[0], parts[1]
 }
 
 func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -66,7 +52,7 @@ func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "unauthorized token", http.StatusUnauthorized)
 		return
 	}
-	owner, cmdName, args := parseArgs(r)
+	owner, cmdName := parseArgs(r)
 	if owner == "" || cmdName == "" {
 		http.Error(w, "not found", http.StatusNotFound)
 		return
@@ -109,13 +95,14 @@ func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		wc:          wc,
 		stdin:       ioutil.NopCloser(strings.NewReader("")),
 		token:       token.Key,
+		cmdName:     cmd.Name,
 		isWebSocket: isWebSocket,
 		ctx:         ctx,
 	}
 	defer session.Close()
 
 	// TODO: put exit status in resp headers / stream trailers
-	if status := cmd.Run(session, args); status != 0 {
+	if status := cmd.Run(session, nil); status != 0 {
 		fmt.Fprintf(session, "exit status: %d", status)
 		return
 	}

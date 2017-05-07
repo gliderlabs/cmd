@@ -5,9 +5,16 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"strconv"
 	"strings"
 
+	"github.com/gliderlabs/cmd/lib/release"
 	"github.com/gliderlabs/ssh"
+)
+
+const (
+	SERVER_PROTOCOL   = "HTTP/1.1"
+	GATEWAY_INTERFACE = "CGI/1.1"
 )
 
 type httpSession struct {
@@ -15,6 +22,7 @@ type httpSession struct {
 	wc          io.WriteCloser
 	stdin       io.ReadCloser
 	token       string
+	cmdName     string
 	isWebSocket bool
 	ctx         context.Context
 }
@@ -46,24 +54,34 @@ func (sess *httpSession) RemoteAddr() net.Addr {
 func (sess *httpSession) Environ() []string {
 	common := []string{
 		"SERVER_SOFTWARE=cmd.io",
-		"REMOTE_ADDR=" + string(sess.RemoteAddr())}
-
+		"REMOTE_ADDR=" + sess.RemoteAddr().String(),
+		"USER=" + sess.User(),
+		"CMDIO_NAME=" + sess.cmdName,
+		"CMDIO_CHANNEL=" + release.Channel(),
+		"CMDIO_VERSION=" + release.DisplayVersion(),
+	}
 	if sess.req == nil {
 		return common
 	}
+	sh := strings.Split(sess.req.Host, ":")
+	port := ""
+	if len(sh) > 1 {
+		port = sh[1]
+	}
 	return append(common, []string{
-		"SERVER_NAME=" + sess.req.Host,
-		"SERVER_PROTOCOL=HTTP/1.1",
-		"HTTP_HOST=" + sess.req.Host,
-		"GATEWAY_INTERFACE=CGI/1.1",
+		"SERVER_NAME=" + release.Hostname(),
+		"SERVER_PROTOCOL=" + SERVER_PROTOCOL,
+		"HTTP_HOST=" + release.Hostname(),
+		"GATEWAY_INTERFACE=" + GATEWAY_INTERFACE,
 		"REQUEST_METHOD=" + sess.req.Method,
 		"QUERY_STRING=" + sess.req.URL.RawQuery,
 		"REQUEST_URI=" + sess.req.URL.RequestURI(),
-		"PATH_INFO=" + pathInfo,
-		"SCRIPT_NAME=" + sess.Command(),
-		"SCRIPT_FILENAME=" + "",
+		"PATH_INFO=" + sess.req.URL.Path,
+		"SCRIPT_NAME=" + sess.cmdName,
 		"SERVER_PORT=" + port,
-	})
+		"CONTENT_TYPE=" + sess.req.Header.Get("Content-Type"),
+		"CONTENT_LENGTH=" + strconv.Itoa(int(sess.req.ContentLength)),
+	}...)
 }
 
 func (sess *httpSession) Command() []string {

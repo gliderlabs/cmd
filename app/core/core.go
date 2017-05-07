@@ -265,7 +265,7 @@ func (c *Command) Run(sess ssh.Session, args []string) int {
 func (c *Command) run(sess ssh.Session, args []string) (int, error) {
 	pty, winCh, isPty := sess.Pty()
 	client := c.Docker()
-	env := append(c.Env(), fmt.Sprintf("USER=%s", sess.User()))
+	env := append(c.Env(), sess.Environ()...)
 	if isPty {
 		env = append([]string{fmt.Sprintf("TERM=%s", pty.Term)}, env...)
 	}
