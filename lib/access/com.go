@@ -12,7 +12,9 @@ import (
 func init() {
 	com.Register("access", &Component{},
 		com.Option("gh_team_id", "2144066", "GitHub team ID to allow access to"),
-		com.Option("gh_token", "", "GitHub access token"))
+		com.Option("gh_token", "", "GitHub access token"),
+		com.Option("deny_msg", "Access Denied", "User message on access denied"),
+	)
 }
 
 type Component struct {
