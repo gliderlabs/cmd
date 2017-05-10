@@ -50,7 +50,7 @@ var createCmd = func(sess cli.Session) *cobra.Command {
 				User:   sess.User(),
 				Source: string(source),
 			}
-			if (flags.HasFlags() && c.Flags().Lookup("description") != nil) {
+			if flags.HasFlags() && c.Flags().Lookup("description") != nil {
 				cmd.Description = c.Flags().Lookup("description").Value.String()
 			}
 

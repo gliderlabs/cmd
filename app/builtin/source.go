@@ -18,7 +18,7 @@ var sourceCmd = func(sess cli.Session) *cobra.Command {
 				return nil
 			}
 			sourceCmd := store.Selected().Get(sess.User(), args[0])
-			if (sourceCmd == nil) {
+			if sourceCmd == nil {
 				fmt.Fprintln(sess.Stderr(), "Command", cli.Bright(args[0]), "does not exist")
 				sess.Exit(cli.StatusUnknownCommand)
 				return nil
