@@ -34,14 +34,18 @@ func parseToken(r *http.Request) string {
 	return user
 }
 
-func parseArgs(r *http.Request) (string, string) {
+func parseArgs(r *http.Request) (string, string, []string) {
 	path := strings.TrimPrefix(r.URL.Path, runPrefix)
 	parts := strings.SplitN(path, "/", 3)
+	if r.URL.Query().Get("args") != "" {
+		// args in query param
+		return parts[0], parts[1], strings.Split(r.URL.Query().Get("args"), " ")
+	}
 	if len(parts) < 2 {
 		// not enough parts
-		return "", ""
+		return "", "", nil
 	}
-	return parts[0], parts[1]
+	return parts[0], parts[1], nil
 }
 
 func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -52,7 +56,7 @@ func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "unauthorized token", http.StatusUnauthorized)
 		return
 	}
-	owner, cmdName := parseArgs(r)
+	owner, cmdName, args := parseArgs(r)
 	if owner == "" || cmdName == "" {
 		http.Error(w, "not found", http.StatusNotFound)
 		return
@@ -102,7 +106,7 @@ func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer session.Close()
 
 	// TODO: put exit status in resp headers / stream trailers
-	if status := cmd.Run(session, nil); status != 0 {
+	if status := cmd.Run(session, args); status != 0 {
 		fmt.Fprintf(session, "exit status: %d", status)
 		return
 	}

@@ -48,27 +48,22 @@ func (sess *httpSession) Context() context.Context {
 func (sess *httpSession) User() string {
 	return sess.token
 }
+func (sess *httpSession) CmdName() string {
+	return sess.cmdName
+}
 func (sess *httpSession) RemoteAddr() net.Addr {
 	return &net.IPAddr{IP: net.ParseIP(sess.req.RemoteAddr)}
 }
 func (sess *httpSession) Environ() []string {
-	common := []string{
-		"SERVER_SOFTWARE=cmd.io",
-		"REMOTE_ADDR=" + sess.RemoteAddr().String(),
-		"USER=" + sess.User(),
-		"CMDIO_NAME=" + sess.cmdName,
-		"CMDIO_CHANNEL=" + release.Channel(),
-		"CMDIO_VERSION=" + release.DisplayVersion(),
-	}
 	if sess.req == nil {
-		return common
+		return nil
 	}
 	sh := strings.Split(sess.req.Host, ":")
 	port := ""
 	if len(sh) > 1 {
 		port = sh[1]
 	}
-	return append(common, []string{
+	return []string{
 		"SERVER_NAME=" + release.Hostname(),
 		"SERVER_PROTOCOL=" + SERVER_PROTOCOL,
 		"HTTP_HOST=" + release.Hostname(),
@@ -77,11 +72,11 @@ func (sess *httpSession) Environ() []string {
 		"QUERY_STRING=" + sess.req.URL.RawQuery,
 		"REQUEST_URI=" + sess.req.URL.RequestURI(),
 		"PATH_INFO=" + sess.req.URL.Path,
-		"SCRIPT_NAME=" + sess.cmdName,
+		"SCRIPT_NAME=" + sess.CmdName(),
 		"SERVER_PORT=" + port,
 		"CONTENT_TYPE=" + sess.req.Header.Get("Content-Type"),
 		"CONTENT_LENGTH=" + strconv.Itoa(int(sess.req.ContentLength)),
-	}...)
+	}
 }
 
 func (sess *httpSession) Command() []string {
