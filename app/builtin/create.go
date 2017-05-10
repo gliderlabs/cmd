@@ -14,12 +14,13 @@ import (
 )
 
 var createCmd = func(sess cli.Session) *cobra.Command {
-	return &cobra.Command{
+	retval := &cobra.Command{
 		Use:   "create <name>",
 		Short: "Create a command",
 		RunE: func(c *cobra.Command, args []string) error {
 			limit := billing.ContextPlan(sess.Context()).MaxCmds
 			cmds := store.Selected().List(sess.User())
+			flags := c.Flags()
 			if len(cmds) >= limit {
 				fmt.Fprintln(sess.Stderr(), "Command limit for plan reached")
 				sess.Exit(cli.StatusNoPerm)
@@ -49,6 +50,9 @@ var createCmd = func(sess cli.Session) *cobra.Command {
 				User:   sess.User(),
 				Source: string(source),
 			}
+			if (flags.HasFlags() && c.Flags().Lookup("description") != nil) {
+				cmd.Description = c.Flags().Lookup("description").Value.String()
+			}
 
 			if err := cmd.Build(); err != nil {
 				log.Info(err)
@@ -66,4 +70,6 @@ var createCmd = func(sess cli.Session) *cobra.Command {
 			return nil
 		},
 	}
+	cli.AddFlag(retval, cli.Flag{"description", "", "add descriptive text", "d", "string"})
+	return retval
 }
