@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/gliderlabs/ssh"
 	"github.com/patrickmn/go-cache"
@@ -17,10 +16,6 @@ import (
 	"github.com/gliderlabs/cmd/app/console"
 	"github.com/gliderlabs/cmd/app/core"
 	"github.com/gliderlabs/cmd/app/store"
-	"github.com/gliderlabs/cmd/lib/access"
-	"github.com/gliderlabs/cmd/lib/cli"
-	"github.com/gliderlabs/cmd/lib/maint"
-	"github.com/gliderlabs/cmd/lib/release"
 )
 
 // Default expiry of 30 sec and expiry purge every 5 min.
@@ -45,35 +40,16 @@ func (c *Component) HandleSSH(s ssh.Session) {
 		log.Info(s, cmd, time.Since(start), msg)
 	}()
 
-	// restrict access when maintenance mode is active
-	// TODO: should be handled via hook
-	if maint.Active() && !maint.IsAllowed(userName) {
-		msg = "maintenance"
-		fmt.Fprintln(s, maint.Notice())
-		return
-	}
-
-	// check for first time user
-	if user := console.ContextUser(s.Context()); user != nil {
-		if user.Account.CustomerID == "" {
-			fmt.Fprintf(s, cli.Bright("\nWelcome, %s!\n\n"), s.User())
-			fmt.Fprintln(s, "We noticed this is your first login. So far so good!")
-			fmt.Fprintln(s, "Would you mind logging in via the web interface?")
-			fmt.Fprintln(s, "This way we can properly set up your account:\n")
-			fmt.Fprintf(s, cli.Bright("https://%s/login\n\n"), release.Hostname())
-			fmt.Fprintln(s, "Then you can come back and use SSH as usual. Thanks!\n")
+	var cont bool
+	for _, preprocessor := range Preprocessors() {
+		cont, msg = preprocessor.PreprocessSession(s)
+		if !cont {
 			authCache.Delete(s.User())
 			return
 		}
 	}
 
-	// check for channel access when user is not a token
-	if tok := uuid.FromStringOrNil(userName); tok == uuid.Nil && !access.Check(userName) {
-		msg = "channel access denied"
-		fmt.Fprintln(s, com.GetString("access_denied_msg"))
-		return
-	}
-
+	// TODO: make builtins also a preprocessor!
 	args := s.Command()
 	if len(args) == 0 || strings.HasPrefix(args[0], ":") {
 		if err := builtin.Execute(s); err != nil {
@@ -83,7 +59,7 @@ func (c *Component) HandleSSH(s ssh.Session) {
 	}
 	cmdName = args[0]
 
-	// TODO: move elsewhere (via hook?)
+	// TODO: make into preprocessor
 	// handle git-receive-pack by finding the first cmd which has io.cmd.git-receive == arg[1]
 	if strings.HasPrefix(cmdName, "git-receive-pack") && len(args) > 1 {
 		cmds := store.Selected().List(userName)

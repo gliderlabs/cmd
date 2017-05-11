@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: gliderlabs/ci:build-64
+      - image: gliderlabs/ci:build-2
         command: ["/bin/bash"]
       - image: mattaitchison/dynamodb-local
         cmd: ["-inMemory" ,"-sharedDb"]

@@ -11,6 +11,9 @@ data:
     active = false
     allow = "mattaitchison"
 
+    [access]
+    deny_msg = "Access Denied: Visit https://alpha.cmd.io/request to request access"
+
     [docker]
     name = "_docker._tcp.sandbox.infra.gl"
 
