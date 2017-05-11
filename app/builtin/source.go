@@ -8,7 +8,7 @@ import (
 )
 
 var sourceCmd = func(sess cli.Session) *cobra.Command {
-	sourceCmd := &cobra.Command{
+	return &cobra.Command{
 		Use:   "source <name>",
 		Short: "Display the command source",
 		RunE: func(c *cobra.Command, args []string) error {
@@ -17,16 +17,14 @@ var sourceCmd = func(sess cli.Session) *cobra.Command {
 				sess.Exit(cli.StatusUsageError)
 				return nil
 			}
-			sourceCmd := store.Selected().Get(sess.User(), args[0])
-			if sourceCmd == nil {
+			cmd := store.Selected().Get(sess.User(), args[0])
+			if cmd == nil {
 				fmt.Fprintln(sess.Stderr(), "Command", cli.Bright(args[0]), "does not exist")
 				sess.Exit(cli.StatusUnknownCommand)
 				return nil
 			}
-			cli.Header(sess, "Command Source")
-			fmt.Fprintln(sess.Stderr(), sourceCmd.Source)
+			fmt.Fprintln(sess.Stderr(), cmd.Source)
 			return nil
 		},
 	}
-	return sourceCmd
 }
