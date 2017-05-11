@@ -99,9 +99,9 @@ func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		wc:          wc,
 		stdin:       ioutil.NopCloser(strings.NewReader("")),
 		token:       token.Key,
-		cmdName:     cmd.Name,
 		isWebSocket: isWebSocket,
 		ctx:         ctx,
+		cmd:         append([]string{cmdName}, args...),
 	}
 	defer session.Close()
 

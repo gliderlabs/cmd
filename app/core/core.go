@@ -27,6 +27,8 @@ import (
 	"github.com/gliderlabs/cmd/lib/release"
 )
 
+const ServerSoftware = "cmd.io"
+
 // Token used to provide access to non-github users
 type Token struct {
 	Key         string
@@ -81,7 +83,7 @@ func (c *Command) SetEnv(key, val string) {
 // Env returns config in a `k=v` format without any cmd specific keys
 func (c *Command) Env() (env []string) {
 	env = append(env, []string{
-		"SERVER_SOFTWARE=cmd.io",
+		"SERVER_SOFTWARE=" + ServerSoftware,
 		"CMD_CHANNEL=" + release.Channel(),
 		"CMD_VERSION=" + release.DisplayVersion(),
 	}...)
@@ -274,7 +276,7 @@ func (c *Command) run(sess ssh.Session, args []string) (int, error) {
 	env := append([]string{
 		"REMOTE_ADDR=" + sess.RemoteAddr().String(),
 		"USER=" + sess.User(),
-		"CMD_NAME=" + sess.CmdName(),
+		"CMD_NAME=" + sess.Command()[0],
 	}, c.Env()...)
 	env = append(env, sess.Environ()...)
 	if isPty {

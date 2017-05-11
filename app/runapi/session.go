@@ -22,9 +22,9 @@ type httpSession struct {
 	wc          io.WriteCloser
 	stdin       io.ReadCloser
 	token       string
-	cmdName     string
 	isWebSocket bool
 	ctx         context.Context
+	cmd         []string
 }
 
 func (sess *httpSession) Write(p []byte) (n int, err error) {
@@ -47,9 +47,6 @@ func (sess *httpSession) Context() context.Context {
 }
 func (sess *httpSession) User() string {
 	return sess.token
-}
-func (sess *httpSession) CmdName() string {
-	return sess.cmdName
 }
 func (sess *httpSession) RemoteAddr() net.Addr {
 	return &net.IPAddr{IP: net.ParseIP(sess.req.RemoteAddr)}
@@ -80,9 +77,9 @@ func (sess *httpSession) Environ() []string {
 }
 
 func (sess *httpSession) Command() []string {
-	// TODO
-	return []string{}
+	return append([]string(nil), sess.cmd...)
 }
+
 func (sess *httpSession) Pty() (ssh.Pty, <-chan ssh.Window, bool) {
 	var winch chan ssh.Window
 	//if sess.isWebSocket {
