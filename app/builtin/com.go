@@ -22,6 +22,7 @@ func (c *Component) BuiltinCommands() []cli.CommandFactory {
 		deleteCmd,
 		editCmd,
 		tokensCmd,
+		sourceCmd,
 	}
 }
 
