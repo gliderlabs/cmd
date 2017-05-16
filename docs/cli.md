@@ -43,12 +43,12 @@ a colon.
 
  |
 --- | ---
-[:access](./access) &nbsp;|&nbsp; Manage command access
-[:admins](./admins) &nbsp;|&nbsp; Manage command admins
-[:create](./create) &nbsp;|&nbsp; Create a command
-[:delete](./delete) &nbsp;|&nbsp; Delete a command
-[:edit](./edit)     &nbsp;|&nbsp; Edit a command
-[:env](./env)       &nbsp;|&nbsp; Manage command environment
-[:ls](./ls)         &nbsp;|&nbsp; List available commands
-[:tokens](./tokens) &nbsp;|&nbsp; Manage access tokens
+[:access](/cli/access/) &nbsp;|&nbsp; Manage command access
+[:admins](/cli/admins/) &nbsp;|&nbsp; Manage command admins
+[:create](/cli/create/) &nbsp;|&nbsp; Create a command
+[:delete](/cli/delete/) &nbsp;|&nbsp; Delete a command
+[:edit](/cli/edit/)     &nbsp;|&nbsp; Edit a command
+[:env](/cli/env/)       &nbsp;|&nbsp; Manage command environment
+[:ls](/cli/ls/)         &nbsp;|&nbsp; List available commands
+[:tokens](/cli/tokens/) &nbsp;|&nbsp; Manage access tokens
 :help               &nbsp;|&nbsp; Help about any command

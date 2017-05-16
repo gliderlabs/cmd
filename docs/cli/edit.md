@@ -15,4 +15,4 @@ $ cat ./script | ssh alpha.cmd.io :edit <name> -
 The builtin requires the `-` second argument to inform it to read from
 STDIN, as future versions may introduce an interactive mode.
 
-See [:create](../create) for the expected script format.
+See [:create](../create/) for the expected script format.
