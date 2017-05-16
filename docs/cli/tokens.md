@@ -37,7 +37,7 @@ $ ssh alpha.cmd.io :tokens new
 ```
 
 The `new` subcommand will create and display a new access token that can be used
-with [:access](../access).
+with [:access](../access/).
 
 ### rm
 

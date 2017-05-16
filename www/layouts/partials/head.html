@@ -25,4 +25,10 @@
 	{{- else -}}
 	<link rel="shortcut icon" href="{{ $.Site.BaseURL }}favicon.ico" type="image/x-icon"/>
 	{{- end }}
+
+	<script type="text/javascript">
+		if (location.hostname == "gliderlabs.github.io") {
+			location.href = "https://www.cmd.io"+location.pathname.replace("/cmd/", "/");
+		}
+	</script>
 </head>

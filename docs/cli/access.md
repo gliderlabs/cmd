@@ -39,7 +39,7 @@ $ ssh alpha.cmd.io :access <name> grant <subject>...
 
 The `grant` subcommand will allow a subject, either a username or access token,
 to run the command `<name>` in your namespace. The command will be configured with the same environment, but they will not have the ability to view or change environment
-or access to the command. For this, see [:admins](../admins).
+or access to the command. For this, see [:admins](../admins/).
 
 More than one subject can be provided as extra arguments.
 
