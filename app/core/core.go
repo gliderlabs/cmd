@@ -83,9 +83,9 @@ func (c *Command) SetEnv(key, val string) {
 // Env returns config in a `k=v` format without any cmd specific keys
 func (c *Command) Env() (env []string) {
 	env = append(env, []string{
-		"SERVER_SOFTWARE=" + ServerSoftware,
-		"CMD_CHANNEL=" + release.Channel(),
-		"CMD_VERSION=" + release.DisplayVersion(),
+		fmt.Sprintf("SERVER_SOFTWARE=%s", ServerSoftware),
+		fmt.Sprintf("CMD_CHANNEL=%s", release.Channel()),
+		fmt.Sprintf("CMD_VERSION=%s", release.DisplayVersion()),
 	}...)
 	for k, v := range c.Environment {
 		if strings.HasPrefix(k, "io.cmd") {

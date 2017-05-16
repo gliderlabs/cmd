@@ -2,6 +2,7 @@ package runapi
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
@@ -61,18 +62,18 @@ func (sess *httpSession) Environ() []string {
 		port = sh[1]
 	}
 	return []string{
-		"SERVER_NAME=" + release.Hostname(),
-		"SERVER_PROTOCOL=" + ServerProtocol,
-		"HTTP_HOST=" + release.Hostname(),
-		"GATEWAY_INTERFACE=" + GatewayInterface,
-		"REQUEST_METHOD=" + sess.req.Method,
-		"QUERY_STRING=" + sess.req.URL.RawQuery,
-		"REQUEST_URI=" + sess.req.URL.RequestURI(),
-		"PATH_INFO=" + sess.req.URL.Path,
-		"SCRIPT_NAME=" + sess.Command()[0],
-		"SERVER_PORT=" + port,
-		"CONTENT_TYPE=" + sess.req.Header.Get("Content-Type"),
-		"CONTENT_LENGTH=" + strconv.Itoa(int(sess.req.ContentLength)),
+		fmt.Sprintf("SERVER_NAME=%s", release.Hostname()),
+		fmt.Sprintf("SERVER_PROTOCOL=%s", ServerProtocol),
+		fmt.Sprintf("HTTP_HOST=%s", release.Hostname()),
+		fmt.Sprintf("GATEWAY_INTERFACE=%s", GatewayInterface),
+		fmt.Sprintf("REQUEST_METHOD=%s", sess.req.Method),
+		fmt.Sprintf("QUERY_STRING=%s", sess.req.URL.RawQuery),
+		fmt.Sprintf("REQUEST_URI=%s", sess.req.URL.RequestURI()),
+		fmt.Sprintf("PATH_INFO=%s", sess.req.URL.Path),
+		fmt.Sprintf("SCRIPT_NAME=%s", sess.Command()[0]),
+		fmt.Sprintf("SERVER_PORT=%s", port),
+		fmt.Sprintf("CONTENT_TYPE=%s", sess.req.Header.Get("Content-Type")),
+		fmt.Sprintf("CONTENT_LENGTH=%s", strconv.Itoa(int(sess.req.ContentLength))),
 	}
 }
 
