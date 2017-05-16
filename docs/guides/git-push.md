@@ -1,13 +1,13 @@
 ---
 date: 2017-01-31T18:00:00-06:00
-title: Advanced
+title: Handling git push
+menu: guides
 weight: 60
+draft: true
 ---
 
-## Handling `git push`
 
-There are a number of patterns and recipes to cover elsewhere in this wiki, but
-I'm going to share this one here. You can use Cmd.io commands over SSH as Git
+You can use Cmd.io commands over SSH as Git
 remote endpoints to implement and react to `git push` from your repositories.
 Specifically, you can use one command for Git remotes: `git-receive-pack`.
 
@@ -24,7 +24,7 @@ Dokku, Flynn, etc all do in some form effectively is wrap `git-receive-pack` and
 install a pre-receive hook into the repository (perhaps created on the fly) that
 does some task. Git is designed to display the output of that hook back to the
 user during the push, so from that hook script you can `git archive` to get a
-tar of what was pushed and do whatever you want with it.
+tar of what was pushed and deploy or do whatever you want with it.
 
 Currently, you can do this with Cmd.io by creating a command named
 `git-receive-pack`, which will handle all Git pushes to Cmd.io that authenticate

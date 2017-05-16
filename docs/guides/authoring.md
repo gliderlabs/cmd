@@ -1,21 +1,12 @@
 ---
 date: 2017-01-31T18:00:00-06:00
 title: Authoring Commands
-weight: 30
+menu: guides
+weight: 10
+draft: true
 ---
 
-You'll probably be using your own commands more than off-the-shelf commands.
-Right now, since Docker Hub is the only source for commands, making and
-publishing commands is as easy as any Docker container. After you've gone
-through this once, you might be surprised at how quickly you can make and update
-Cmd.io commands. It's literally build, push, use.
 
-Up to this point, we haven't needed to use or install Docker. For the time
-being, you'll need Docker to make Cmd.io commands. We highly recommend [Docker
-for Mac](https://docs.docker.com/docker-for-mac/) if you're running macOS.
-
-You'll also need a [Docker Hub](https://hub.docker.com/) account and be sure to
-login with Docker (`docker login`).
 
 ### Commands based on existing utilities
 

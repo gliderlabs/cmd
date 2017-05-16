@@ -1,7 +1,6 @@
 ---
 date: 2017-01-31T18:00:00-06:00
-title: Overview
-menu: cli
+title: CLI Reference
 type: cli
 weight: 10
 ---
@@ -16,13 +15,25 @@ Typically using Cmd via SSH looks like this in the terminal:
 $ ssh <username>@alpha.cmd.io <command>
 ```
 
-This can be shortened a number of ways. The most common is eliminating the need
-for specifying the username by setting it in your SSH configuration. You can also go so far as to create an alias:
+{{< admonition title="Quick Tip" type="note" >}}
+The above can be shortened a number of ways. The most common is editing your `~/.ssh/config` file to add:
 
-```sh
-$ alias cmd="ssh <username>@alpha.cmd.io"
-$ cmd <command>
 ```
+Host cmd
+  HostName alpha.cmd.io
+  User <username>
+```
+Then you can run commands with:
+```sh
+$ ssh cmd <command>
+```
+{{< /admonition >}}
+
+### Authentication
+
+Cmd uses your GitHub user for authentication. It also uses the SSH public keys stored with your GitHub account. If you haven't uploaded a public key to GitHub, you can easily add one in Settings under [SSH and GPG keys](https://github.com/settings/keys).
+
+For more information you can read [Connecting to GitHub with SSH](https://help.github.com/articles/connecting-to-github-with-ssh/). If you can connect to GitHub via SSH, you can connect to Cmd.
 
 ## Builtin Commands
 

@@ -4,9 +4,25 @@
 	{{ partial "head" . }}
 
 	<body role="document">
-		<div class="ui container">
-			<div class="ui centered grid">
-				<div role="navigation" aria-label="main navigation" class="three wide column">
+		<div class="ui inverted vertical segment" style="padding:0;">
+      <div class="ui container">
+        <div class="ui large borderless inverted menu">
+          <a href="/" class="item" style="color: white !important;"><div style="border: 1px solid white; border-radius: 4px; background: white; color: black; font-size: x-large; line-height:1; margin-right: 6px;">&#8984;</div> CMD</a>
+          <a href="/docs" class="item"><i class="icon book"></i> Documentation</a>
+          <a href="/community" class="item"><i class="icon slack"></i>Community</a>
+          <a href="/dev" class="item"><i class="icon github"></i>Development</a>
+					<a href="https://medium.com/gliderlabs" class="item"><i class="icon medium"></i>Blog</a>
+
+					<div class="right item">
+	          <a href="https://alpha.cmd.io/console/" class="ui inverted button">Login to the Console</a>
+	        </div>
+        </div>
+      </div>
+    </div>
+
+		<div class="ui container" style="margin-top: 20px;">
+			<div class="ui grid" style="margin-left: 4px;">
+				<div role="navigation" aria-label="main navigation" class="four wide column">
 					{{ partial "sidebar/sidebar" . }}
 				</div>
 

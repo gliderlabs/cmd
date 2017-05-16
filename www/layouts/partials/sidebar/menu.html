@@ -1,13 +1,37 @@
 {{ $.Scratch.Add "menu" (index .Site.Menus .Type) }}
 {{ if $.Scratch.Get "menu" }}
 {{ if gt (len ($.Scratch.Get "menu")) 0 }}
-<h3>Navigation:</h3>
-<ul>
-	{{ range $.Scratch.Get "menu" }}
+{{ end }}
+{{ end }}
+<h3>Documentation</h3>
+<ul style="margin-left: 17px;">
 	<li class="toctree-l1">
-		<a class="reference internal" href="{{ .URL }}">{{ .Name }}</a>
+		<a class="reference internal" href="/docs">Overview</a>
 	</li>
-	{{ end }}
+	<li class="toctree-l1">
+		<a class="reference internal" href="/quickstart">Quickstart</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="/cli">CLI Reference</a>
+		<ul style="margin-left: 17px; margin-top: 2px;">
+			{{ range (index .Site.Menus "cli") }}
+			<li class="toctree-l2">
+				<a class="reference internal" href="{{ .URL }}">{{ .Name }}</a>
+			</li>
+			{{ end }}
+		</ul>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="/api">API Reference</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="/guides">Guides</a>
+		<ul style="margin-left: 17px; margin-top: 2px;">
+			{{ range (index .Site.Menus "guides") }}
+			<li class="toctree-l2">
+				<a class="reference internal" href="{{ .URL }}">{{ .Name }}</a>
+			</li>
+			{{ end }}
+		</ul>
+	</li>
 </ul>
-{{ end }}
-{{ end }}
