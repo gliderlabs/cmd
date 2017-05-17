@@ -5,7 +5,7 @@ menu: cli
 type: cli
 weight: 50
 ---
-#### Edits a command
+##### Edits a command
 
 ```sh
 $ cat ./script | ssh alpha.cmd.io :edit <name> -

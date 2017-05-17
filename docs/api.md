@@ -6,9 +6,7 @@ type: api
 weight: 10
 ---
 
-## Using the Run API
-
-Commands can be run over secure HTTP and WebSocket using [access tokens](/cli/tokens/). This can be used for running commands in places
+Commands can be run over secure HTTP and WebSocket using [access tokens](/cli/tokens/). This can be used to run commands when
 you don't have SSH or need something more programmatic.
 
 When commands are run via this API, they receive a representation of the HTTP request using [CGI](https://en.wikipedia.org/wiki/Common_Gateway_Interface). This means request metadata will be added to the environment and the body of the request will be passed as STDIN.

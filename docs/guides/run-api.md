@@ -9,15 +9,15 @@ What if you could turn a shell script into a web API in seconds?
 
 <img src="https://cdn-images-1.medium.com/max/800/1*ITLxMPLRoXrEBsd_VxHw8w.gif" />
 
-Every Cmd.io command you make can be run via SSH *and* our Run API. All you have to do is write the script, create the command as usual, and you get this right out of the box.
+Every Cmd.io command you make can be run via SSH *and* our Run API. All you have to do is write the script and create the command as usual, and you get this right out of the box.
 
-The Run API exposes a secure HTTP endpoint to execute and return the output of your command, with an option to stream the response in realtime. The same endpoint can also be upgraded to a WebSocket connection to stream the output into a browser or to a WebSocket client.
+The Run API exposes a secure HTTP endpoint to execute and return the output of your command, with an option to stream the response in real-time. The same endpoint can also be upgraded to a WebSocket connection in order to stream the output into a browser or to a WebSocket client.
 
-Running a command this way is restricted to those with Access Tokens, which you create and assign to your commands. At any point you can revoke the token for a command, or delete the token entirely to prevent access.
+Running a command this way is restricted to those with Access Tokens, which you create and assign to your commands. You can revoke the token for a command&mdash;or delete the token entirely to prevent access&mdash;at any time.
 
 Combined with environment configuration, you can start exposing secure APIs for capabilities that would otherwise only be reasonable to run from a workstation shell.
 
-Let’s run through an example. We’ll take `git log`, showing us changes to a repository since a recent point in time, and expose it as a command with an API endpoint. The period of time to look back on will be a human-friendly argument of the command. Here is our Cmd script consisting of two lines of Bash after two shebang lines:
+Let’s run through an example. We’ll take `git log`, showing us changes to a repository since a recent point in time, and expose it as a command with an API endpoint. The period of time to review will be a human-friendly argument of the command. Here is our Cmd script consisting of two lines of Bash after two shebang lines:
 
 ```sh
 #!cmd alpine bash git
@@ -26,9 +26,9 @@ git clone --depth "${DEPTH:-10}" "${REPO?}" . &> /dev/null
 git log --no-merges --raw --since="$*"
 ```
 
-This otherwise normal shell script with a special Cmd shebang does a few things. First it sets up an Alpine Linux environment with `bash` and `git` to run in, then using Bash it clones a repository 10 commits back but hiding the output, and then it runs `git log` using an argument specifying how far back in time to look.
+This otherwise normal shell script with a special Cmd shebang does a few things. First, it sets up an Alpine Linux environment with `bash` and `git` to run in, then using Bash it clones a repository 10 commits back but hiding the output, and then it runs `git log` using an argument specifying how far back in time to look.
 
-You might notice the clone depth of 10 can optionally be configured with `$DEPTH`. We’ll leave that, but we will need to configure `$REPO` before we run the command or it will run and immediately exit in error.
+You might notice the clone depth of 10 can optionally be configured with `$DEPTH`. We’ll leave that, but we *will* need to configure `$REPO` before we run the command, or it will run and immediately exit in error.
 
 We’ll pipe this script into Cmd.io as a new command called `recent`:
 
@@ -45,7 +45,7 @@ $ ssh alpha.cmd.io :env recent set \
 Setting REPO on recent... done
 ```
 
-That was it! We can now run `recent` via SSH asking it to show changes from the last 2 weeks:
+That was it! We can now run `recent` via SSH, asking it to show changes from the last 2 weeks:
 
 ```sh
 $ ssh alpha.cmd.io recent "4 weeks ago"
@@ -59,7 +59,7 @@ Date:   Wed Feb 1 22:33:44 2017 +0100
 :100644 100644 347ef69… 6933945… M README.md
 ```
 
-The Run API uses different authentication than SSH. We need to create an access token and add it to our `recent` command’s access control list:
+The Run API uses a different method of authentication than SSH does; we need to create an access token and add it to our `recent` command’s access control list:
 
 ```sh
 $ ssh alpha.cmd.io :tokens new
@@ -68,7 +68,7 @@ $ ssh alpha.cmd.io :access recent grant a17671fb-b2f1–4286–89de
 Granting a17671fb-b2f1–4286–89de access to recent... done
 ```
 
-Now we can access the command via HTTP using `curl`, again a one line command shown on two lines:
+Now we can access the command via HTTP using `curl`, again using a one line command shown on two lines:
 
 ```sh
 $ curl -u "a17671fb-b2f1–4286–89de:" \

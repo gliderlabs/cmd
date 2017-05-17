@@ -5,7 +5,7 @@ menu: cli
 type: cli
 weight: 20
 ---
-#### Creates a new command
+##### Creates a new command
 
 ```sh
 $ cat ./script | ssh alpha.cmd.io :create <name> -
@@ -41,7 +41,7 @@ arguments are packages available in their respective package repositories. Examp
 ```
 
 The next line must be a regular shebang line, either defining an interpreter
-for the rest of the script, or the binary to run for the command. Examples:
+for the rest of the script or the binary to run for the command. Examples:
 
 ```text
 #!cmd alpine bash

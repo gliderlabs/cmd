@@ -6,7 +6,7 @@ weight: 1
 
 {{< admonition title="Alpha users" type="note" >}}
 You also have access to the [source code](https://github.com/gliderlabs/cmd) and our [development wiki](https://github.com/gliderlabs/cmd/wiki)! A great way
-to help out is to take notes while playing with Cmd.io, just make a page for
+to help out is to take notes while playing with Cmd.io: just make a page for
 yourself on our [UserNotes](https://github.com/gliderlabs/cmd/wiki/UserNotes) wiki page.
 {{</ admonition >}}
 
@@ -14,7 +14,7 @@ With Cmd we can make shell scripts that live and run in the cloud. In this quick
 
 First, we'll need to make sure we've set up our GitHub user and SSH key to access Cmd over SSH. Take a quick look at [Using the CLI via SSH](/cli/) if you need to add your key to GitHub. Cmd uses your GitHub and SSH key to authenticate.
 
-If it's your first time using Cmd and haven't logged into the web-based [Console](https://alpha.cmd.io/console/), it may prompt you to do that first.
+If it's your first time using Cmd and you haven't logged into the web-based [Console](https://alpha.cmd.io/console/), it may prompt you to do that first.
 
 After that you should be able to just SSH to alpha.cmd.io to get a basic usage response, something like this:
 
@@ -52,31 +52,31 @@ No commands are listed, but we can make one using the builtin commands.
 
 We can create a command with `:create`. First, we have to create a Cmd script locally to feed into it. Let's make a `hello.cmd` file:
 
-```
+```text
 #!cmd alpine bash
 #!/bin/bash
 echo "Hello, ${1:-world}!"
 ```
 
-You'll notice this looks like a standard shell script with the addition of an extra shebang line. This tells Cmd.io how to build the environment for the command. The first argument alpine is the distro, Alpine Linux, which is currently the only supported Linux distro. Any following arguments are packages to install. You can search for packages [based on name](http://pkgs.alpinelinux.org/packages) or [based on contents](http://pkgs.alpinelinux.org/contents).
+You'll notice this looks like a standard shell script with the addition of an extra shebang line. This tells Cmd.io how to build the environment for the command. The first argument `alpine` represents Alpine Linux, currently the only supported Linux distro. Any following arguments are packages to install. You can search for packages [based on name](http://pkgs.alpinelinux.org/packages) or [based on contents](http://pkgs.alpinelinux.org/contents).
 
 Let's create the command from the script:
 
-```
+```text
 $ cat hello.cmd | ssh alpha.cmd.io :create hello
 Creating command... done
 ```
 
 Now we can run it:
 
-```
+```text
 $ ssh alpha.cmd.io hello
 Hello, world!
 ```
 
 We made it use `world` if there is no argument, but we can also provide one when we run it:
 
-```
+```text
 $ ssh alpha.cmd.io hello everybody
 Hello, everybody!
 ```
@@ -87,20 +87,20 @@ That's it!
 
 If you want to build a command based on an existing Alpine package, you can just install it and then specify it as the "interpreter" (in this case it's acting as an "entrypoint"). No need to specify a full path, but you can if you want. Here's a script to make a [jq](https://stedolan.github.io/jq/) command:
 
-```
+```text
 #!cmd alpine jq
 #!jq
 ```
 
-Create the command as usual, let's say that above was called `jq.cmd`:
+Create the command as usual. Let's say that the above was called `jq.cmd`:
 
-```
+```text
 $ cat jq.cmd | ssh alpha.cmd.io :create jq
 ```
 
 Now you have a cloud `jq` you can use from anywhere. Here we'll curl the GitHub API for my user and get my name from the JSON by piping into our cloud `jq`:
 
-```
+```text
 $ curl -s https://api.github.com/users/progrium \
   | ssh alpha.cmd.io jq .name
 "Jeff Lindsay"
