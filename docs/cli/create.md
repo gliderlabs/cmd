@@ -80,3 +80,5 @@ Ping: 13.78 ms
 Download: 552.79 Mbit/s
 Upload: 126.91 Mbit/s
 ```
+
+The output is a test of the Cmd infrastructure (not your local Internet connection). While not very practical, it demonstrates how we can run simple utilities entirely remotely.
