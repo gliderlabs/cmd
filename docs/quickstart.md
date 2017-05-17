@@ -12,7 +12,7 @@ yourself on our [UserNotes](https://github.com/gliderlabs/cmd/wiki/UserNotes) wi
 
 With Cmd we can make shell scripts that live and run in the cloud. In this quick guide, we'll make a "Hello, world" script in Bash as a cloud command.
 
-First, we'll need to make sure we've set up our GitHub user and SSH key to access Cmd over SSH. Take a quick look at [Using the CLI via SSH](/cli) if you need to add your key to GitHub. Cmd uses your GitHub and SSH key to authenticate.
+First, we'll need to make sure we've set up our GitHub user and SSH key to access Cmd over SSH. Take a quick look at [Using the CLI via SSH](/cli/) if you need to add your key to GitHub. Cmd uses your GitHub and SSH key to authenticate.
 
 If it's your first time using Cmd and haven't logged into the web-based [Console](https://alpha.cmd.io/console/), it may prompt you to do that first.
 
