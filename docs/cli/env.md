@@ -11,7 +11,7 @@ weight: 60
 $ ssh alpha.cmd.io :env <name> [<subcommand>]
 ```
 
-`:env` provides management of environment variables for your command `<name>`. The
+`:env` allows you to manage environment variables for your command `<name>`. The
 builtin has subcommands for setting and unsetting variables.
 
 By default, if no subcommand is provided, it will list environment variables.
