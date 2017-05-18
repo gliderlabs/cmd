@@ -41,6 +41,12 @@ jobs:
           path: build
           destination: build
       - deploy:
+          name: Deploy website
+          command: |
+            if is-branch "master"; then
+              make -C www publish-ci
+            fi
+      - deploy:
           name: Deploy beta channel
           command: |
             if is-branch "master"; then

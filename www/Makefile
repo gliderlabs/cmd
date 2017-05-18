@@ -13,12 +13,19 @@ stage: clobber $(BUILD_DIR)www
 clobber:
 	rm -rf $(BUILD_DIR)www
 
-publisher:
-	docker build -t progrium/cmd-publisher publisher
-	docker push progrium/cmd-publisher
-
 publish-local:
-	cd .. && tar -cf - . | docker run --rm -i progrium/cmd-publisher -
+	cd .. && tar \
+		--exclude=vendor \
+		--exclude=.git \
+		--exclude=build \
+		-cf - . | ssh alpha.cmd.io progrium/cmd-publish master
+
+publish-ci:
+	@cd .. && tar \
+		--exclude=vendor \
+		--exclude=.git \
+		--exclude=build \
+		-cf - . | ssh $(PUBLISH_TOKEN)@alpha.cmd.io progrium/cmd-publish $(CIRCLE_BRANCH)
 
 ../ui/static/semantic:
 	$(MAKE) -C ../ui static/semantic

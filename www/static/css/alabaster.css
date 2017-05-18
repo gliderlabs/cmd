@@ -12,8 +12,7 @@ body {
 }
 
 div.document {
-    width: 940px;
-    margin: 30px auto 0 auto;
+    margin: 40px auto 80px auto;
 }
 
 div.documentwrapper {
@@ -175,24 +174,29 @@ a:hover {
     text-decoration: underline;
 }
 
-div.body h1,
-div.body h2,
-div.body h3,
-div.body h4,
-div.body h5,
-div.body h6 {
-    font-family: 'Garamond', 'Georgia', serif;
+div.document h1,
+div.document h2,
+div.document h3 {
     font-weight: normal;
     margin: 30px 0px 10px 0px;
     padding: 0;
 }
 
-div.body h1 { margin-top: 0; padding-top: 0; font-size: 240%; }
-div.body h2 { font-size: 180%; }
-div.body h3 { font-size: 150%; }
-div.body h4 { font-size: 130%; }
-div.body h5 { font-size: 100%; }
-div.body h6 { font-size: 100%; }
+div.document h4,
+div.document h5,
+div.document h6 {
+    font-weight: normal;
+    margin: 0px 0px 10px 0px;
+    padding: 0;
+}
+
+
+div.document h1 { margin-top: 0; padding-top: 0; font-size: 240%; }
+div.document h2 { font-size: 160%;  }
+div.document h3 { font-size: 130%; font-weight: bold; }
+div.document h4 { font-size: 105%; font-weight: bold; }
+div.document h5 { font-size: 105%; }
+div.document h6 { font-size: 100%; }
 
 a.headerlink {
     color: #DDD;
@@ -210,10 +214,14 @@ div.body p, div.body dd, div.body li {
 }
 
 div.admonition {
-    margin: 20px 0px;
-    padding: 10px 30px;
+    margin: 20px 0px 30px;
+    padding: 10px 20px;
     background-color: #FCC;
     border: 1px solid #FAA;
+}
+
+div.admonition pre {
+  padding: 0px 10px;
 }
 
 div.admonition tt.xref, div.admonition a tt {
@@ -371,7 +379,7 @@ ul, ol {
 
 pre {
     background: #EEE;
-    padding: 7px 30px;
+    padding: 20px 20px;
     margin: 15px 0px;
     line-height: 1.3em;
 }
@@ -387,9 +395,8 @@ dl dl pre {
 }
 
 tt, code {
-    background-color: #ecf0f3;
     color: #222;
-    /* padding: 1px 2px; */
+    padding: 0px 2px;
 }
 
 tt.xref, code.xref, a tt {

@@ -5,7 +5,7 @@ menu: cli
 type: cli
 weight: 30
 ---
-#### Lists available commands
+##### Lists available commands
 
 ```sh
 $ ssh alpha.cmd.io :ls

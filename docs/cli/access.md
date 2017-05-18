@@ -5,22 +5,22 @@ menu: cli
 type: cli
 weight: 70
 ---
-#### Manages command access
+##### Manages command access
 
 ```sh
 $ ssh alpha.cmd.io :access <name> [<subcommand>]
 ```
 
-`:access` provides management of who else can run your command `<name>`. The
+`:access` allows you to control who can run your command `<name>`. The
 builtin has subcommands for granting and revoking access to users or access tokens.
 
-By default, if no subcommand is provided, it will list command access.
+If no subcommand is provided, it will list command access by default.
 
 ## Subcommands
 
 ### ls
 
-Lists command access
+##### Lists command access
 
 ```sh
 $ ssh alpha.cmd.io :access <name> ls
@@ -31,7 +31,7 @@ run the command `<name>`. This is the default subcommand to `:access`.
 
 ### grant
 
-Grants command access to a subject
+##### Grants command access to a subject
 
 ```sh
 $ ssh alpha.cmd.io :access <name> grant <subject>...
@@ -45,7 +45,7 @@ More than one subject can be provided as extra arguments.
 
 ### revoke
 
-Revokes command access from a subject
+##### Revokes command access from a subject
 
 ```sh
 $ ssh alpha.cmd.io :access <name> revoke <subject>...

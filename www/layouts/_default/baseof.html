@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	{{ partial "head" . }}
 
-	<body role="document">
+	<body>
 		<div class="ui inverted vertical segment" style="padding:0;">
       <div class="ui container">
         <div class="ui large borderless inverted menu">
@@ -20,7 +20,7 @@
       </div>
     </div>
 
-		<div class="ui container" style="margin-top: 20px;">
+		<div role="document" class="ui container document">
 			<div class="ui grid" style="margin-left: 4px;">
 				<div role="navigation" aria-label="main navigation" class="four wide column">
 					{{ partial "sidebar/sidebar" . }}

@@ -1,4 +1,4 @@
 <div class="admonition {{ .Get "type" | lower }}">
-<p class="first admonition-title">{{ .Get "title" }}</p>
-<p><br />{{ string .Inner | markdownify }}</p>
+<h4>{{ .Get "title" }}</h4>
+<p>{{ string .Inner | markdownify }}</p>
 </div>

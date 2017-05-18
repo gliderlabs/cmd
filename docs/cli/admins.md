@@ -5,25 +5,25 @@ menu: cli
 type: cli
 weight: 80
 ---
-#### Manages command admins
+##### Manages command admins
 
 ```sh
 $ ssh alpha.cmd.io :admins <name> [<subcommand>]
 ```
 
-`:admins` provides management of who else can manage your command `<name>`. The
+`:admins` allows you to control who can administer your command `<name>`. The
 builtin has subcommands for granting and revoking command admin to users.
 
 Admins have the ability to view and change environment and access, and edit a
 command script.
 
-By default, if no subcommand is provided, it will list command admins.
+If no subcommand is provided, it will list command admins by default.
 
 ## Subcommands
 
 ### ls
 
-Lists command admins
+##### Lists command admins
 
 ```sh
 $ ssh alpha.cmd.io :admins <name> ls
@@ -34,7 +34,7 @@ the command `<name>`. This is the default subcommand to `:admins`.
 
 ### grant
 
-Grants command admin to a user
+##### Grants command admin to a user
 
 ```sh
 $ ssh alpha.cmd.io :admins <name> grant <user>...
@@ -46,7 +46,7 @@ More than one user can be provided as extra arguments.
 
 ### revoke
 
-Revokes command admin from a user
+##### Revokes command admin from a user
 
 ```sh
 $ ssh alpha.cmd.io :admins <name> revoke <user>...
