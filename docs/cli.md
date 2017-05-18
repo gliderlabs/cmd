@@ -50,5 +50,6 @@ a colon.
 [:edit](/cli/edit/)     &nbsp;|&nbsp; Edit a command
 [:env](/cli/env/)       &nbsp;|&nbsp; Manage command environment
 [:ls](/cli/ls/)         &nbsp;|&nbsp; List available commands
+[:source](/cli/source/) &nbsp;|&nbsp; Display command source
 [:tokens](/cli/tokens/) &nbsp;|&nbsp; Manage access tokens
 :help               &nbsp;|&nbsp; Help about any command
