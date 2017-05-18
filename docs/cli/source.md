@@ -8,7 +8,7 @@ weight: 30
 ##### Prints the source of a command
 
 ```sh
-$ ssh alpha.cmd.io :source <command>
+$ ssh alpha.cmd.io :source <name>
 ```
 
-`:source <command>` will display the source for a given `<command>`.
+`:source <name>` will display the source of your command by the name given by `<name>`.
