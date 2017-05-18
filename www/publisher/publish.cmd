@@ -1,3 +1,4 @@
+#!cmd alpine openssh bash hugo make git ca-certificates openssl
 #!/bin/bash
 
 REPO_NAME="gliderlabs/cmd"
@@ -8,16 +9,23 @@ DOCS_DIR="docs"
 WWW_DIR="www"
 COMMIT_MSG="published via www/publisher/publish"
 TARGET_BRANCH="gh-pages"
+EXPECT_BRANCH="master"
 
 set -eo pipefail
+mkdir -p /root/.ssh
+cat > /root/.ssh/id_rsa << EOF
+{{ $key }}
+EOF
+chmod 600 /root/.ssh/id_rsa
 
 main() {
+  echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
+  git config --global user.name "Publisher"
+  git config --global user.email "team+robot@gliderlabs.com"
   chown -R $(whoami) /root/.ssh
-  if [[ "$1" == "-" ]]; then
-    cat | tar -xpf -
-  else
-    git clone --depth 1 "git@github.com:${REPO_NAME}.git" .
-  fi
+
+  cat | tar -xpf -
+
   local checksum="$(checksum-src)"
   local url="${BASE_URL}/checksum.txt?$(date +%s)"
   local deployed="$(wget -qO- $url)"
@@ -44,8 +52,6 @@ checksum-dir() {
   find $1 -type f -exec md5sum {} \; | sort -k 2 | md5sum | cut -d' ' -f1
 }
 
-if [[ "$1" == "--pubkey" ]]; then
-  cat /root/.ssh/id_rsa.pub
-else
+if [[ "$1" == "$EXPECT_BRANCH" ]]; then
   main "$@"
 fi
