@@ -22,7 +22,7 @@ If you want to jump in, get started with the [Quickstart](/quickstart/) guide!
 ## Command Environment
 
 Cloud commands can run any x86 64-bit program in a Linux Docker container.
-However, Cmd is designed for commands and scripts as opposed to long-running
+However, Cmd is designed for commands and scripts rather than long-running
 daemons. In fact, commands can only run for a limited time before they timeout,
 so Cmd is also not suitable for replacing your shell. Kudos for such a clever
 idea, though.

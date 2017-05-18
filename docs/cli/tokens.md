@@ -11,7 +11,7 @@ weight: 90
 $ ssh alpha.cmd.io :tokens [<subcommand>]
 ```
 
-`:tokens` provides management of access tokens that can be used to provide access to apps and users without a user account. The
+`:tokens` allows you to manage access tokens that can be used to provide access to apps and users without a user account. The
 builtin has subcommands for creating and deleting tokens.
 
 If no subcommand is provided, it will list access tokens by default.

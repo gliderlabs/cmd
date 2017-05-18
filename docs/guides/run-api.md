@@ -17,7 +17,7 @@ Running a command this way is restricted to those with Access Tokens, which you 
 
 Combined with environment configuration, you can start exposing secure APIs for capabilities that would otherwise only be reasonable to run from a workstation shell.
 
-Let’s run through an example. We’ll take `git log`, showing us changes to a repository since a recent point in time, and expose it as a command with an API endpoint. The period of time to review will be a human-friendly argument of the command. Here is our Cmd script consisting of two lines of Bash after two shebang lines:
+Let’s run through an example. We’ll take `git log`, showing changes to a repository since a recent point in time, and expose it as a command with an API endpoint. The period of time to review will be a human-friendly argument of the command. Here is our Cmd script consisting of two lines of Bash after two shebang lines:
 
 ```sh
 #!cmd alpine bash git

@@ -40,8 +40,8 @@ arguments are packages available in their respective package repositories. Examp
 #!cmd ubuntu git build-essential
 ```
 
-The next line must be a regular shebang line, either defining an interpreter
-for the rest of the script or the binary to run for the command. Examples:
+The next line must be a regular shebang line, defining either an interpreter
+for the rest of the script or a binary to run for the command. Examples:
 
 ```text
 #!cmd alpine bash
