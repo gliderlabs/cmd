@@ -26,7 +26,7 @@ git clone --depth "${DEPTH:-10}" "${REPO?}" . &> /dev/null
 git log --no-merges --raw --since="$*"
 ```
 
-This otherwise normal shell script with a special Cmd shebang does a few things. First, it sets up an Alpine Linux environment with `bash` and `git` to run in, then using Bash it clones a repository 10 commits back but hiding the output, and then it runs `git log` using an argument specifying how far back in time to look.
+This (otherwise normal) shell script with a special Cmd shebang does a few things. First, it sets up an Alpine Linux environment with `bash` and `git` to run in, then using Bash it clones a repository 10 commits back but hiding the output, and then it runs `git log` using an argument specifying how far back in time to look.
 
 You might notice the clone depth of 10 can optionally be configured with `$DEPTH`. We’ll leave that, but we *will* need to configure `$REPO` before we run the command, or it will run and immediately exit in error.
 
