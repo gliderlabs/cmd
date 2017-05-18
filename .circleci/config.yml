@@ -44,6 +44,8 @@ jobs:
           name: Deploy website
           command: |
             if is-branch "master"; then
+              mkdir -p /root/.ssh
+              echo -e "Host alpha.cmd.io\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
               make -C www publish-ci
             fi
       - deploy:
