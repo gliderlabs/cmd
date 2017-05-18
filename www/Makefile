@@ -21,7 +21,7 @@ publish-local:
 		-cf - . | ssh alpha.cmd.io progrium/cmd-publish master
 
 publish-ci:
-	cd .. && tar \
+	@cd .. && tar \
 		--exclude=vendor \
 		--exclude=.git \
 		--exclude=build \
