@@ -1,10 +1,10 @@
-hash: d87a14ff6ff2e92bfac3e15c1af36a6074f58819adddc2c3bbb72414174dcc23
-updated: 2017-04-29T15:25:41.427887008-04:00
+hash: 7a7e6ee6c549d065cd769c3201ce31a651068bcd2992f11bbb9a5a9fb5b9d154
+updated: 2017-05-19T13:01:58.619583065-05:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
 - name: github.com/aws/aws-sdk-go
-  version: 0dbc446aca87aebb6e0a24509b59bafc0e3ec0ae
+  version: 0b6039ef3d10c1eda49843ebf9773dcc5bba0169
   subpackages:
   - aws
   - aws/awserr
@@ -35,7 +35,7 @@ imports:
 - name: github.com/cenkalti/backoff
   version: 5d150e7eec023ce7a124856b37c68e54b4050ac7
 - name: github.com/certifi/gocertifi
-  version: 03be5e6bb9874570ea7fb0961225d193cbc374c5
+  version: a61bf5eafa3aee233ec8043e9da052447e5463dd
 - name: github.com/docker/distribution
   version: b38e5838b7b2f2ad48e06ec4b500011976080621
   subpackages:
@@ -80,11 +80,11 @@ imports:
 - name: github.com/facebookgo/stats
   version: 1b76add642e42c6ffba7211ad7b3939ce654526e
 - name: github.com/fsnotify/fsnotify
-  version: 4da3e2cfbabc9f751898f250b49f2439785783a1
+  version: c07fd863aee264025aa0ef438bf9d2046c803493
 - name: github.com/getsentry/raven-go
-  version: b68337dbf03e7fbb53d9fd9b63fd09b28e8f13f7
+  version: 379f8d0a68ca237cf8893a1cdfd4f574125e2c51
 - name: github.com/gliderlabs/comlab
-  version: 74658b93b58feb38af020cfcd13caf5bab03befb
+  version: c2931c3367515ff225b4cb446390255e4a73d9d6
   subpackages:
   - lib/daemon
   - pkg/com
@@ -92,13 +92,13 @@ imports:
   - pkg/events
   - pkg/log
 - name: github.com/gliderlabs/gosper
-  version: 74658b93b58feb38af020cfcd13caf5bab03befb
+  version: c2931c3367515ff225b4cb446390255e4a73d9d6
   subpackages:
   - lib/daemon
   - pkg/com
   - pkg/log
 - name: github.com/gliderlabs/ssh
-  version: bbb28830b0470b600305f16ca7c39be4a71bfe10
+  version: 60e94da4cc34b0c78eb1ef616089db314343a12f
 - name: github.com/go-ini/ini
   version: e7fea39b01aea8d5671f6858f0532f56e8bff3a5
 - name: github.com/golang/mock
@@ -114,7 +114,7 @@ imports:
   subpackages:
   - github
 - name: github.com/google/go-querystring
-  version: 53e6ce116135b80d037921a7fdd5138cf32d7a8a
+  version: 9235644dd9e52eeae6fa48efd539fdc351a0af53
   subpackages:
   - query
 - name: github.com/gorilla/context
@@ -130,12 +130,12 @@ imports:
 - name: github.com/gregjones/httpcache
   version: d02018f006d98f58512bf3adfc171d88d17626df
 - name: github.com/guregu/dynamo
-  version: fe5a473f84183957b457029329684928d20384c9
+  version: cf4b69f8138d1200bf366993c34f4fe9263779c3
   repo: https://github.com/mattaitchison/dynamo.git
   subpackages:
   - internal/exprs
 - name: github.com/hashicorp/hcl
-  version: 630949a3c5fa3c613328e1b8256052cbc2327c9b
+  version: ef8133da8cda503718a74741312bf50821e6de79
   subpackages:
   - hcl/ast
   - hcl/parser
@@ -154,27 +154,25 @@ imports:
   subpackages:
   - frame
 - name: github.com/jmespath/go-jmespath
-  version: 0b12d6b521d83fc7f755e7cfc1b1fbdd35a01a74
+  version: bd40a432e4c76585ef6b72d3fd96fb9b6dc7b68d
 - name: github.com/kardianos/osext
   version: 9d302b58e975387d0b4d9be876622c86cefe64be
+- name: github.com/kr/fs
+  version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
 - name: github.com/leekchan/accounting
   version: a35854c075934d6aa1a6c1ab3ea8a82ee0dc1a93
 - name: github.com/magiconair/properties
-  version: 51463bfca2576e06c62a8504b5c0f06d61312647
+  version: 0723e352fa358f9322c938cc2dadda874e9151a9
 - name: github.com/maruel/panicparse
   version: ae43f192cef2add653fe1481a3070ed00a4a6981
   subpackages:
   - stack
-- name: github.com/mattn/go-colorable
-  version: ded68f7a9561c023e790de24279db7ebf473ea80
-- name: github.com/mattn/go-isatty
-  version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
 - name: github.com/mgutz/ansi
-  version: 9520e82c474b0a04dd04f8a40959027271bab992
+  version: c286dcecd19ff979eeb73ea444e479b903f2cfcb
 - name: github.com/Microsoft/go-winio
   version: fff283ad5116362ca252298cfc9b95828956d85d
 - name: github.com/mitchellh/mapstructure
-  version: 53818660ed4955e899c0bcafa97299a388bd7c8e
+  version: 482a9fd5fa83e8c4e7817413b80f3eb8feec03ef
 - name: github.com/mitchellh/panicwrap
   version: fce601fe55579125e1b3cb0b992287e7290f7b83
 - name: github.com/nlopes/slack
@@ -183,30 +181,37 @@ imports:
   version: aa2ec055abd10d26d539eb630a92241b781ce4bc
 - name: github.com/patrickmn/go-cache
   version: ea4bd2a538d816ad2bd3426ced3a99f2382103ba
+- name: github.com/pborman/uuid
+  version: ca53cad383cad2479bbba7f7a1a05797ec1386e4
 - name: github.com/pelletier/go-buffruneio
-  version: c37440a7cf42ac63b919c752ca73a85067e05992
+  version: df1e16fde7fc330a0ca68167c23bf7ed6ac31d6d
 - name: github.com/pelletier/go-toml
-  version: fe206efb84b2bc8e8cfafe6b4c1826622be969e3
+  version: 45932ad32dfdd20826f5671da37a5f3ce9f26a8d
 - name: github.com/pkg/errors
-  version: ff09b135c25aae272398c51a07235b90a75aa4f0
+  version: 839d9e913e063e28dfd0e6c7b7512793e0a48be9
+- name: github.com/pkg/sftp
+  version: 4d0e916071f68db74f8a73926335f809396d6b42
+- name: github.com/pmylund/go-cache
+  version: 7ac151875ffb48b9f3ccce9ea20f020b0c1596c8
 - name: github.com/satori/go.uuid
-  version: 5bf94b69c6b68ee1b541973bb8e1144db23a194b
+  version: 879c5887cd475cd7864858769793b2ceb0d44feb
 - name: github.com/Sirupsen/logrus
   version: 55eb11d21d2a31a3cc93838241d04800f52e823d
 - name: github.com/spf13/afero
-  version: 9be650865eab0c12963d8753212f4f9c66cdcf12
+  version: 52e4a6cfac46163658bd4f123c49b6ee7dc75f78
   subpackages:
   - mem
+  - sftp
 - name: github.com/spf13/cast
-  version: ce135a4ebeee6cfe9a26c93ee0d37825f26113c7
+  version: 2580bc98dc0e62908119e4737030cc2fdfc45e4c
 - name: github.com/spf13/cobra
-  version: 7aeaa2cce6ae7e18d2a6ee597b60ee137e999bd9
+  version: 9c28e4bbd74e5c3ed7aacbc552b2cab7cfdfe744
 - name: github.com/spf13/jwalterweatherman
-  version: fa7ca7e836cf3a8bb4ebf799f472c12d7e903d66
+  version: 33c24e77fb80341fe7130ee7c594256ff08ccc46
 - name: github.com/spf13/pflag
   version: 5ccb023bc27df288a957c5e994cd44fd19619465
 - name: github.com/spf13/viper
-  version: 84f94806c67f59dd7ae87bc5351f7a9c94a4558d
+  version: 382f87b929b84ce13e9c8a375a4b217f224e6c65
 - name: github.com/stripe/stripe-go
   version: b4624161e25b0d4d6b153f13bf5f9090cf3ec4b8
   subpackages:
@@ -248,7 +253,7 @@ imports:
 - name: github.com/thejerf/suture
   version: 0ac47afae95ad5bc5184ed346bc945168e883f5d
 - name: golang.org/x/crypto
-  version: c7af5bf2638a1164f2eb5467c39c6cffbd13a02e
+  version: 459e26527287adbc2adcc5d0d49abff9a5f315a7
   subpackages:
   - curve25519
   - ed25519
@@ -258,7 +263,7 @@ imports:
   - salsa20/salsa
   - ssh
 - name: golang.org/x/net
-  version: 4876518f9e71663000c348837735820161a42df7
+  version: e90d6d0afc4c315a0d87a568ae68577cc15149a0
   subpackages:
   - context
   - context/ctxhttp
@@ -279,7 +284,7 @@ imports:
   - transform
   - unicode/norm
 - name: google.golang.org/appengine
-  version: 12d5545dc1cfa6047a286d5e853841b6471f4c19
+  version: 4f7eeb5305a4ba1966344836ba4af9996b7b4e05
   subpackages:
   - internal
   - internal/app_identity

@@ -52,3 +52,4 @@ import:
   version: master
   repo: https://github.com/mattaitchison/dynamo.git
 - package: github.com/gliderlabs/ssh
+- package: github.com/pborman/uuid
