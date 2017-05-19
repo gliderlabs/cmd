@@ -5,7 +5,7 @@ menu: cli
 type: cli
 weight: 40
 ---
-#### Deletes a command
+##### Deletes a command
 
 ```sh
 $ ssh alpha.cmd.io :delete <name>

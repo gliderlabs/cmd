@@ -5,7 +5,7 @@ menu: cli
 type: cli
 weight: 20
 ---
-#### Creates a new command
+##### Creates a new command
 
 ```sh
 $ cat ./script | ssh alpha.cmd.io :create <name> -
@@ -40,8 +40,8 @@ arguments are packages available in their respective package repositories. Examp
 #!cmd ubuntu git build-essential
 ```
 
-The next line must be a regular shebang line, either defining an interpreter
-for the rest of the script, or the binary to run for the command. Examples:
+The next line must be a regular shebang line, defining either an interpreter
+for the rest of the script or a binary to run for the command. Examples:
 
 ```text
 #!cmd alpine bash
@@ -50,6 +50,35 @@ echo "Hello world"
 ```
 
 ```text
-#!cmd alpine terraform
-#!/usr/bin/terraform
+#!cmd alpine curl
+#!/usr/bin/curl
 ```
+
+### Example
+This simple example will install a package and use the binary as the interpreter. Our script will be the following:
+
+```text
+#!cmd alpine speedtest-cli
+#!/usr/bin/speedtest-cli
+```
+
+Let's create our `speedtest` command by redirecting a heredoc (an alternative to piping the text file) to the `:create` built-in command:
+
+```sh
+$ ssh alpha.cmd.io :create speedtest - <<EOF
+#!cmd alpine speedtest-cli
+#!/usr/bin/speedtest-cli
+EOF
+Creating command... done
+```
+
+We can then run and pass arguments to the command:
+
+```sh
+$ ssh alpha.cmd.io speedtest --simple
+Ping: 13.78 ms
+Download: 552.79 Mbit/s
+Upload: 126.91 Mbit/s
+```
+
+The output is a test of the Cmd infrastructure (not your local Internet connection). While not very practical, it demonstrates how we can run simple utilities entirely remotely.

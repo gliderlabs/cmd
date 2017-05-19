@@ -5,13 +5,13 @@ menu: cli
 type: cli
 weight: 60
 ---
-#### Manages command environment
+##### Manages command environment
 
 ```sh
 $ ssh alpha.cmd.io :env <name> [<subcommand>]
 ```
 
-`:env` provides management of environment variables for your command `<name>`. The
+`:env` allows you to manage environment variables for your command `<name>`. The
 builtin has subcommands for setting and unsetting variables.
 
 By default, if no subcommand is provided, it will list environment variables.
@@ -20,7 +20,7 @@ By default, if no subcommand is provided, it will list environment variables.
 
 ### ls
 
-Lists command environment variables
+##### Lists command environment variables
 
 ```sh
 $ ssh alpha.cmd.io :env <name> ls
@@ -31,7 +31,7 @@ the command `<name>`. This is the default subcommand to `:env`.
 
 ### set
 
-Sets an environment variable
+##### Sets an environment variable
 
 ```sh
 $ ssh alpha.cmd.io :env <name> set <key=value>...
@@ -43,7 +43,7 @@ More than one variable can be set with extra arguments.
 
 ### unset
 
-Unsets an environment variable
+##### Unsets an environment variable
 
 ```sh
 $ ssh alpha.cmd.io :env <name> unset <key>...

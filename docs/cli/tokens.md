@@ -5,22 +5,22 @@ menu: cli
 type: cli
 weight: 90
 ---
-#### Manages access tokens
+##### Manages access tokens
 
 ```sh
 $ ssh alpha.cmd.io :tokens [<subcommand>]
 ```
 
-`:tokens` provides management of access tokens that can be used to provide access to apps and users without a user account. The
+`:tokens` allows you to manage access tokens that can be used to provide access to apps and users without a user account. The
 builtin has subcommands for creating and deleting tokens.
 
-By default, if no subcommand is provided, it will list access tokens.
+If no subcommand is provided, it will list access tokens by default.
 
 ## Subcommands
 
 ### ls
 
-Lists access tokens
+##### Lists access tokens
 
 ```sh
 $ ssh alpha.cmd.io :tokens ls
@@ -30,7 +30,7 @@ The `ls` subcommand will display existing access tokens. This is the default sub
 
 ### new
 
-Creates a new access token
+##### Creates a new access token
 
 ```sh
 $ ssh alpha.cmd.io :tokens new
@@ -41,7 +41,7 @@ with [:access](../access/).
 
 ### rm
 
-Deletes an access token
+##### Deletes an access token
 
 ```sh
 $ ssh alpha.cmd.io :tokens rm <token>
