@@ -1,5 +1,6 @@
 {{ define "main" }}
 	<h1>{{ .Title }}</h1>
-	
 	{{ .Content }}
+	<hr style="margin-top: 40px;"/>
+	<a href="https://github.com/gliderlabs/cmd/edit/master/docs/{{.File.Path}}"><i class="icon pencil" style="text-decoration: none;"></i>Suggest Edits</a>
 {{ end }}
