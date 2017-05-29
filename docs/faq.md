@@ -6,10 +6,10 @@ weight: 10
 
 #### Where can I go for help using Cmd?
 
-Besides this documentation, you can [join our Slack](/community/) and the
-community will do their best to help. This is preferred before submitting
-a Github issue for general help, however if you believe you found a bug feel
-to submit an issue.
+Besides this documentation, you can [join our Slack](/community/) (the `#cmd`
+channel) and the community will do their best to help. This is preferred before
+submitting a Github issue for general help, however if you believe you found a
+bug feel to submit an issue.
 
 #### Can config be used for secrets?
 
