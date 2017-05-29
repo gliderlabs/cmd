@@ -37,25 +37,15 @@ func parseToken(r *http.Request) string {
 func parseArgs(r *http.Request) (string, string, []string) {
 	path := strings.TrimPrefix(r.URL.Path, runPrefix)
 	parts := strings.SplitN(path, "/", 3)
-	if len(parts) < 2 {
-		// not enough parts
-		return "", "", []string{}
-	}
 	if r.URL.Query().Get("args") != "" {
 		// args in query param
 		return parts[0], parts[1], strings.Split(r.URL.Query().Get("args"), " ")
 	}
-	if len(parts) > 2 {
-		if strings.Contains(parts[2], "/") {
-			// args via path parts
-			args := strings.Split(strings.Replace(parts[2], "+", " ", -1), "/")
-			return parts[0], parts[1], args
-		}
-		// args as single path part
-		return parts[0], parts[1], strings.Split(parts[2], "+")
+	if len(parts) < 2 {
+		// not enough parts
+		return "", "", nil
 	}
-	// no args
-	return parts[0], parts[1], []string{}
+	return parts[0], parts[1], nil
 }
 
 func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -111,6 +101,7 @@ func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		token:       token.Key,
 		isWebSocket: isWebSocket,
 		ctx:         ctx,
+		cmd:         append([]string{cmdName}, args...),
 	}
 	defer session.Close()
 

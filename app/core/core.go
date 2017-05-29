@@ -24,7 +24,10 @@ import (
 	"github.com/gliderlabs/cmd/lib/agentproxy"
 	"github.com/gliderlabs/cmd/lib/crypto"
 	"github.com/gliderlabs/cmd/lib/docker"
+	"github.com/gliderlabs/cmd/lib/release"
 )
+
+const ServerSoftware = "cmd.io"
 
 // Token used to provide access to non-github users
 type Token struct {
@@ -79,6 +82,11 @@ func (c *Command) SetEnv(key, val string) {
 
 // Env returns config in a `k=v` format without any cmd specific keys
 func (c *Command) Env() (env []string) {
+	env = append(env, []string{
+		"SERVER_SOFTWARE=" + ServerSoftware,
+		"CMD_CHANNEL=" + release.Channel(),
+		"CMD_VERSION=" + release.DisplayVersion(),
+	}...)
 	for k, v := range c.Environment {
 		if strings.HasPrefix(k, "io.cmd") {
 			continue
@@ -265,7 +273,12 @@ func (c *Command) Run(sess ssh.Session, args []string) int {
 func (c *Command) run(sess ssh.Session, args []string) (int, error) {
 	pty, winCh, isPty := sess.Pty()
 	client := c.Docker()
-	env := append(c.Env(), fmt.Sprintf("USER=%s", sess.User()))
+	env := append([]string{
+		"REMOTE_ADDR=" + sess.RemoteAddr().String(),
+		"USER=" + sess.User(),
+		"CMD_NAME=" + sess.Command()[0],
+	}, c.Env()...)
+	env = append(env, sess.Environ()...)
 	if isPty {
 		env = append([]string{fmt.Sprintf("TERM=%s", pty.Term)}, env...)
 	}
