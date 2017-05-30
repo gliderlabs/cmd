@@ -39,6 +39,9 @@ data:
     [web]
     listen_addr = ":80"
 
+    [analytics]
+    tracking_id = "UA-58928488-4"
+
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
