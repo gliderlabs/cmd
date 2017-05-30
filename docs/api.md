@@ -31,16 +31,12 @@ Query parameters:
 This is a simple example command that will just echo `env` to stdout and exit. It's useful for debugging and will show exactly what environment variables are set for you to use in your scripts.
 
 ```
-$ test_cmd=$(cat <<'EOD'
+$ cat <<'EOD'
 #!cmd.io alpine bash
 #!/bin/bash
-echo
-env
-echo
-i=1
-echo "args:"; for arg in $@; do printf "${i}-${arg} "; i=$((i+1)); done; echo
+env && echo "Args: $@"
 EOD
-) && echo "${test_cmd}"|ssh <username>@alpha.cmd.io :create printenv && unset test_cmd
+|ssh <username>@alpha.cmd.io :create printenv && unset test_cmd
 
 Creating command... done
 ```
@@ -80,9 +76,7 @@ SERVER_PROTOCOL=HTTP/1.1
 CONTENT_TYPE=
 REQUEST_METHOD=GET
 _=/usr/bin/env
-
-args:
-
+Args:
 ```
 There were no query parameters sent, so these variables are mostly empty. Note the args array is also empty since there is no `args` query parameter.
 
@@ -114,10 +108,7 @@ SERVER_PROTOCOL=HTTP/1.1
 CONTENT_TYPE=
 REQUEST_METHOD=GET
 _=/usr/bin/env
-
-args:
-1-hi 2-two 3-three 4-four
-
+Args: hi two three four
 ```
 
 Finally, adding arbitrary query string parameters is allowed and are exposed as environment variables per CGI.
@@ -149,10 +140,7 @@ SERVER_PROTOCOL=HTTP/1.1
 CONTENT_TYPE=
 REQUEST_METHOD=GET
 _=/usr/bin/env
-
-args:
-
+Args:
 ```
+
 In this example, your command would need to parse the `QUERY_STRING` variable programatically in order to access those variables.
-
-
