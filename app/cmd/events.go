@@ -73,9 +73,6 @@ func init() {
 			if foundBranch == "" {
 				return
 			}
-			if String(status.State) == "pending" {
-				return
-			}
 			colors := map[string]string{
 				"success": "good",
 				"failure": "danger",
