@@ -36,7 +36,7 @@ $ cat <<'EOD'
 #!/bin/bash
 env && echo "Args: $@"
 EOD
-|ssh <username>@alpha.cmd.io :create printenv && unset test_cmd
+|ssh <username>@alpha.cmd.io :create printenv
 
 Creating command... done
 ```
@@ -48,45 +48,11 @@ $ ssh <username>@alpha.cmd.io :access printenv grant $(ssh <username>@alpha.cmd.
 Granting 18e370e1-6eae-4e2d-9b60-7c74d08c4333 access to printenv... done
 ```
 
-Now issue curl commands to execute the `printenv` command:
-```
-$ curl -u "${TOKEN}:" https://alpha.cmd.io/run/<username>/printenv
-
-HOSTNAME=alpha.cmd.io
-SERVER_PORT=443
-HTTP_HOST=alpha.cmd.io
-USER=18e370e1-6eae-4e2d-9b60-7c74d08c433
-CMD_NAME=printenv
-REQUEST_URI=/run/chiefy/printenv
-SCRIPT_NAME=printenv
-PATH_INFO=/run/chiefy/printenv
-CMD_CHANNEL=alpha
-CMD_VERSION=alpha
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-PWD=/cmd
-REMOTE_ADDR=
-SHLVL=1
-HOME=/root
-SERVER_NAME=alpha.cmd.io
-CONTENT_LENGTH=0
-SERVER_SOFTWARE=cmd.io
-QUERY_STRING=
-GATEWAY_INTERFACE=CGI/1.1
-SERVER_PROTOCOL=HTTP/1.1
-CONTENT_TYPE=
-REQUEST_METHOD=GET
-_=/usr/bin/env
-Args:
-```
-There were no query parameters sent, so these variables are mostly empty. Note the args array is also empty since there is no `args` query parameter.
-
-Next, use the `args` query parameter to send a command's arguments. The command can access these arguments the same as a normal shell script (${1}, ${2}, etc.).
+Use the `args` query parameter to send a command's arguments. The command can access these arguments the same as a normal shell script (${1}, ${2}, etc.).
 ```
 $ curl -u "${TOKEN}:" https://alpha.cmd.io/run/<username>/printenv?args=hi+two+three+four
 
 HOSTNAME=alpha.cmd.io
-SERVER_PORT=443
-HTTP_HOST=alpha.cmd.io
 USER=18e370e1-6eae-4e2d-9b60-7c74d08c433
 CMD_NAME=printenv
 REQUEST_URI=/run/chiefy/printenv?args=hi+two+three+four
@@ -94,20 +60,10 @@ SCRIPT_NAME=printenv
 PATH_INFO=/run/chiefy/printenv
 CMD_CHANNEL=alpha
 CMD_VERSION=alpha
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-PWD=/cmd
-REMOTE_ADDR=
-SHLVL=1
-HOME=/root
 SERVER_NAME=alpha.cmd.io
-CONTENT_LENGTH=0
 SERVER_SOFTWARE=cmd.io
 QUERY_STRING=args=hi+two+three+four
-GATEWAY_INTERFACE=CGI/1.1
-SERVER_PROTOCOL=HTTP/1.1
-CONTENT_TYPE=
 REQUEST_METHOD=GET
-_=/usr/bin/env
 Args: hi two three four
 ```
 
@@ -117,8 +73,6 @@ Finally, adding arbitrary query string parameters is allowed and are exposed as 
 $ curl -u "${TOKEN}:" https://alpha.cmd.io/run/<username>/printenv?val=true&something=else&whatever=false+maybe"
 
 HOSTNAME=alpha.cmd.io
-SERVER_PORT=443
-HTTP_HOST=alpha.cmd.io
 USER=18e370e1-6eae-4e2d-9b60-7c74d08c433
 CMD_NAME=printenv
 REQUEST_URI=/run/chiefy/printenv?val=true&something=else&whatever=false+maybe
@@ -126,20 +80,10 @@ SCRIPT_NAME=printenv
 PATH_INFO=/run/chiefy/printenv
 CMD_CHANNEL=alpha
 CMD_VERSION=alpha
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-PWD=/cmd
-REMOTE_ADDR=
-SHLVL=1
-HOME=/root
 SERVER_NAME=alpha.cmd.io
-CONTENT_LENGTH=0
 SERVER_SOFTWARE=cmd.io
 QUERY_STRING=val=true&something=else&whatever=false+maybe
-GATEWAY_INTERFACE=CGI/1.1
-SERVER_PROTOCOL=HTTP/1.1
-CONTENT_TYPE=
 REQUEST_METHOD=GET
-_=/usr/bin/env
 Args:
 ```
 
