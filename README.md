@@ -15,7 +15,7 @@ are executable by following commands.
 
 ### OSX Dependencies
 
- * [Docker for Mac](https://docs.docker.com/docker-for-mac/install/)
+ * [Docker for Mac](https://docs.docker.com/docker-for-mac/install/) (we develop against the Edge channel)
  * [Homebrew](https://brew.sh/) so you can `brew bundle` the rest
 
 ### Linux Dependencies
