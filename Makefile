@@ -84,6 +84,7 @@ www-dev:
 ## DEPENDENCIES
 
 deps-update: ## update dependencies if changed
+	go get -u github.com/Masterminds/glide
 	./dev/deps.sh
 
 deps-go:
