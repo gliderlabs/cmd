@@ -59,5 +59,5 @@ jobs:
           command: |
             if is-branch "master"; then
               make deploy-alpha IMAGE=$(infra-query -r ".modules[0].outputs.repos.value.cmd"):build-$CIRCLE_BUILD_NUM
-              [[ "$(ssh ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $CMD_TOKEN@alpha.cmd.io gliderbot/ping)" == "pong" ]]
+              [[ "$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${CMD_TOKEN_ALPHA}@alpha.cmd.io gliderbot/ping)" == "pong" ]]
             fi
