@@ -2,12 +2,20 @@ package runapi
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
+	"strconv"
 	"strings"
 
+	"github.com/gliderlabs/cmd/lib/release"
 	"github.com/gliderlabs/ssh"
+)
+
+const (
+	ServerProtocol   = "HTTP/1.1"
+	GatewayInterface = "CGI/1.1"
 )
 
 type httpSession struct {
@@ -17,6 +25,7 @@ type httpSession struct {
 	token       string
 	isWebSocket bool
 	ctx         context.Context
+	cmd         []string
 }
 
 func (sess *httpSession) Write(p []byte) (n int, err error) {
@@ -44,13 +53,34 @@ func (sess *httpSession) RemoteAddr() net.Addr {
 	return &net.IPAddr{IP: net.ParseIP(sess.req.RemoteAddr)}
 }
 func (sess *httpSession) Environ() []string {
-	// TODO
-	return []string{}
+	if sess.req == nil {
+		return nil
+	}
+	sh := strings.Split(sess.req.Host, ":")
+	port := ""
+	if len(sh) > 1 {
+		port = sh[1]
+	}
+	return []string{
+		fmt.Sprintf("SERVER_NAME=%s", release.Hostname()),
+		fmt.Sprintf("SERVER_PROTOCOL=%s", ServerProtocol),
+		fmt.Sprintf("HTTP_HOST=%s", release.Hostname()),
+		fmt.Sprintf("GATEWAY_INTERFACE=%s", GatewayInterface),
+		fmt.Sprintf("REQUEST_METHOD=%s", sess.req.Method),
+		fmt.Sprintf("QUERY_STRING=%s", sess.req.URL.RawQuery),
+		fmt.Sprintf("REQUEST_URI=%s", sess.req.URL.RequestURI()),
+		fmt.Sprintf("PATH_INFO=%s", sess.req.URL.Path),
+		fmt.Sprintf("SCRIPT_NAME=%s", sess.Command()[0]),
+		fmt.Sprintf("SERVER_PORT=%s", port),
+		fmt.Sprintf("CONTENT_TYPE=%s", sess.req.Header.Get("Content-Type")),
+		fmt.Sprintf("CONTENT_LENGTH=%s", strconv.Itoa(int(sess.req.ContentLength))),
+	}
 }
+
 func (sess *httpSession) Command() []string {
-	// TODO
-	return []string{}
+	return append([]string(nil), sess.cmd...)
 }
+
 func (sess *httpSession) Pty() (ssh.Pty, <-chan ssh.Window, bool) {
 	var winch chan ssh.Window
 	//if sess.isWebSocket {
