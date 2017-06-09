@@ -123,7 +123,9 @@ func (c *Component) proxy(conn *net.TCPConn) {
 		return
 	}
 	req.Write(backend)
+	done := make(chan struct{})
 	go func() {
+		defer close(done)
 		io.Copy(conn, backend)
 		conn.CloseWrite()
 		backend.(*net.TCPConn).CloseRead()
@@ -131,5 +133,6 @@ func (c *Component) proxy(conn *net.TCPConn) {
 	io.Copy(backend, conn)
 	backend.(*net.TCPConn).CloseWrite()
 	conn.CloseRead()
+	<-done
 	return
 }
