@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/facebookgo/httpdown"
-	"github.com/gorilla/context"
 	"github.com/gliderlabs/cmd/lib/maint" // TODO: remove dep via hook
+	"github.com/gorilla/context"
 
 	"github.com/gliderlabs/comlab/pkg/com"
 	"github.com/gliderlabs/comlab/pkg/log"
@@ -21,7 +21,9 @@ func (c *Component) Serve() {
 			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				t := time.Now()
 				lw := log.WrapResponseWriter(w)
-				defer log.Info(r, lw, time.Now().Sub(t))
+				defer func() {
+					log.Info(r, lw, time.Now().Sub(t))
+				}()
 
 				if maint.Active() {
 					http.Error(lw, maint.Notice(), http.StatusServiceUnavailable)
