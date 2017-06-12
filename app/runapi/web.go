@@ -92,7 +92,7 @@ func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	u, err := console.LookupNickname(token.User)
 	if err == nil {
-		context.WithValue(ctx, "plan", u.Account.Plan)
+		ctx = context.WithValue(ctx, "plan", u.Account.Plan)
 	}
 	session := &httpSession{
 		req:         r,
