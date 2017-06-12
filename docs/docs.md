@@ -17,7 +17,7 @@ A very common use case is for sysadmins and operators to build cloud scripts to 
 
 The Run API increases the use cases by letting you easily write scripts in any language and use them as webhook handlers.
 
-If you want to jump in, get started with the [Quickstart](/quickstart/) guide!
+If you want to jump in, get started with the [Quickstart](./quickstart.md) guide!
 
 ## Command Environment
 
