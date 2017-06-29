@@ -21,7 +21,6 @@ const (
 type httpSession struct {
 	req         *http.Request
 	wc          io.WriteCloser
-	stdin       io.ReadCloser
 	token       string
 	isWebSocket bool
 	ctx         context.Context
@@ -32,7 +31,7 @@ func (sess *httpSession) Write(p []byte) (n int, err error) {
 	return sess.wc.Write(p)
 }
 func (sess *httpSession) Read(data []byte) (int, error) {
-	return sess.stdin.Read(data)
+	return sess.req.Body.Read(data)
 }
 func (sess *httpSession) PublicKey() ssh.PublicKey {
 	return nil
@@ -97,7 +96,7 @@ func (sess *httpSession) Pty() (ssh.Pty, <-chan ssh.Window, bool) {
 }
 
 func (sess *httpSession) Close() error {
-	sess.stdin.Close()
+	sess.req.Body.Close()
 	return sess.wc.Close()
 }
 func (sess *httpSession) CloseWrite() error {

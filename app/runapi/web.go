@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"strings"
 	"sync"
@@ -97,7 +96,6 @@ func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	session := &httpSession{
 		req:         r,
 		wc:          wc,
-		stdin:       ioutil.NopCloser(strings.NewReader("")),
 		token:       token.Key,
 		isWebSocket: isWebSocket,
 		ctx:         ctx,
