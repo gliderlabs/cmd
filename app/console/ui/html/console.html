@@ -11,6 +11,7 @@
   <link rel="stylesheet" type="text/css" href="/static/semantic/semantic.min.css">
   <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
   <script src="https://unpkg.com/js-base64@2.1.9/base64.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.3/js.cookie.min.js"></script>
   <style type="text/css">
     code {
@@ -218,6 +219,7 @@
               {{if eq .BillingInfo.Plan "Basic"}}<div onclick="$('#upgrade-modal').modal('show')" class="item">Upgrade</div>{{end}}
               <div onclick="$('#billing-modal').modal('show')" class="item">Billing</div>
               <a class="item" href="https://www.cmd.io/cli/#authentication">SSH Keys</a>
+              <div onclick="$('#invite-modal').modal('show')" class="item">Invitations</div>
               <div class="divider"></div>
               <a class="item" href="/_auth/logout">Logout</a>
             </div>
@@ -259,10 +261,9 @@
 
       <div class="ui segment">
         <h2>Thank you!</h2>
-        <p>We appreciate you using our tool. One of many to come!</p>
         <p>Consider upgrading to
           <a onclick="$('#upgrade-modal').modal('show')" href="javascript:void()">Cmd.io Plus</a>
-          to keep this one alive and let us continue building great tools.</p>
+          to keep this tool alive and let us continue building great tools.</p>
       </div>
       <div class="ui segment">
         <h2>Next Steps</h2>
@@ -546,6 +547,74 @@
     </div>
   </div>
 
+
+  <div class="ui small modal" id="invite-modal">
+    <i class="close icon"></i>
+    <div class="header">
+      Invite Codes
+    </div>
+    <div class="content">
+      <table class="ui very basic single line table">
+        <thead>
+          <tr>
+            <th class="five wide">Code</th>
+            <th class="ten wide">Invite URL</th>
+            <th class="one wide"></th>
+          </tr>
+        </thead>
+        <tbody id="invite-codes">
+
+        </tbody>
+      </table>
+      <script id="code-template" type="text/x-custom-template">
+        <tr class="ui form">
+          <td><code>{code}</code></td>
+          <td class="field"><input type="text" id="code-{code}" class="code-textbox" readonly="readonly" value="https://alpha.cmd.io/invite/{code}" /></td>
+          <td><button class="clipboard-btn" data-clipboard-target="#code-{code}">
+              <i class="icon clipboard" title="Copy to clipboard"></i>
+            </button>
+          </td>
+        </tr>
+      </script>
+    </div>
+    <div class="actions">
+      <div id="invite-generate" class="ui button">
+        Generate Code
+      </div>
+      <div class="ui black cancel button">
+        Done
+      </div>
+    </div>
+  </div>
+  <script>
+    new Clipboard('.clipboard-btn');
+    function inviteLoadCodes(data) {
+      $("#invite-codes").empty();
+      if (data.pending != null) {
+        for (var i = 0; i < data.pending.length; i++) {
+          $("#invite-codes").append($("#code-template").html().replace(/\{code\}/g, data.pending[i]));
+        }
+        if (data.pending.length >= data.max) {
+          $("#invite-generate").addClass("disabled");
+        }
+      }
+      $(".code-textbox").click(function(el) {
+        el.target.select();
+      });
+    }
+    $("#invite-generate").click(function() {
+      $.ajax({url: "/console/-/codes", method: "POST", success: function(data) {
+        inviteLoadCodes(data)
+      }});
+    })
+    $("#invite-modal").modal({
+      onShow: function() {
+        $.ajax({url: "/console/-/codes", success: function(data) {
+          inviteLoadCodes(data)
+        }});
+      }
+    })
+  </script>
 
 
 

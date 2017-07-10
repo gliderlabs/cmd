@@ -1,6 +1,7 @@
 package console
 
 import (
+	"encoding/json"
 	"net/http"
 	"strings"
 	"text/template"
@@ -8,6 +9,7 @@ import (
 	"github.com/gliderlabs/cmd/lib/access"
 	"github.com/gliderlabs/cmd/lib/slack"
 	"github.com/gliderlabs/cmd/lib/web"
+	"github.com/gliderlabs/cmd/pkg/auth0"
 	"github.com/gliderlabs/comlab/pkg/log"
 )
 
@@ -41,6 +43,7 @@ func (c *Component) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	mux.HandleFunc("/register", registerHandler)
 	mux.HandleFunc("/request", requestAccessHandler)
 	mux.HandleFunc("/console/-/billing", billingHandler)
+	mux.HandleFunc("/console/-/codes", codesHandler)
 	mux.HandleFunc("/console/", consoleHandler)
 	mux.ServeHTTP(w, r)
 }
@@ -161,4 +164,46 @@ func billingHandler(w http.ResponseWriter, r *http.Request) {
 		subscribeHandler(w, r, user)
 	}
 	http.Redirect(w, r, "/console/", http.StatusFound)
+}
+
+func codesHandler(w http.ResponseWriter, r *http.Request) {
+	user := SessionUser(r)
+	if user == nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	pendingInvites := user.Account.Invites.Pending
+	if r.Method == "POST" {
+		if len(user.Account.Invites.Pending) <= MaxPendingInvites {
+			code, err := GenerateInviteCode(user)
+			if err != nil {
+				log.Info(r, err, log.Fields{"uid": user.ID})
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			pendingInvites = append(pendingInvites, code)
+			err = auth0.DefaultClient().PatchUser(user.ID, auth0.User{
+				"app_metadata": map[string]interface{}{
+					"invites": map[string]interface{}{
+						"pending":    pendingInvites,
+						"invited_by": user.Account.Invites.InvitedBy,
+					},
+				},
+			})
+			if err != nil {
+				log.Info(r, err, log.Fields{"uid": user.ID})
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		}
+	}
+	w.Header().Add("content-type", "application/json")
+	enc := json.NewEncoder(w)
+	err := enc.Encode(map[string]interface{}{
+		"pending": pendingInvites,
+		"max":     MaxPendingInvites,
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }

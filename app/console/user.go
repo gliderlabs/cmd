@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gliderlabs/comlab/pkg/events"
-	"github.com/gliderlabs/comlab/pkg/log"
-	"github.com/mitchellh/mapstructure"
 	"github.com/gliderlabs/cmd/lib/stripe"
 	"github.com/gliderlabs/cmd/lib/web"
 	"github.com/gliderlabs/cmd/pkg/auth0"
+	"github.com/gliderlabs/comlab/pkg/events"
+	"github.com/gliderlabs/comlab/pkg/log"
+	"github.com/mitchellh/mapstructure"
 	stripelib "github.com/stripe/stripe-go"
 )
 
@@ -32,6 +32,12 @@ type Account struct {
 type AppMetadata struct {
 	Account `mapstructure:",squash"`
 	Groups  map[string]Account
+	Invites Invites
+}
+
+type Invites struct {
+	Pending   []string
+	InvitedBy string `mapstructure:"invited_by"`
 }
 
 func SessionUser(r *http.Request) *User {
