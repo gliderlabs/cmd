@@ -145,6 +145,7 @@ func (c *Client) DelegationToken(token *oauth2.Token, apiType string) (string, e
 	return obj["id_token"].(string), nil
 }
 
+// TODO: check if error on non existant user
 func (c *Client) User(id string) (User, error) {
 	url := fmt.Sprintf(userEndpoint, c.Domain, id)
 	req, err := http.NewRequest("GET", url, nil)
