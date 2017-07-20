@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: dockerbox
+spec:
+  template:
+    metadata:
+      labels:
+        app: dockerbox
+    spec:
+      containers:
+        - name: dockerbox
+          image: gliderlabs/dockerbox:latest
+          ports:
+            - name: http
+              containerPort: 2375
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 5
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: dockerbox
+              mountPath: /var/lib/docker
+      volumes:
+        - name: dockerbox
+          emptyDir: {}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: dockerbox
+spec:
+  clusterIP: None
+  selector:
+    app: dockerbox
+  ports:
+    - name: http
+      targetPort: http
+      port: 2375

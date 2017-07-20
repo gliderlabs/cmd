@@ -9,7 +9,7 @@ import (
 	_ "github.com/gliderlabs/cmd/app/store/dynamodb"
 	_ "github.com/gliderlabs/cmd/lib/access"
 	_ "github.com/gliderlabs/cmd/lib/crypto"
-	_ "github.com/gliderlabs/cmd/lib/docker"
+	_ "github.com/gliderlabs/cmd/lib/dockerbox"
 	_ "github.com/gliderlabs/cmd/lib/github"
 	_ "github.com/gliderlabs/cmd/lib/google/analytics"
 	_ "github.com/gliderlabs/cmd/lib/maint"

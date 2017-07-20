@@ -5,7 +5,6 @@ import (
 
 	"github.com/gliderlabs/cmd/lib/cli"
 	"github.com/gliderlabs/cmd/lib/release"
-	"github.com/gliderlabs/comlab/pkg/log"
 	"github.com/gliderlabs/ssh"
 )
 
@@ -15,7 +14,6 @@ func (c *Component) PreprocessOrder() uint {
 
 func (c *Component) PreprocessSession(sess ssh.Session) (cont bool, msg string) {
 	// check for first time user
-	log.Local("check")
 	if user := ContextUser(sess.Context()); user != nil {
 		if user.Account.CustomerID == "" {
 			fmt.Fprintf(sess, cli.Bright("\nWelcome, %s!\n\n"), sess.User())
