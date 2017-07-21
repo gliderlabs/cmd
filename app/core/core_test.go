@@ -8,8 +8,9 @@ import (
 	"testing"
 
 	"github.com/docker/docker/api/types"
-	"github.com/golang/mock/gomock"
+	"github.com/gliderlabs/cmd/lib/dockerbox"
 	mock_client "github.com/gliderlabs/cmd/lib/mock/docker/docker/client"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/gliderlabs/cmd/app/billing"
@@ -225,7 +226,7 @@ func TestCmdPull(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		client := mock_client.NewMockAPIClient(ctrl)
-		cmd.docker = client
+		cmd.docker = &dockerbox.Client{client, "test"}
 		pullRes := ioutil.NopCloser(strings.NewReader(""))
 		client.EXPECT().
 			ImagePull(gomock.Any(), cmd.Source, types.ImagePullOptions{}).
@@ -246,7 +247,7 @@ func TestCmdPull(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		client := mock_client.NewMockAPIClient(ctrl)
-		cmd.docker = client
+		cmd.docker = &dockerbox.Client{client, "test"}
 		pullRes := ioutil.NopCloser(strings.NewReader(""))
 		client.EXPECT().
 			ImagePull(gomock.Any(), cmd.Source, types.ImagePullOptions{}).

@@ -13,7 +13,6 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/docker/go-units"
 	"github.com/gliderlabs/comlab/pkg/log"
@@ -23,7 +22,7 @@ import (
 	"github.com/gliderlabs/cmd/app/billing"
 	"github.com/gliderlabs/cmd/lib/agentproxy"
 	"github.com/gliderlabs/cmd/lib/crypto"
-	"github.com/gliderlabs/cmd/lib/docker"
+	"github.com/gliderlabs/cmd/lib/dockerbox"
 	"github.com/gliderlabs/cmd/lib/release"
 )
 
@@ -61,13 +60,17 @@ type Command struct {
 
 	Changed bool `dynamodbav:"-"`
 
-	docker client.APIClient
+	docker *dockerbox.Client
 }
 
 // Docker will return a configured docker client
-func (c *Command) Docker() client.APIClient {
+func (c *Command) Docker() *dockerbox.Client {
 	if c.docker == nil {
-		c.docker = docker.Client()
+		var err error
+		c.docker, err = dockerbox.GetBackend()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	return c.docker
 }

@@ -37,7 +37,7 @@ func (c *Component) HandleSSH(s ssh.Session) {
 		cmdName  = ""
 	)
 	defer func() {
-		log.Info(s, cmd, time.Since(start), msg)
+		log.Info(s, cmd, time.Since(start), msg, log.Fields{"docker": cmd.Docker().Host})
 	}()
 
 	var cont bool
