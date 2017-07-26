@@ -478,13 +478,21 @@
         </div>
         <div class="ten wide column">
           <h4 class="ui inverted header">Subscribe for Updates</h4>
-          <form action="//gliderlabs.us10.list-manage.com/subscribe/post?u=49c4b06ffd30bcf49ec53c277&amp;id=5a7af54e44"
-            method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate form-inline" target="_blank" novalidate>
+          <script src="https://assets.convertkit.com/assets/CKJS4.js?v=21"></script>
+          <form action="https://app.convertkit.com/landing_pages/242514/subscribe"
+            id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate form-inline" data-remote="true" novalidate>
+            <input type="hidden" value="{&quot;form_style&quot;:&quot;minimal&quot;,&quot;embed_style&quot;:&quot;inline&quot;,&quot;embed_trigger&quot;:&quot;scroll_percentage&quot;,&quot;scroll_percentage&quot;:&quot;70&quot;,&quot;delay_seconds&quot;:&quot;10&quot;,&quot;display_position&quot;:&quot;br&quot;,&quot;display_devices&quot;:&quot;all&quot;,&quot;days_no_show&quot;:&quot;15&quot;,&quot;converted_behavior&quot;:&quot;show&quot;}" id="ck_form_options">
+            <input type="hidden" name="id" value="242514" id="landing_page_id">
+            <input type="hidden" name="ck_form_recaptcha" value="" id="ck_form_recaptcha">
           <div class="ui small right action input">
-              <input type="email" value="" name="EMAIL" class="email input" id="mce-EMAIL" placeholder="Email Address" required>
+              <input type="email" value="" name="email" class="email input" id="mce-EMAIL" placeholder="Email Address" required>
 
-              <input type="submit" value="SUBSCRIBE" name="subscribe" id="mc-embedded-subscribe" class="ui button">
-              <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_49c4b06ffd30bcf49ec53c277_5a7af54e44" tabindex="-1" value=""></div>
+              <button class="subscribe_button ck_subscribe_button btn fields ui button" id="ck_subscribe_button">
+                Subscribe
+              </button>
+              <div class="ck_control_group ck_captcha2_h_field_group ck-captcha2-h" style="position: absolute !important;left: -999em !important;">
+                <input type="text" name="captcha2_h" class="ck-captcha2-h" id="ck_captcha2_h" placeholder="We use this field to detect spam bots. If you fill this in, you will be marked as a spammer.">
+              </div>
           </div>
         </form>
         <small>Stay informed and get Cmd.io announcements.</small>
