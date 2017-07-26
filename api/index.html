@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head lang="en-us">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+	<meta name="description" content="Shell commands in the cloud.">
+	<meta name="generator" content="Hugo 0.20.7" />
+
+	<title>API Reference &mdash; Cmd Documentation</title>
+
+	<link rel="stylesheet" href="https://www.cmd.io//semantic/semantic.min.css" type="text/css" />
+	<link rel="stylesheet" href="https://www.cmd.io/css/alabaster.css" type="text/css" />
+	<link rel="stylesheet" href="https://www.cmd.io/css/highlight.css" type="text/css" />
+
+	
+
+	<link rel="shortcut icon" href="https://www.cmd.io/favicon.ico" type="image/x-icon"/>
+
+	<script type="text/javascript">
+		if (location.hostname == "gliderlabs.github.io") {
+			location.href = "https://www.cmd.io"+location.pathname.replace("/cmd/", "/");
+		}
+	</script>
+</head>
+
+
+	<body>
+		<div class="ui inverted vertical segment" style="padding:0;">
+      <div class="ui container">
+        <div class="ui large borderless inverted menu">
+          <a href="https://www.cmd.io/" class="item" style="color: white !important;"><div style="border: 1px solid white; border-radius: 4px; background: white; color: black; font-size: x-large; line-height:1; margin-right: 6px;">&#8984;</div> CMD</a>
+          <a href="https://www.cmd.io/docs/" class="item"><i class="icon book"></i> Documentation</a>
+          <a href="https://www.cmd.io/community/" class="item"><i class="icon slack"></i>Community</a>
+          <a href="https://www.cmd.io/dev/" class="item"><i class="icon github"></i>Development</a>
+					<a href="https://medium.com/gliderlabs" class="item"><i class="icon medium"></i>Blog</a>
+
+					<div class="right item">
+	          <a href="https://alpha.cmd.io/console/" class="ui inverted button">Login to the Console</a>
+	        </div>
+        </div>
+      </div>
+    </div>
+
+		<div role="document" class="ui container document">
+			<div class="ui grid" style="margin-left: 4px;">
+				<div role="navigation" aria-label="main navigation" class="four wide column">
+					
+
+
+
+
+<h4>Documentation</h4>
+<ul style="margin-left: 17px;">
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/docs/">Overview</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/quickstart/">Quickstart</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/cli/">CLI Reference</a>
+		<ul style="margin-left: 17px; margin-top: 2px;">
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/create/">create</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/ls/">ls</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/source/">source</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/delete/">delete</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/edit/">edit</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/env/">env</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/access/">access</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/admins/">admins</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/tokens/">tokens</a>
+			</li>
+			
+		</ul>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/api/">API Reference</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/faq/">FAQ</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/guides/">Guides</a>
+		<ul style="margin-left: 17px; margin-top: 2px;">
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/guides/run-api/">Using the Run API</a>
+			</li>
+			
+		</ul>
+	</li>
+</ul>
+
+
+				</div>
+
+				<div class="body ten wide column" role="main">
+					
+	<h1>API Reference</h1>
+	
+
+<p>Commands can be run over secure HTTP and WebSocket using <a href="https://www.cmd.io/cli/tokens/">access tokens</a>. This can be used to run commands when
+you don&rsquo;t have SSH or need something more programmatic.</p>
+
+<p>When commands are run via this API, they receive a representation of the HTTP request using <a href="https://en.wikipedia.org/wiki/Common_Gateway_Interface">CGI</a>. This means request metadata will be added to the environment and the body of the request will be passed as STDIN.</p>
+
+<h3 id="authentication">Authentication</h3>
+
+<p>The Run API requires the use of <a href="https://www.cmd.io/cli/tokens/">access tokens</a>, which can be created and given access to one or more commands. The token can then be used as the user in Basic Auth or as the query param <code>access_token</code>.</p>
+
+<h3 id="endpoint">Endpoint</h3>
+
+<pre><code>[https|wss]://alpha.cmd.io/run/&lt;username&gt;/&lt;command&gt;[query]
+</code></pre>
+
+<p>Query parameters:</p>
+
+<ul>
+<li><code>access_token</code> - Token with access to this command. Required if not provided by Basic Auth.</li>
+<li><code>args</code> - Optional string of arguments to send to command, should be <code>+</code> separated and/or URL encoded (ex. <a href="https://alpha.cmd.io/run/hansgruber/shoot?args=the+glass">https://alpha.cmd.io/run/hansgruber/shoot?args=the+glass</a>).</li>
+<li>Additional query parameters - You may include any other query parameters as you wish, they will be injected as environment variables into your command via <a href="https://en.wikipedia.org/wiki/Common_Gateway_Interface">CGI</a>.</li>
+</ul>
+
+<h3 id="printenv-command-example"><code>printenv</code> command example</h3>
+
+<p>This is a simple example command that will just echo <code>env</code> to stdout and exit. It&rsquo;s useful for debugging and will show exactly what environment variables are set for you to use in your scripts.</p>
+
+<pre><code>$ cat &lt;&lt;'EOD'
+#!cmd.io alpine bash
+#!/bin/bash
+env &amp;&amp; echo &quot;Args: $@&quot;
+EOD
+|ssh &lt;username&gt;@alpha.cmd.io :create printenv
+
+Creating command... done
+</code></pre>
+
+<p>Next, grant access to a token in order to use the API endpoint. Make a note of the token output.</p>
+
+<pre><code>$ ssh &lt;username&gt;@alpha.cmd.io :access printenv grant $(ssh &lt;username&gt;@alpha.cmd.io :tokens new printenv)
+
+Granting 18e370e1-6eae-4e2d-9b60-7c74d08c4333 access to printenv... done
+</code></pre>
+
+<p>Use the <code>args</code> query parameter to send a command&rsquo;s arguments. The command can access these arguments the same as a normal shell script (${1}, ${2}, etc.).</p>
+
+<pre><code>$ curl -u &quot;${TOKEN}:&quot; https://alpha.cmd.io/run/&lt;username&gt;/printenv?args=hi+two+three+four
+
+HOSTNAME=alpha.cmd.io
+USER=18e370e1-6eae-4e2d-9b60-7c74d08c433
+CMD_NAME=printenv
+REQUEST_URI=/run/chiefy/printenv?args=hi+two+three+four
+SCRIPT_NAME=printenv
+PATH_INFO=/run/chiefy/printenv
+CMD_CHANNEL=alpha
+CMD_VERSION=alpha
+SERVER_NAME=alpha.cmd.io
+SERVER_SOFTWARE=cmd.io
+QUERY_STRING=args=hi+two+three+four
+REQUEST_METHOD=GET
+Args: hi two three four
+</code></pre>
+
+<p>Finally, adding arbitrary query string parameters is allowed and are exposed as environment variables per CGI.</p>
+
+<pre><code>$ curl -u &quot;${TOKEN}:&quot; https://alpha.cmd.io/run/&lt;username&gt;/printenv?val=true&amp;something=else&amp;whatever=false+maybe&quot;
+
+HOSTNAME=alpha.cmd.io
+USER=18e370e1-6eae-4e2d-9b60-7c74d08c433
+CMD_NAME=printenv
+REQUEST_URI=/run/chiefy/printenv?val=true&amp;something=else&amp;whatever=false+maybe
+SCRIPT_NAME=printenv
+PATH_INFO=/run/chiefy/printenv
+CMD_CHANNEL=alpha
+CMD_VERSION=alpha
+SERVER_NAME=alpha.cmd.io
+SERVER_SOFTWARE=cmd.io
+QUERY_STRING=val=true&amp;something=else&amp;whatever=false+maybe
+REQUEST_METHOD=GET
+Args:
+</code></pre>
+
+<p>In this example, your command would need to parse the <code>QUERY_STRING</code> variable programatically in order to access those variables.</p>
+
+	<hr style="margin-top: 40px;"/>
+	<a href="https://github.com/gliderlabs/cmd/edit/master/docs/api.md"><i class="icon pencil" style="text-decoration: none;"></i>Suggest Edits</a>
+
+				</div>
+
+			</div>
+
+
+			
+
+			
+
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+			<script>hljs.initHighlightingOnLoad();</script>
+			
+
+			
+		</div>
+	</body>
+</html>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Guides on Cmd Documentation</title>
+    <link>https://www.cmd.io/guides/</link>
+    <description>Recent content in Guides on Cmd Documentation</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 31 Jan 2017 18:00:00 -0600</lastBuildDate>
+    
+	<atom:link href="https://www.cmd.io/guides/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Using the Run API</title>
+      <link>https://www.cmd.io/guides/run-api/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/guides/run-api/</guid>
+      <description>What if you could turn a shell script into a web API in seconds?
+Every Cmd.io command you make can be run via SSH and our Run API. All you have to do is write the script and create the command as usual, and you get this right out of the box.
+The Run API exposes a secure HTTP endpoint to execute and return the output of your command, with an option to stream the response in real-time.</description>
+    </item>
+    
+  </channel>
+</rss>

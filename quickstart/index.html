@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head lang="en-us">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+	<meta name="description" content="Shell commands in the cloud.">
+	<meta name="generator" content="Hugo 0.20.7" />
+
+	<title>Quickstart &mdash; Cmd Documentation</title>
+
+	<link rel="stylesheet" href="https://www.cmd.io//semantic/semantic.min.css" type="text/css" />
+	<link rel="stylesheet" href="https://www.cmd.io/css/alabaster.css" type="text/css" />
+	<link rel="stylesheet" href="https://www.cmd.io/css/highlight.css" type="text/css" />
+
+	
+
+	<link rel="shortcut icon" href="https://www.cmd.io/favicon.ico" type="image/x-icon"/>
+
+	<script type="text/javascript">
+		if (location.hostname == "gliderlabs.github.io") {
+			location.href = "https://www.cmd.io"+location.pathname.replace("/cmd/", "/");
+		}
+	</script>
+</head>
+
+
+	<body>
+		<div class="ui inverted vertical segment" style="padding:0;">
+      <div class="ui container">
+        <div class="ui large borderless inverted menu">
+          <a href="https://www.cmd.io/" class="item" style="color: white !important;"><div style="border: 1px solid white; border-radius: 4px; background: white; color: black; font-size: x-large; line-height:1; margin-right: 6px;">&#8984;</div> CMD</a>
+          <a href="https://www.cmd.io/docs/" class="item"><i class="icon book"></i> Documentation</a>
+          <a href="https://www.cmd.io/community/" class="item"><i class="icon slack"></i>Community</a>
+          <a href="https://www.cmd.io/dev/" class="item"><i class="icon github"></i>Development</a>
+					<a href="https://medium.com/gliderlabs" class="item"><i class="icon medium"></i>Blog</a>
+
+					<div class="right item">
+	          <a href="https://alpha.cmd.io/console/" class="ui inverted button">Login to the Console</a>
+	        </div>
+        </div>
+      </div>
+    </div>
+
+		<div role="document" class="ui container document">
+			<div class="ui grid" style="margin-left: 4px;">
+				<div role="navigation" aria-label="main navigation" class="four wide column">
+					
+
+<h4>Documentation</h4>
+<ul style="margin-left: 17px;">
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/docs/">Overview</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/quickstart/">Quickstart</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/cli/">CLI Reference</a>
+		<ul style="margin-left: 17px; margin-top: 2px;">
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/create/">create</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/ls/">ls</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/source/">source</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/delete/">delete</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/edit/">edit</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/env/">env</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/access/">access</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/admins/">admins</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/tokens/">tokens</a>
+			</li>
+			
+		</ul>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/api/">API Reference</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/faq/">FAQ</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/guides/">Guides</a>
+		<ul style="margin-left: 17px; margin-top: 2px;">
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/guides/run-api/">Using the Run API</a>
+			</li>
+			
+		</ul>
+	</li>
+</ul>
+
+
+				</div>
+
+				<div class="body ten wide column" role="main">
+					
+	<h1>Quickstart</h1>
+	
+
+<div class="admonition note">
+<h4>Alpha users</h4>
+<p>You also have access to the <a href="https://github.com/gliderlabs/cmd">source code</a> and our <a href="https://github.com/gliderlabs/cmd/wiki">development wiki</a>! A great way
+to help out is to take notes while playing with Cmd.io: just make a page for
+yourself on our <a href="https://github.com/gliderlabs/cmd/wiki/UserNotes">UserNotes</a> wiki page.</p>
+</div>
+
+
+<p>With Cmd we can make shell scripts that live and run in the cloud. In this quick guide, we&rsquo;ll make a &ldquo;Hello, world&rdquo; script in Bash as a cloud command.</p>
+
+<p>First, we&rsquo;ll need to make sure we&rsquo;ve set up our GitHub user and SSH key to access Cmd over SSH. Take a quick look at <a href="https://www.cmd.io/cli/">Using the CLI via SSH</a> if you need to add your key to GitHub. Cmd uses your GitHub and SSH key to authenticate.</p>
+
+<p>If it&rsquo;s your first time using Cmd and you haven&rsquo;t logged into the web-based <a href="https://alpha.cmd.io/console/">Console</a>, it may prompt you to do that first.</p>
+
+<p>After that you should be able to just SSH to alpha.cmd.io to get a basic usage response, something like this:</p>
+
+<pre><code class="language-text">$ ssh alpha.cmd.io
+⌘ Cmd by Glider Labs
+  version: 473573c2
+
+► Usage
+  ssh alpha.cmd.io [ command | builtin ]
+
+☰ Commands
+
+☰ Builtins
+  :access      Manage command access
+  :admins      Manage command admins
+  :create      Create a command
+  :delete      Delete a command
+  :edit        Edit a command
+  :env         Manage command environment
+  :help        Help about any command
+  :ls          List available commands
+  :tokens      Manage access tokens
+
+⚑ Flags
+  -h, --help   help for cmd
+
+Use &quot;ssh alpha.cmd.io [builtin] --help&quot; to learn more about a builtin.
+Connection to alpha.cmd.io closed.
+</code></pre>
+
+<p>No commands are listed, but we can make one using the builtin commands.</p>
+
+<h3 id="making-a-command">Making a command</h3>
+
+<p>We can create a command with <code>:create</code>. First, we have to create a Cmd script locally to feed into it. Let&rsquo;s make a <code>hello.cmd</code> file:</p>
+
+<pre><code class="language-text">#!cmd alpine bash
+#!/bin/bash
+echo &quot;Hello, ${1:-world}!&quot;
+</code></pre>
+
+<p>You&rsquo;ll notice this looks like a standard shell script with the addition of an extra shebang line. This tells Cmd.io how to build the environment for the command. The first argument <code>alpine</code> represents Alpine Linux, currently the only supported Linux distro. Any following arguments are packages to install. You can search for packages <a href="http://pkgs.alpinelinux.org/packages">based on name</a> or <a href="http://pkgs.alpinelinux.org/contents">based on contents</a>.</p>
+
+<p>Let&rsquo;s create the command from the script:</p>
+
+<pre><code class="language-text">$ cat hello.cmd | ssh alpha.cmd.io :create hello
+Creating command... done
+</code></pre>
+
+<p>Now we can run it:</p>
+
+<pre><code class="language-text">$ ssh alpha.cmd.io hello
+Hello, world!
+</code></pre>
+
+<p>We made it use <code>world</code> if there is no argument, but we can also provide one when we run it:</p>
+
+<pre><code class="language-text">$ ssh alpha.cmd.io hello everybody
+Hello, everybody!
+</code></pre>
+
+<p>That&rsquo;s it!</p>
+
+<h3 id="making-a-command-for-an-existing-utility">Making a command for an existing utility</h3>
+
+<p>If you want to build a command based on an existing Alpine package, you can just install it and then specify it as the &ldquo;interpreter&rdquo; (in this case it&rsquo;s acting as an &ldquo;entrypoint&rdquo;). No need to specify a full path, but you can if you want. Here&rsquo;s a script to make a <a href="https://stedolan.github.io/jq/">jq</a> command:</p>
+
+<pre><code class="language-text">#!cmd alpine jq
+#!jq
+</code></pre>
+
+<p>Create the command as usual. Let&rsquo;s say that the above was called <code>jq.cmd</code>:</p>
+
+<pre><code class="language-text">$ cat jq.cmd | ssh alpha.cmd.io :create jq
+</code></pre>
+
+<p>Now you have a cloud <code>jq</code> you can use from anywhere. Here we&rsquo;ll curl the GitHub API for my user and get my name from the JSON by piping into our cloud <code>jq</code>:</p>
+
+<pre><code class="language-text">$ curl -s https://api.github.com/users/progrium \
+  | ssh alpha.cmd.io jq .name
+&quot;Jeff Lindsay&quot;
+</code></pre>
+
+<p><div class="admonition note">
+<h4>Exploring Alpine</h4>
+<p>If you want to play with Alpine Linux, the easiest way to interactively experiment with it is using <a href="https://www.docker.com/">Docker</a>. The official <code>alpine</code> image is the same image used by Cmd. Here&rsquo;s how you&rsquo;d jump into an Alpine shell in Docker:</p>
+
+<pre><code>$ docker run -it alpine sh
+</code></pre>
+</p>
+</div>
+</p>
+
+<h3 id="what-next">What next?</h3>
+
+<p>See what else you can do by exploring the rest of the docs! If you need help, <a href="http://slack.gliderlabs.com/">join our Slack</a> and say hi in the <code>#cmd</code> channel.</p>
+
+	<hr style="margin-top: 40px;"/>
+	<a href="https://github.com/gliderlabs/cmd/edit/master/docs/quickstart.md"><i class="icon pencil" style="text-decoration: none;"></i>Suggest Edits</a>
+
+				</div>
+
+			</div>
+
+
+			
+
+			
+
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+			<script>hljs.initHighlightingOnLoad();</script>
+			
+
+			
+		</div>
+	</body>
+</html>

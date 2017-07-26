@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="generator" content="Hugo 0.20.7" />
+  
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  
+  <title>Shell commands in the cloud - Cmd.io</title>
+  <link rel="stylesheet" type="text/css" href="https://www.cmd.io/semantic/semantic.min.css">
+
+  <style type="text/css">
+    code {
+      padding-left: 3px;
+      padding-right: 3px;
+    }
+    .masthead.segment {
+      padding: 1em 0em 0em;
+    }
+    .masthead .row {
+      padding: 100px 0 0 !important;
+    }
+    .masthead .image {
+      border-bottom-left-radius: 0em !important;
+      border-bottom-right-radius: 0em !important;
+    }
+    .masthead .segment {
+      font-size: 1.5em;
+      padding: 0;
+    }
+    .masthead .column .text {
+      padding-top: 50px;
+      margin-left: 50px;
+    }
+    .masthead .column .text p {
+      color: rgba(255,255,255,.5);
+    }
+    .masthead .ui.menu .ui.button {
+      margin-left: 0.5em;
+    }
+    .masthead h1.ui.header {
+      margin-top: 3em;
+      margin-bottom: 0em;
+      font-size: 4em;
+      font-weight: normal;
+    }
+    .masthead h2 {
+      font-size: 1.7em;
+      font-weight: normal;
+    }
+
+    .masthead .terminal {
+      margin-bottom: -1px;
+      margin-top: -40px;
+    }
+    .masthead .terminal header {
+      position: relative;
+      background-color: gray;
+      text-align: center;
+      height: 26px;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+    }
+    .masthead .terminal h4 {
+      margin: 0px;
+    }
+    .masthead .terminal ul {
+      position: absolute;
+      top: 0px;
+      left: 4px;
+      padding-left: 0;
+      margin: 0;
+
+    }
+    .masthead .terminal li {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 6px;
+      margin-left: 6px;
+      background-color: lightgray;
+    }
+
+    .ui.vertical.stripe {
+      padding: 8em 0em;
+    }
+    .ui.vertical.stripe h3 {
+      font-size: 2em;
+    }
+    .ui.vertical.stripe .button + h3,
+    .ui.vertical.stripe p + h3 {
+      margin-top: 3em;
+    }
+    .ui.vertical.stripe .floated.image {
+      clear: both;
+    }
+    .ui.vertical.stripe p {
+      font-size: 1.33em;
+    }
+    .ui.vertical.stripe .horizontal.divider {
+      margin: 3em 0em;
+    }
+
+    .quote.stripe.segment {
+      padding: 0em;
+    }
+    .quote.stripe.segment .grid .column {
+      padding-top: 5em;
+      padding-bottom: 5em;
+    }
+
+    .footer.segment {
+      padding: 5em 0em;
+    }
+
+
+    .footer .project h3 {
+      line-height: 14px;
+      margin-top: -4px;
+    }
+    .footer .project h3 img {
+      width: 32px;
+      float: left;
+      margin-top: -2px;
+      margin-right: 6px;
+      vertical-align: top;
+    }
+    .footer .project h3 span {
+      font-weight: 100;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+    .footer .project h4 {
+      margin-top: 30px;
+      color: rgba(255,255,255,0.8);
+      font-weight: normal;
+    }
+    .footer .project a {
+      color: white;
+    }
+    .footer small {
+      color: rgba(255,255,255,0.3);
+      font-size: small;
+    }
+    .footer form {
+      margin-bottom: 4px;
+    }
+    .footer input[type=email] {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    .footer input[type=submit] {
+      background: rgba(255,255,255,0.9);
+    }
+
+
+    @media only screen and (max-width: 700px) {
+      .ui.fixed.menu {
+        display: none !important;
+      }
+      .secondary.pointing.menu .item,
+      .secondary.pointing.menu .menu {
+        display: none;
+      }
+      .secondary.pointing.menu .toc.item {
+        display: block;
+      }
+      .masthead.segment {
+        min-height: 350px;
+      }
+      .masthead h1.ui.header {
+        font-size: 2em;
+        margin-top: 1.5em;
+      }
+      .masthead h2 {
+        margin-top: 0.5em;
+        font-size: 1.5em;
+      }
+    }
+
+
+  </style>
+
+  <link rel="shortcut icon" href="https://www.cmd.io/favicon.ico" />
+  <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
+</head>
+<body>
+
+
+<div class="pusher">
+  <div class="ui inverted vertical masthead center aligned segment">
+
+    <div class="ui container">
+      <div class="ui large secondary pointing inverted menu">
+        <a class="item"><div style="border: 1px solid white; border-radius: 4px; background: white; color: black; font-size: x-large; line-height:1; position: absolute; top: -9px;">&#8984;</div></a>
+        <a class="item" style="color: white !important;">CMD</a>
+        <a href="https://www.cmd.io/docs/" class="item"><i class="icon book"></i> Documentation</a>
+        <a href="https://www.cmd.io/community/" class="item"><i class="icon slack"></i>Community</a>
+        <a href="https://www.cmd.io/dev/"  class="item"><i class="icon github"></i>Development</a>
+        <a href="https://medium.com/gliderlabs" class="item"><i class="icon medium"></i>Blog</a>
+
+        <div class="right item">
+          <a href="https://alpha.cmd.io/login" class="ui inverted button" style="box-shadow: none!important;">Login</a>
+          <a href="https://alpha.cmd.io/request" class="ui inverted button">Request Access</a>
+          
+        </div>
+      </div>
+
+
+      <div class="ui inverted vertical segment">
+        <div class="ui equal width stackable grid">
+          <div class="left aligned row">
+            <div class="column">
+              <div class="text">
+                <h2>Shell Commands in the Cloud</h2>
+                <p>Run command-line tools and scripts from anywhere using SSH or HTTP.</p>
+                <a href="https://alpha.cmd.io/request" class="ui big primary button">Request Access <i class="right arrow icon"></i></a>
+              </div>
+            </div>
+            <div class="column">
+              <div class="terminal">
+                <header>
+                  <ul><li></li><li></li><li></li></ul>
+                </header>
+                <div class="terminal-window">
+                  <img src="https://www.cmd.io/CmdMain.gif" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="ui vertical stripe segment" style="font-size: smaller;">
+    <div class="ui equal width stackable grid container">
+      <div class="center aligned row">
+        <div class="column">
+          <h3 class="ui icon header">
+            <i class="wizard icon"></i>
+            Your tools everywhere you go
+          </h3>
+          <p>
+            Many command-line utilities can now be put in the cloud, configured just as you need, and run from anywhere using SSH with no installation.
+          </p>
+        </div>
+        <div class="column">
+          <h3 class="ui icon header">
+            <i class="users icon"></i>
+            Share scripts and automation
+          </h3>
+          <p>
+            Empower your team with scripts and custom tooling that doesn't need to be set up. Just give access and others can run the command.
+          </p>
+        </div>
+        <div class="column">
+          <h3 class="ui icon header">
+            <i class="settings icon"></i>
+            Integrate with your workflow
+          </h3>
+          <p>
+            Running commands via HTTP and WebSocket open up new ways to integrate shell scripting and utilities into your apps and internal systems.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="ui vertical stripe segment inverted blue" style="font-size: smaller;">
+    <div class="ui equal width stackable grid container">
+      <div class="row">
+        <div class="column">
+          <div class="ui embed" data-source="vimeo" data-id="181089646"></div>
+        </div>
+        <div class="column">
+          <h3 class="ui inverted header">Cmd.io is a specialized compute platform</h3>
+          <p>
+            It was made for running short lived, sometimes interactive programs made for the command-line.
+            Programs are run in their own stateless, isolated execution environment in the cloud.
+          </p>
+          <p>
+            Programs are run as commands using SSH, HTTP, or WebSocket.
+            You can give them environment variables, arguments, and <code>STDIN</code>.
+            They then stream back the output of <code>STDOUT</code> and <code>STDERR</code>.
+            It's effectively a cloud API for POSIX tasks.
+          </p>
+          <p>
+            However, Cmd is not designed to run long-lived programs, programs that
+            accept network connections, or programs that require interactive access
+            to the user filesystem.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="ui vertical stripe segment">
+    <div class="ui center aligned text container">
+      <h3 class="ui header">Most importantly, Cmd.io is a building block.</h3>
+      <p>
+        Cmd was built to <strong>do one thing and do it well</strong>.<br />
+        It was designed to be <strong>composable</strong> with other systems.<br />
+      </p>
+      <p>
+        <small>Here are a few ideas to spark inspiration...</small>
+      </p>
+      <div class="ui equal width stackable grid container">
+        <div class="center aligned row" style="margin: 20px;">
+          <div class="column">
+            <i class="huge history icon" style="margin: 7px;"></i>
+            <div>Cron</div>
+          </div>
+          <div class="column">
+            <img class="ui centered tiny image" style="height: 80px; width: 58px;" src="https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png" />
+            <div>CI</div>
+          </div>
+          <div class="column">
+            <img class="ui centered tiny image" src="https://a.slack-edge.com/ae7f/img/services/outgoing-webhook_512.png" />
+            <div>Webhooks</div>
+          </div>
+        </div>
+        <div class="center aligned row" style="margin: 20px;">
+          <div class="column">
+            <img class="ui centered tiny image" src="https://www.w3.org/html/logo/downloads/HTML5_Badge_512.png" />
+            <div>WebSocket</div>
+          </div>
+          <div class="column">
+            <img class="ui centered tiny image" src="https://upload.wikimedia.org/wikipedia/commons/7/76/Slack_Icon.png" />
+            <div>Slack</div>
+          </div>
+          <div class="column">
+            <img class="ui centered tiny image" src="https://web-assets.ifttt.com/images/og_ifttt_logo.png" />
+            <div>IFTTT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+
+  <div class="ui inverted vertical footer segment">
+    <div class="ui container">
+      <div class="ui stackable inverted divided equal height stackable grid">
+        <div class="three wide column">
+          <h4 class="ui inverted header">&#8984; Cmd</h4>
+          <div class="ui inverted link list">
+            
+            <a href="https://medium.com/cmd-io" class="item">Blog</a>
+            <a href="https://slack.gliderlabs.com" class="item">Community</a>
+            <a href="https://github.com/gliderlabs/cmd" class="item">Development</a>
+            
+            
+          </div>
+        </div>
+        <div class="ten wide column">
+          <h4 class="ui inverted header">Subscribe for Updates</h4>
+          <script src="https://assets.convertkit.com/assets/CKJS4.js?v=21"></script>
+          <form action="https://app.convertkit.com/landing_pages/242514/subscribe"
+            id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate form-inline" data-remote="true" novalidate>
+            <input type="hidden" value="{&quot;form_style&quot;:&quot;minimal&quot;,&quot;embed_style&quot;:&quot;inline&quot;,&quot;embed_trigger&quot;:&quot;scroll_percentage&quot;,&quot;scroll_percentage&quot;:&quot;70&quot;,&quot;delay_seconds&quot;:&quot;10&quot;,&quot;display_position&quot;:&quot;br&quot;,&quot;display_devices&quot;:&quot;all&quot;,&quot;days_no_show&quot;:&quot;15&quot;,&quot;converted_behavior&quot;:&quot;show&quot;}" id="ck_form_options">
+            <input type="hidden" name="id" value="242514" id="landing_page_id">
+            <input type="hidden" name="ck_form_recaptcha" value="" id="ck_form_recaptcha">
+          <div class="ui small right action input">
+              <input type="email" value="" name="email" class="email input" id="mce-EMAIL" placeholder="Email Address" required>
+
+              <button class="subscribe_button ck_subscribe_button btn fields ui button" id="ck_subscribe_button">
+                Subscribe
+              </button>
+              <div class="ck_control_group ck_captcha2_h_field_group ck-captcha2-h" style="position: absolute !important;left: -999em !important;">
+                <input type="text" name="captcha2_h" class="ck-captcha2-h" id="ck_captcha2_h" placeholder="We use this field to detect spam bots. If you fill this in, you will be marked as a spammer.">
+              </div>
+          </div>
+        </form>
+        <small>Stay informed and get Cmd.io announcements.</small>
+        </div>
+        <div class="three wide column project">
+          <h3>
+            <a href="https://gliderlabs.com">
+            <img src="https://gliderlabs.com/images/dots-bw.svg" />
+            GLIDER LABS<br />
+            <span>Community Project</span>
+            </a>
+          </h3>
+          <div>
+            <h4>Originated in Austin, Texas</h4>
+            <small>The future belongs to those<br />who program it.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $('.ui.embed').embed();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-58928488-4', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+
+</html>

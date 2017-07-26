@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head lang="en-us">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+	<meta name="description" content="Shell commands in the cloud.">
+	<meta name="generator" content="Hugo 0.20.7" />
+
+	<title>CLI Reference &mdash; Cmd Documentation</title>
+
+	<link rel="stylesheet" href="https://www.cmd.io//semantic/semantic.min.css" type="text/css" />
+	<link rel="stylesheet" href="https://www.cmd.io/css/alabaster.css" type="text/css" />
+	<link rel="stylesheet" href="https://www.cmd.io/css/highlight.css" type="text/css" />
+
+	
+
+	<link rel="shortcut icon" href="https://www.cmd.io/favicon.ico" type="image/x-icon"/>
+
+	<script type="text/javascript">
+		if (location.hostname == "gliderlabs.github.io") {
+			location.href = "https://www.cmd.io"+location.pathname.replace("/cmd/", "/");
+		}
+	</script>
+</head>
+
+
+	<body>
+		<div class="ui inverted vertical segment" style="padding:0;">
+      <div class="ui container">
+        <div class="ui large borderless inverted menu">
+          <a href="https://www.cmd.io/" class="item" style="color: white !important;"><div style="border: 1px solid white; border-radius: 4px; background: white; color: black; font-size: x-large; line-height:1; margin-right: 6px;">&#8984;</div> CMD</a>
+          <a href="https://www.cmd.io/docs/" class="item"><i class="icon book"></i> Documentation</a>
+          <a href="https://www.cmd.io/community/" class="item"><i class="icon slack"></i>Community</a>
+          <a href="https://www.cmd.io/dev/" class="item"><i class="icon github"></i>Development</a>
+					<a href="https://medium.com/gliderlabs" class="item"><i class="icon medium"></i>Blog</a>
+
+					<div class="right item">
+	          <a href="https://alpha.cmd.io/console/" class="ui inverted button">Login to the Console</a>
+	        </div>
+        </div>
+      </div>
+    </div>
+
+		<div role="document" class="ui container document">
+			<div class="ui grid" style="margin-left: 4px;">
+				<div role="navigation" aria-label="main navigation" class="four wide column">
+					
+
+
+
+
+<h4>Documentation</h4>
+<ul style="margin-left: 17px;">
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/docs/">Overview</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/quickstart/">Quickstart</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/cli/">CLI Reference</a>
+		<ul style="margin-left: 17px; margin-top: 2px;">
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/create/">create</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/ls/">ls</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/source/">source</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/delete/">delete</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/edit/">edit</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/env/">env</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/access/">access</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/admins/">admins</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/tokens/">tokens</a>
+			</li>
+			
+		</ul>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/api/">API Reference</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/faq/">FAQ</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/guides/">Guides</a>
+		<ul style="margin-left: 17px; margin-top: 2px;">
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/guides/run-api/">Using the Run API</a>
+			</li>
+			
+		</ul>
+	</li>
+</ul>
+
+
+				</div>
+
+				<div class="body ten wide column" role="main">
+					
+	<h1>CLI Reference</h1>
+	
+
+<h2 id="using-the-cli-via-ssh">Using the CLI via SSH</h2>
+
+<p>There is no Cmd-specific client. Instead, you use an SSH client to interact with Cmd. Most of our documentation assumes OpenSSH, which is available on all Linux and MacOS systems.</p>
+
+<p>Using Cmd via SSH typically looks like this in the terminal:</p>
+
+<pre><code class="language-sh">$ ssh &lt;username&gt;@alpha.cmd.io &lt;command&gt;
+</code></pre>
+
+<div class="admonition note">
+<h4>Quick Tip</h4>
+<p>The above can be shortened a number of ways. The most common is editing your <code>~/.ssh/config</code> file to add:</p>
+
+<pre><code class="language-text">Host cmd
+  HostName alpha.cmd.io
+  User &lt;username&gt;
+</code></pre>
+
+<p>Then you can run commands with:</p>
+
+<pre><code class="language-text">$ ssh cmd &lt;command&gt;
+</code></pre>
+</p>
+</div>
+
+
+<h3 id="authentication">Authentication</h3>
+
+<p>Cmd uses your GitHub user for authentication. It also uses the SSH public keys stored with your GitHub account. If you haven&rsquo;t uploaded a public key to GitHub, you can easily add one in Settings under <a href="https://github.com/settings/keys">SSH and GPG keys</a>.</p>
+
+<p>For more information, you can read <a href="https://help.github.com/articles/connecting-to-github-with-ssh/">Connecting to GitHub with SSH</a>. If you can connect to GitHub via SSH, you can connect to Cmd.</p>
+
+<h2 id="builtin-commands">Builtin Commands</h2>
+
+<p>The point of Cmd is to run commands you create, but there are builtin
+commands to manage and configure your commands. These commands are prefixed with
+a colon.</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><a href="https://www.cmd.io/cli/access/">:access</a> &nbsp;</td>
+<td>&nbsp; Manage command access</td>
+</tr>
+
+<tr>
+<td><a href="https://www.cmd.io/cli/admins/">:admins</a> &nbsp;</td>
+<td>&nbsp; Manage command admins</td>
+</tr>
+
+<tr>
+<td><a href="https://www.cmd.io/cli/create/">:create</a> &nbsp;</td>
+<td>&nbsp; Create a command</td>
+</tr>
+
+<tr>
+<td><a href="https://www.cmd.io/cli/delete/">:delete</a> &nbsp;</td>
+<td>&nbsp; Delete a command</td>
+</tr>
+
+<tr>
+<td><a href="https://www.cmd.io/cli/edit/">:edit</a>     &nbsp;</td>
+<td>&nbsp; Edit a command</td>
+</tr>
+
+<tr>
+<td><a href="https://www.cmd.io/cli/env/">:env</a>       &nbsp;</td>
+<td>&nbsp; Manage command environment</td>
+</tr>
+
+<tr>
+<td><a href="https://www.cmd.io/cli/ls/">:ls</a>         &nbsp;</td>
+<td>&nbsp; List available commands</td>
+</tr>
+
+<tr>
+<td><a href="https://www.cmd.io/cli/source/">:source</a> &nbsp;</td>
+<td>&nbsp; Display command source</td>
+</tr>
+
+<tr>
+<td><a href="https://www.cmd.io/cli/tokens/">:tokens</a> &nbsp;</td>
+<td>&nbsp; Manage access tokens</td>
+</tr>
+
+<tr>
+<td>:help               &nbsp;</td>
+<td>&nbsp; Help about any command</td>
+</tr>
+</tbody>
+</table>
+
+	<hr style="margin-top: 40px;"/>
+	<a href="https://github.com/gliderlabs/cmd/edit/master/docs/cli.md"><i class="icon pencil" style="text-decoration: none;"></i>Suggest Edits</a>
+
+				</div>
+
+			</div>
+
+
+			
+
+			
+
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+			<script>hljs.initHighlightingOnLoad();</script>
+			
+
+			
+		</div>
+	</body>
+</html>

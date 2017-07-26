@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head lang="en-us">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+	<meta name="description" content="Shell commands in the cloud.">
+	<meta name="generator" content="Hugo 0.20.7" />
+
+	<title>source &mdash; Cmd Documentation</title>
+
+	<link rel="stylesheet" href="https://www.cmd.io//semantic/semantic.min.css" type="text/css" />
+	<link rel="stylesheet" href="https://www.cmd.io/css/alabaster.css" type="text/css" />
+	<link rel="stylesheet" href="https://www.cmd.io/css/highlight.css" type="text/css" />
+
+	
+
+	<link rel="shortcut icon" href="https://www.cmd.io/favicon.ico" type="image/x-icon"/>
+
+	<script type="text/javascript">
+		if (location.hostname == "gliderlabs.github.io") {
+			location.href = "https://www.cmd.io"+location.pathname.replace("/cmd/", "/");
+		}
+	</script>
+</head>
+
+
+	<body>
+		<div class="ui inverted vertical segment" style="padding:0;">
+      <div class="ui container">
+        <div class="ui large borderless inverted menu">
+          <a href="https://www.cmd.io/" class="item" style="color: white !important;"><div style="border: 1px solid white; border-radius: 4px; background: white; color: black; font-size: x-large; line-height:1; margin-right: 6px;">&#8984;</div> CMD</a>
+          <a href="https://www.cmd.io/docs/" class="item"><i class="icon book"></i> Documentation</a>
+          <a href="https://www.cmd.io/community/" class="item"><i class="icon slack"></i>Community</a>
+          <a href="https://www.cmd.io/dev/" class="item"><i class="icon github"></i>Development</a>
+					<a href="https://medium.com/gliderlabs" class="item"><i class="icon medium"></i>Blog</a>
+
+					<div class="right item">
+	          <a href="https://alpha.cmd.io/console/" class="ui inverted button">Login to the Console</a>
+	        </div>
+        </div>
+      </div>
+    </div>
+
+		<div role="document" class="ui container document">
+			<div class="ui grid" style="margin-left: 4px;">
+				<div role="navigation" aria-label="main navigation" class="four wide column">
+					
+
+
+
+
+<h4>Documentation</h4>
+<ul style="margin-left: 17px;">
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/docs/">Overview</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/quickstart/">Quickstart</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/cli/">CLI Reference</a>
+		<ul style="margin-left: 17px; margin-top: 2px;">
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/create/">create</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/ls/">ls</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/source/">source</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/delete/">delete</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/edit/">edit</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/env/">env</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/access/">access</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/admins/">admins</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/tokens/">tokens</a>
+			</li>
+			
+		</ul>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/api/">API Reference</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/faq/">FAQ</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/guides/">Guides</a>
+		<ul style="margin-left: 17px; margin-top: 2px;">
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/guides/run-api/">Using the Run API</a>
+			</li>
+			
+		</ul>
+	</li>
+</ul>
+
+
+				</div>
+
+				<div class="body ten wide column" role="main">
+					
+	<h1>source</h1>
+	
+
+<h5 id="prints-the-source-of-a-command">Prints the source of a command</h5>
+
+<pre><code class="language-sh">$ ssh alpha.cmd.io :source &lt;name&gt;
+</code></pre>
+
+<p><code>:source &lt;name&gt;</code> will display the source of your command by the name given by <code>&lt;name&gt;</code>.</p>
+
+	<hr style="margin-top: 40px;"/>
+	<a href="https://github.com/gliderlabs/cmd/edit/master/docs/cli/source.md"><i class="icon pencil" style="text-decoration: none;"></i>Suggest Edits</a>
+
+				</div>
+
+			</div>
+
+
+			
+
+			
+
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+			<script>hljs.initHighlightingOnLoad();</script>
+			
+
+			
+		</div>
+	</body>
+</html>

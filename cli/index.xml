@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Clis on Cmd Documentation</title>
+    <link>https://www.cmd.io/cli/</link>
+    <description>Recent content in Clis on Cmd Documentation</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 31 Jan 2017 18:00:00 -0600</lastBuildDate>
+    
+	<atom:link href="https://www.cmd.io/cli/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>create</title>
+      <link>https://www.cmd.io/cli/create/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/create/</guid>
+      <description>Creates a new command $ cat ./script | ssh alpha.cmd.io :create &amp;lt;name&amp;gt; -  :create will build and add a new command to your namespace with the given &amp;lt;name&amp;gt; using the script passed via STDIN. The - argument is required to inform the command to read from STDIN, as future versions may introduce an interactive mode.
+Script format Cmd expects a shell script with at least two shebang lines. The first line must be a special #!</description>
+    </item>
+    
+    <item>
+      <title>source</title>
+      <link>https://www.cmd.io/cli/source/</link>
+      <pubDate>Wed, 17 May 2017 18:22:00 -0800</pubDate>
+      
+      <guid>https://www.cmd.io/cli/source/</guid>
+      <description>Prints the source of a command $ ssh alpha.cmd.io :source &amp;lt;name&amp;gt;  :source &amp;lt;name&amp;gt; will display the source of your command by the name given by &amp;lt;name&amp;gt;.</description>
+    </item>
+    
+    <item>
+      <title>ls</title>
+      <link>https://www.cmd.io/cli/ls/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/ls/</guid>
+      <description>Lists available commands $ ssh alpha.cmd.io :ls  :ls will display a list of your commands.</description>
+    </item>
+    
+    <item>
+      <title>delete</title>
+      <link>https://www.cmd.io/cli/delete/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/delete/</guid>
+      <description>Deletes a command $ ssh alpha.cmd.io :delete &amp;lt;name&amp;gt;  :delete will delete your command by the name given by &amp;lt;name&amp;gt;.</description>
+    </item>
+    
+    <item>
+      <title>edit</title>
+      <link>https://www.cmd.io/cli/edit/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/edit/</guid>
+      <description>Edits a command $ cat ./script | ssh alpha.cmd.io :edit &amp;lt;name&amp;gt; -  :edit will rebuild the command &amp;lt;name&amp;gt; with the script passed via STDIN. The builtin requires the - second argument to inform it to read from STDIN, as future versions may introduce an interactive mode.
+See :create for the expected script format.</description>
+    </item>
+    
+    <item>
+      <title>env</title>
+      <link>https://www.cmd.io/cli/env/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/env/</guid>
+      <description>Manages command environment $ ssh alpha.cmd.io :env &amp;lt;name&amp;gt; [&amp;lt;subcommand&amp;gt;]  :env allows you to manage environment variables for your command &amp;lt;name&amp;gt;. The builtin has subcommands for setting and unsetting variables.
+By default, if no subcommand is provided, it will list environment variables.
+Subcommands ls Lists command environment variables $ ssh alpha.cmd.io :env &amp;lt;name&amp;gt; ls  The ls subcommand will display environment variables configured for the command &amp;lt;name&amp;gt;. This is the default subcommand to :env.</description>
+    </item>
+    
+    <item>
+      <title>access</title>
+      <link>https://www.cmd.io/cli/access/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/access/</guid>
+      <description>Manages command access $ ssh alpha.cmd.io :access &amp;lt;name&amp;gt; [&amp;lt;subcommand&amp;gt;]  :access allows you to control who can run your command &amp;lt;name&amp;gt;. The builtin has subcommands for granting and revoking access to users or access tokens.
+If no subcommand is provided, it will list command access by default.
+Subcommands ls Lists command access $ ssh alpha.cmd.io :access &amp;lt;name&amp;gt; ls  The ls subcommand will display what users and access tokens have access to run the command &amp;lt;name&amp;gt;.</description>
+    </item>
+    
+    <item>
+      <title>admins</title>
+      <link>https://www.cmd.io/cli/admins/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/admins/</guid>
+      <description>Manages command admins $ ssh alpha.cmd.io :admins &amp;lt;name&amp;gt; [&amp;lt;subcommand&amp;gt;]  :admins allows you to control who can administer your command &amp;lt;name&amp;gt;. The builtin has subcommands for granting and revoking command admin to users.
+Admins have the ability to view and change environment and access, and edit a command script.
+If no subcommand is provided, it will list command admins by default.
+Subcommands ls Lists command admins $ ssh alpha.cmd.io :admins &amp;lt;name&amp;gt; ls  The ls subcommand will display what users have admin access to the command &amp;lt;name&amp;gt;.</description>
+    </item>
+    
+    <item>
+      <title>tokens</title>
+      <link>https://www.cmd.io/cli/tokens/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/tokens/</guid>
+      <description>Manages access tokens $ ssh alpha.cmd.io :tokens [&amp;lt;subcommand&amp;gt;]  :tokens allows you to manage access tokens that can be used to provide access to apps and users without a user account. The builtin has subcommands for creating and deleting tokens.
+If no subcommand is provided, it will list access tokens by default.
+Subcommands ls Lists access tokens $ ssh alpha.cmd.io :tokens ls  The ls subcommand will display existing access tokens.</description>
+    </item>
+    
+  </channel>
+</rss>

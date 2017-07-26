@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cmd Documentation</title>
+    <link>https://www.cmd.io/</link>
+    <description>Recent content on Cmd Documentation</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 31 Jan 2017 18:00:00 -0600</lastBuildDate>
+    
+	<atom:link href="https://www.cmd.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Quickstart</title>
+      <link>https://www.cmd.io/quickstart/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/quickstart/</guid>
+      <description>Alpha users You also have access to the source code and our development wiki! A great way to help out is to take notes while playing with Cmd.io: just make a page for yourself on our UserNotes wiki page.
+ With Cmd we can make shell scripts that live and run in the cloud. In this quick guide, we&amp;rsquo;ll make a &amp;ldquo;Hello, world&amp;rdquo; script in Bash as a cloud command.</description>
+    </item>
+    
+    <item>
+      <title>API Reference</title>
+      <link>https://www.cmd.io/api/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/api/</guid>
+      <description>Commands can be run over secure HTTP and WebSocket using access tokens. This can be used to run commands when you don&amp;rsquo;t have SSH or need something more programmatic.
+When commands are run via this API, they receive a representation of the HTTP request using CGI. This means request metadata will be added to the environment and the body of the request will be passed as STDIN.
+Authentication The Run API requires the use of access tokens, which can be created and given access to one or more commands.</description>
+    </item>
+    
+    <item>
+      <title>CLI Reference</title>
+      <link>https://www.cmd.io/cli/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/</guid>
+      <description>Using the CLI via SSH There is no Cmd-specific client. Instead, you use an SSH client to interact with Cmd. Most of our documentation assumes OpenSSH, which is available on all Linux and MacOS systems.
+Using Cmd via SSH typically looks like this in the terminal:
+$ ssh &amp;lt;username&amp;gt;@alpha.cmd.io &amp;lt;command&amp;gt;  Quick Tip The above can be shortened a number of ways. The most common is editing your ~/.ssh/config file to add:</description>
+    </item>
+    
+    <item>
+      <title>Community</title>
+      <link>https://www.cmd.io/community/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/community/</guid>
+      <description>Community is hugely important for Cmd. Not only is it a community of users, but as an open source project and service, it&amp;rsquo;s also the community of developers and operators building and running Cmd.
+As a community project of Glider Labs, the Cmd community is part of a larger ecosystem of Glider Labs projects. We&amp;rsquo;d love to invite you into this community, which is centered around our Slack.
+Feel free to join our Slack and find your way to the #cmd channel, but also explore and see what else is going on.</description>
+    </item>
+    
+    <item>
+      <title>Development</title>
+      <link>https://www.cmd.io/dev/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/dev/</guid>
+      <description>Normally this would be a link to the GitHub repository, but we currently have it private to alpha users. If you&amp;rsquo;d like to contribute, request access. We&amp;rsquo;ll open up development more as we go into beta and stable phases.</description>
+    </item>
+    
+    <item>
+      <title>FAQ</title>
+      <link>https://www.cmd.io/faq/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/faq/</guid>
+      <description>Where can I go for help using Cmd? Besides this documentation, you can join our Slack (the #cmd channel) and the community will do their best to help. This is preferred before submitting a Github issue for general help, however if you believe you found a bug feel to submit an issue.
+Can config be used for secrets? Config is intended to be used for secrets, however it&amp;rsquo;s important to understand the risks.</description>
+    </item>
+    
+    <item>
+      <title>Guides</title>
+      <link>https://www.cmd.io/guides/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/guides/</guid>
+      <description>  Using the Run API   TODO  Command Authoring Using Secrets Sharing Commands Handling git push  </description>
+    </item>
+    
+    <item>
+      <title>Shell commands in the cloud</title>
+      <link>https://www.cmd.io/docs/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/docs/</guid>
+      <description>Cmd is a service that runs commands and scripts in the cloud. The primary interface to Cmd is SSH, meaning you can use cloud commands from any host with an SSH client. A couple of use cases for Cmd include:
+ CLI utilities as a service. Example: bring jq wherever you go, without installing it. Avoid installing big CLI programs. Example: latex is huge and difficult to build but used infrequently.</description>
+    </item>
+    
+    <item>
+      <title>create</title>
+      <link>https://www.cmd.io/cli/create/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/create/</guid>
+      <description>Creates a new command $ cat ./script | ssh alpha.cmd.io :create &amp;lt;name&amp;gt; -  :create will build and add a new command to your namespace with the given &amp;lt;name&amp;gt; using the script passed via STDIN. The - argument is required to inform the command to read from STDIN, as future versions may introduce an interactive mode.
+Script format Cmd expects a shell script with at least two shebang lines. The first line must be a special #!</description>
+    </item>
+    
+    <item>
+      <title>source</title>
+      <link>https://www.cmd.io/cli/source/</link>
+      <pubDate>Wed, 17 May 2017 18:22:00 -0800</pubDate>
+      
+      <guid>https://www.cmd.io/cli/source/</guid>
+      <description>Prints the source of a command $ ssh alpha.cmd.io :source &amp;lt;name&amp;gt;  :source &amp;lt;name&amp;gt; will display the source of your command by the name given by &amp;lt;name&amp;gt;.</description>
+    </item>
+    
+    <item>
+      <title>ls</title>
+      <link>https://www.cmd.io/cli/ls/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/ls/</guid>
+      <description>Lists available commands $ ssh alpha.cmd.io :ls  :ls will display a list of your commands.</description>
+    </item>
+    
+    <item>
+      <title>delete</title>
+      <link>https://www.cmd.io/cli/delete/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/delete/</guid>
+      <description>Deletes a command $ ssh alpha.cmd.io :delete &amp;lt;name&amp;gt;  :delete will delete your command by the name given by &amp;lt;name&amp;gt;.</description>
+    </item>
+    
+    <item>
+      <title>Using the Run API</title>
+      <link>https://www.cmd.io/guides/run-api/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/guides/run-api/</guid>
+      <description>What if you could turn a shell script into a web API in seconds?
+Every Cmd.io command you make can be run via SSH and our Run API. All you have to do is write the script and create the command as usual, and you get this right out of the box.
+The Run API exposes a secure HTTP endpoint to execute and return the output of your command, with an option to stream the response in real-time.</description>
+    </item>
+    
+    <item>
+      <title>edit</title>
+      <link>https://www.cmd.io/cli/edit/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/edit/</guid>
+      <description>Edits a command $ cat ./script | ssh alpha.cmd.io :edit &amp;lt;name&amp;gt; -  :edit will rebuild the command &amp;lt;name&amp;gt; with the script passed via STDIN. The builtin requires the - second argument to inform it to read from STDIN, as future versions may introduce an interactive mode.
+See :create for the expected script format.</description>
+    </item>
+    
+    <item>
+      <title>env</title>
+      <link>https://www.cmd.io/cli/env/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/env/</guid>
+      <description>Manages command environment $ ssh alpha.cmd.io :env &amp;lt;name&amp;gt; [&amp;lt;subcommand&amp;gt;]  :env allows you to manage environment variables for your command &amp;lt;name&amp;gt;. The builtin has subcommands for setting and unsetting variables.
+By default, if no subcommand is provided, it will list environment variables.
+Subcommands ls Lists command environment variables $ ssh alpha.cmd.io :env &amp;lt;name&amp;gt; ls  The ls subcommand will display environment variables configured for the command &amp;lt;name&amp;gt;. This is the default subcommand to :env.</description>
+    </item>
+    
+    <item>
+      <title>access</title>
+      <link>https://www.cmd.io/cli/access/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/access/</guid>
+      <description>Manages command access $ ssh alpha.cmd.io :access &amp;lt;name&amp;gt; [&amp;lt;subcommand&amp;gt;]  :access allows you to control who can run your command &amp;lt;name&amp;gt;. The builtin has subcommands for granting and revoking access to users or access tokens.
+If no subcommand is provided, it will list command access by default.
+Subcommands ls Lists command access $ ssh alpha.cmd.io :access &amp;lt;name&amp;gt; ls  The ls subcommand will display what users and access tokens have access to run the command &amp;lt;name&amp;gt;.</description>
+    </item>
+    
+    <item>
+      <title>admins</title>
+      <link>https://www.cmd.io/cli/admins/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/admins/</guid>
+      <description>Manages command admins $ ssh alpha.cmd.io :admins &amp;lt;name&amp;gt; [&amp;lt;subcommand&amp;gt;]  :admins allows you to control who can administer your command &amp;lt;name&amp;gt;. The builtin has subcommands for granting and revoking command admin to users.
+Admins have the ability to view and change environment and access, and edit a command script.
+If no subcommand is provided, it will list command admins by default.
+Subcommands ls Lists command admins $ ssh alpha.cmd.io :admins &amp;lt;name&amp;gt; ls  The ls subcommand will display what users have admin access to the command &amp;lt;name&amp;gt;.</description>
+    </item>
+    
+    <item>
+      <title>tokens</title>
+      <link>https://www.cmd.io/cli/tokens/</link>
+      <pubDate>Tue, 31 Jan 2017 18:00:00 -0600</pubDate>
+      
+      <guid>https://www.cmd.io/cli/tokens/</guid>
+      <description>Manages access tokens $ ssh alpha.cmd.io :tokens [&amp;lt;subcommand&amp;gt;]  :tokens allows you to manage access tokens that can be used to provide access to apps and users without a user account. The builtin has subcommands for creating and deleting tokens.
+If no subcommand is provided, it will list access tokens by default.
+Subcommands ls Lists access tokens $ ssh alpha.cmd.io :tokens ls  The ls subcommand will display existing access tokens.</description>
+    </item>
+    
+  </channel>
+</rss>

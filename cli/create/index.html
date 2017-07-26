@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head lang="en-us">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+	<meta name="description" content="Shell commands in the cloud.">
+	<meta name="generator" content="Hugo 0.20.7" />
+
+	<title>create &mdash; Cmd Documentation</title>
+
+	<link rel="stylesheet" href="https://www.cmd.io//semantic/semantic.min.css" type="text/css" />
+	<link rel="stylesheet" href="https://www.cmd.io/css/alabaster.css" type="text/css" />
+	<link rel="stylesheet" href="https://www.cmd.io/css/highlight.css" type="text/css" />
+
+	
+
+	<link rel="shortcut icon" href="https://www.cmd.io/favicon.ico" type="image/x-icon"/>
+
+	<script type="text/javascript">
+		if (location.hostname == "gliderlabs.github.io") {
+			location.href = "https://www.cmd.io"+location.pathname.replace("/cmd/", "/");
+		}
+	</script>
+</head>
+
+
+	<body>
+		<div class="ui inverted vertical segment" style="padding:0;">
+      <div class="ui container">
+        <div class="ui large borderless inverted menu">
+          <a href="https://www.cmd.io/" class="item" style="color: white !important;"><div style="border: 1px solid white; border-radius: 4px; background: white; color: black; font-size: x-large; line-height:1; margin-right: 6px;">&#8984;</div> CMD</a>
+          <a href="https://www.cmd.io/docs/" class="item"><i class="icon book"></i> Documentation</a>
+          <a href="https://www.cmd.io/community/" class="item"><i class="icon slack"></i>Community</a>
+          <a href="https://www.cmd.io/dev/" class="item"><i class="icon github"></i>Development</a>
+					<a href="https://medium.com/gliderlabs" class="item"><i class="icon medium"></i>Blog</a>
+
+					<div class="right item">
+	          <a href="https://alpha.cmd.io/console/" class="ui inverted button">Login to the Console</a>
+	        </div>
+        </div>
+      </div>
+    </div>
+
+		<div role="document" class="ui container document">
+			<div class="ui grid" style="margin-left: 4px;">
+				<div role="navigation" aria-label="main navigation" class="four wide column">
+					
+
+
+
+
+<h4>Documentation</h4>
+<ul style="margin-left: 17px;">
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/docs/">Overview</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/quickstart/">Quickstart</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/cli/">CLI Reference</a>
+		<ul style="margin-left: 17px; margin-top: 2px;">
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/create/">create</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/ls/">ls</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/source/">source</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/delete/">delete</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/edit/">edit</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/env/">env</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/access/">access</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/admins/">admins</a>
+			</li>
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/cli/tokens/">tokens</a>
+			</li>
+			
+		</ul>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/api/">API Reference</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/faq/">FAQ</a>
+	</li>
+	<li class="toctree-l1">
+		<a class="reference internal" href="https://www.cmd.io/guides/">Guides</a>
+		<ul style="margin-left: 17px; margin-top: 2px;">
+			
+			<li class="toctree-l2">
+				<a class="reference internal" href="https://www.cmd.io/guides/run-api/">Using the Run API</a>
+			</li>
+			
+		</ul>
+	</li>
+</ul>
+
+
+				</div>
+
+				<div class="body ten wide column" role="main">
+					
+	<h1>create</h1>
+	
+
+<h5 id="creates-a-new-command">Creates a new command</h5>
+
+<pre><code class="language-sh">$ cat ./script | ssh alpha.cmd.io :create &lt;name&gt; -
+</code></pre>
+
+<p><code>:create</code> will build and add a new command to your namespace with the given
+<code>&lt;name&gt;</code> using the script passed via STDIN. The <code>-</code> argument is required to
+inform the command to read from STDIN, as future versions may introduce an
+interactive mode.</p>
+
+<h3 id="script-format">Script format</h3>
+
+<p>Cmd expects a shell script with at least two shebang lines. The first line
+must be a special <code>#!cmd</code> line in this format:</p>
+
+<pre><code class="language-text">#!cmd &lt;base&gt; [&lt;package&gt;...]
+</code></pre>
+
+<p>The first argument <code>&lt;base&gt;</code> is either <code>alpine</code> or <code>ubuntu</code>. The following optional
+arguments are packages available in their respective package repositories. Examples:</p>
+
+<pre><code class="language-text">#!cmd alpine
+</code></pre>
+
+<pre><code class="language-text">#!cmd alpine bash curl
+</code></pre>
+
+<pre><code class="language-text">#!cmd ubuntu git build-essential
+</code></pre>
+
+<p>The next line must be a regular shebang line, defining either an interpreter
+for the rest of the script or a binary to run for the command. Examples:</p>
+
+<pre><code class="language-text">#!cmd alpine bash
+#!/bin/bash
+echo &quot;Hello world&quot;
+</code></pre>
+
+<pre><code class="language-text">#!cmd alpine curl
+#!/usr/bin/curl
+</code></pre>
+
+<h3 id="example">Example</h3>
+
+<p>This simple example will install a package and use the binary as the interpreter. Our script will be the following:</p>
+
+<pre><code class="language-text">#!cmd alpine speedtest-cli
+#!/usr/bin/speedtest-cli
+</code></pre>
+
+<p>Let&rsquo;s create our <code>speedtest</code> command by redirecting a heredoc (an alternative to piping the text file) to the <code>:create</code> built-in command:</p>
+
+<pre><code class="language-sh">$ ssh alpha.cmd.io :create speedtest - &lt;&lt;EOF
+#!cmd alpine speedtest-cli
+#!/usr/bin/speedtest-cli
+EOF
+Creating command... done
+</code></pre>
+
+<p>We can then run and pass arguments to the command:</p>
+
+<pre><code class="language-sh">$ ssh alpha.cmd.io speedtest --simple
+Ping: 13.78 ms
+Download: 552.79 Mbit/s
+Upload: 126.91 Mbit/s
+</code></pre>
+
+<p>The output is a test of the Cmd infrastructure (not your local Internet connection). While not very practical, it demonstrates how we can run simple utilities entirely remotely.</p>
+
+	<hr style="margin-top: 40px;"/>
+	<a href="https://github.com/gliderlabs/cmd/edit/master/docs/cli/create.md"><i class="icon pencil" style="text-decoration: none;"></i>Suggest Edits</a>
+
+				</div>
+
+			</div>
+
+
+			
+
+			
+
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+			<script>hljs.initHighlightingOnLoad();</script>
+			
+
+			
+		</div>
+	</body>
+</html>
