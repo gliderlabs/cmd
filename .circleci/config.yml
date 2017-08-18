@@ -9,16 +9,6 @@ jobs:
     working_directory: /go/src/github.com/gliderlabs/cmd
     steps:
       - checkout
-      - restore_cache:
-          key: cmd-{{ .Branch }}-{{ checksum "glide.lock" }}
-      - run:
-          name: Install deps
-          command: glide install --strip-vendor
-      - save_cache:
-          key:  cmd-{{ .Branch }}-{{ checksum "glide.lock" }}-{{ epoch }}
-          paths:
-            - /go/src/github.com/gliderlabs/cmd/vendor
-            - ~/.glide/cache
       - run:
           name: Build cmd
           command: make build

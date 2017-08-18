@@ -1,0 +1,139 @@
+
+# Gopkg.toml example
+#
+# Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
+# for detailed Gopkg.toml documentation.
+#
+# required = ["github.com/user/thing/cmd/thing"]
+# ignored = ["github.com/user/project/pkgX", "bitbucket.org/user/project/pkgA/pkgY"]
+#
+# [[constraint]]
+#   name = "github.com/user/project"
+#   version = "1.0.0"
+#
+# [[constraint]]
+#   name = "github.com/user/project2"
+#   branch = "dev"
+#   source = "github.com/myfork/project2"
+#
+# [[override]]
+#  name = "github.com/x/y"
+#  version = "2.4.0"
+
+ignored = ["github.com/gliderlabs/cmd"]
+
+[[constraint]]
+  name = "github.com/aws/aws-sdk-go"
+  version = "1.4.12"
+
+[[constraint]]
+  name = "github.com/cenkalti/backoff"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/docker/docker"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/docker/go-units"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/facebookgo/httpdown"
+
+[[constraint]]
+  name = "github.com/getsentry/raven-go"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/gliderlabs/comlab"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/gliderlabs/ssh"
+
+[[constraint]]
+  name = "github.com/golang/mock"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/gorilla/context"
+
+[[constraint]]
+  name = "github.com/gorilla/websocket"
+
+[[constraint]]
+  name = "github.com/goware/emailx"
+
+[[constraint]]
+  name = "github.com/gregjones/httpcache"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/guregu/dynamo"
+  source = "https://github.com/mattaitchison/dynamo.git"
+
+[[constraint]]
+  name = "github.com/honeycombio/libhoney-go"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/inconshreveable/muxado"
+
+[[constraint]]
+  name = "github.com/leekchan/accounting"
+  version = "0.2.0"
+
+[[constraint]]
+  name = "github.com/maruel/panicparse"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/mgutz/ansi"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/mitchellh/mapstructure"
+
+[[constraint]]
+  name = "github.com/mitchellh/panicwrap"
+
+[[constraint]]
+  name = "github.com/nlopes/slack"
+
+[[constraint]]
+  name = "github.com/patrickmn/go-cache"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/pkg/errors"
+
+[[constraint]]
+  name = "github.com/satori/go.uuid"
+
+[[constraint]]
+  name = "github.com/spf13/cast"
+  version = "1.1.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/spf13/cobra"
+
+[[constraint]]
+  name = "github.com/stripe/stripe-go"
+  version = "19.2.0"
+
+[[constraint]]
+  name = "github.com/thejerf/suture"
+  version = "2.0.0"
+
+[[constraint]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+
+[[constraint]]
+  name = "golang.org/x/oauth2"
+
+[[constraint]]
+  name = "gopkg.in/mailgun/mailgun-go.v1"
+  version = "1.0.2"

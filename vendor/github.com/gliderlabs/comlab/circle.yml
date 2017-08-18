@@ -1,0 +1,11 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  override:
+    - docker build -t comlab -f dev/setup/Dockerfile .
+
+test:
+  override:
+    - docker run comlab /bin/sh -c "go test -v ./pkg/..."
