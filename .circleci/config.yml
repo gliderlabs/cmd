@@ -49,7 +49,7 @@ jobs:
             if is-branch "master"; then
               echo "$GCLOUD_KEY" | base64 --decode --ignore-garbage > .circleci/gliderlabs.json
               ./google-cloud-sdk/bin/gcloud auth activate-service-account --key-file .circleci/gliderlabs.json
-              docker tag gliderlabs/cmd:build-$CIRCLE_BUILD_NUM us.gcr.io/gliderlabs/cmd:build-$CIRCLE_BUILD_NUM
+              docker tag gliderlabs/cmd us.gcr.io/gliderlabs/cmd:build-$CIRCLE_BUILD_NUM
               ./google-cloud-sdk/bin/gcloud docker -- push us.gcr.io/gliderlabs/cmd:build-$CIRCLE_BUILD_NUM
             fi
       - deploy:
