@@ -10,6 +10,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install tools
+          command: |
+            wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-167.0.0-linux-x86_64.tar.gz
+            tar -zxf google-cloud-sdk-167.0.0-linux-x86_64.tar.gz
+      - run:
           name: Build cmd
           command: make build
       - run:
@@ -42,7 +47,10 @@ jobs:
           name: Deploy beta channel
           command: |
             if is-branch "master"; then
-              make deploy-beta IMAGE=$(infra-query -r ".modules[0].outputs.repos.value.cmd"):build-$CIRCLE_BUILD_NUM
+              echo "$GCLOUD_KEY" | base64 --decode --ignore-garbage > .circleci/gliderlabs.json
+              gcloud auth activate-service-account --key-file .circleci/gliderlabs.json
+              docker tag gliderlabs/cmd:build-$CIRCLE_BUILD_NUM us.gcr.io/gliderlabs/cmd:build-$CIRCLE_BUILD_NUM
+              gcloud docker -- push us.gcr.io/gliderlabs/cmd:build-$CIRCLE_BUILD_NUM
             fi
       - deploy:
           name: Deploy alpha channel
