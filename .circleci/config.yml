@@ -50,7 +50,7 @@ jobs:
               echo "$GCLOUD_KEY" | base64 --decode --ignore-garbage > .circleci/gliderlabs.json
               gcloud auth activate-service-account --key-file .circleci/gliderlabs.json
               docker tag gliderlabs/cmd:build-$CIRCLE_BUILD_NUM us.gcr.io/gliderlabs/cmd:build-$CIRCLE_BUILD_NUM
-              gcloud docker -- push us.gcr.io/gliderlabs/cmd:build-$CIRCLE_BUILD_NUM
+              ./google-cloud-sdk/bin/gcloud docker -- push us.gcr.io/gliderlabs/cmd:build-$CIRCLE_BUILD_NUM
             fi
       - deploy:
           name: Deploy alpha channel
