@@ -19,6 +19,6 @@ ifupdated() {
   fi
 }
 
-ifupdated glide.yaml deps-go
+#ifupdated glide.yaml deps-go
 #ifupdated ui/package.json deps-js
 #ifupdated ui/semantic deps-css
