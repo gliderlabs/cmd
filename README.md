@@ -9,7 +9,7 @@ of everything for [Linux](#linux-dependencies) and probably Windows.
 The cmd project is written in Golang, so 
 [install the latest version of go](https://golang.org/doc/install#install) for
 the platform. From here, make sure your `GOPATH` is set and the cmd project is
-cloned to `$GOPATH/src/gliderlabs/cmd` (this location is important). In some
+cloned to `$GOPATH/src/github.com/gliderlabs/cmd` (this location is important). In some
 cases you need to add $GOPATH/bin to your $PATH variable so the built binaries
 are executable by following commands.
 
