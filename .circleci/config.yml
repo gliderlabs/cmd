@@ -65,6 +65,6 @@ jobs:
               ./google-cloud-sdk/bin/gcloud docker -- push us.gcr.io/gliderlabs/cmd:latest
               ./google-cloud-sdk/bin/gcloud config set project gliderlabs
               ./google-cloud-sdk/bin/gcloud container clusters get-credentials production --zone us-central1-b
-              ./kubectl apply -f run/channels/beta.yaml --namespace cmd
+              sigil -f run/channels/beta.yaml tag=build-$CIRCLE_BUILD_NUM | ./kubectl apply --namespace cmd -f -
               ./kubectl rollout status deployment/cmd-beta --watch --namespace cmd
             fi

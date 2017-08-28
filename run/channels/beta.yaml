@@ -57,7 +57,7 @@ spec:
             name: cmd-beta
       containers:
         - name: cmd
-          image: us.gcr.io/gliderlabs/cmd:latest
+          image: us.gcr.io/gliderlabs/cmd:{{.tag}}
           command: ["/usr/local/bin/cmd", "-d", "/config/config.toml"]
           ports:
             - name: http
