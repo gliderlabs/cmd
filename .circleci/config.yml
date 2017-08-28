@@ -12,8 +12,10 @@ jobs:
       - run:
           name: Install tools
           command: |
-            wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-167.0.0-linux-x86_64.tar.gz
-            tar -zxf google-cloud-sdk-167.0.0-linux-x86_64.tar.gz
+            wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-168.0.0-linux-x86_64.tar.gz
+            tar -zxf google-cloud-sdk-168.0.0-linux-x86_64.tar.gz
+            wget -qO- https://storage.googleapis.com/kubernetes-release/release/v1.6.0/bin/linux/amd64/kubectl > kubectl
+            chmod +x kubectl
       - run:
           name: Build cmd
           command: make build
@@ -50,7 +52,6 @@ jobs:
               make deploy-alpha IMAGE=$(infra-query -r ".modules[0].outputs.repos.value.cmd"):build-$CIRCLE_BUILD_NUM
               [[ "$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${CMD_TOKEN_ALPHA}@alpha.cmd.io gliderbot/ping)" == "pong" ]]
               [[ "$(curl -Ss https://${CMD_TOKEN_ALPHA}@alpha.cmd.io/run/gliderbot/ping)" == "pong" ]]
-              kubectl config view
             fi
       - deploy:
           name: Deploy beta channel
@@ -64,8 +65,6 @@ jobs:
               ./google-cloud-sdk/bin/gcloud docker -- push us.gcr.io/gliderlabs/cmd:latest
               ./google-cloud-sdk/bin/gcloud config set project gliderlabs
               ./google-cloud-sdk/bin/gcloud container clusters get-credentials production --zone us-central1-b
-              export GOOGLE_APPLICATION_CREDENTIALS="$(pwd)/.circleci/gliderlabs.json"
-              kubectl config view
-              kubectl apply -f run/channels/beta.yaml
-              kubectl rollout status deployment/cmd-beta --watch
+              ./kubectl apply -f run/channels/beta.yaml
+              ./kubectl rollout status deployment/cmd-beta --watch
             fi
