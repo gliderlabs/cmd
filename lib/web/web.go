@@ -72,7 +72,7 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, data in
 	var prefix []string
 	for _, part := range parts[1:] {
 		// TODO: fix this, it should not be dependent on file structure
-		if part == "app" {
+		if part == "app" || part == "lib" {
 			break
 		}
 		prefix = append(prefix, part)
