@@ -44,19 +44,25 @@ jobs:
               make -C www publish-ci
             fi
       - deploy:
-          name: Deploy beta channel
-          command: |
-            if is-branch "master"; then
-              echo "$GCLOUD_KEY" | base64 --decode --ignore-garbage > .circleci/gliderlabs.json
-              ./google-cloud-sdk/bin/gcloud auth activate-service-account --key-file .circleci/gliderlabs.json
-              docker tag gliderlabs/cmd us.gcr.io/gliderlabs/cmd:build-$CIRCLE_BUILD_NUM
-              ./google-cloud-sdk/bin/gcloud docker -- push us.gcr.io/gliderlabs/cmd:build-$CIRCLE_BUILD_NUM
-            fi
-      - deploy:
           name: Deploy alpha channel
           command: |
             if is-branch "master"; then
               make deploy-alpha IMAGE=$(infra-query -r ".modules[0].outputs.repos.value.cmd"):build-$CIRCLE_BUILD_NUM
               [[ "$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${CMD_TOKEN_ALPHA}@alpha.cmd.io gliderbot/ping)" == "pong" ]]
               [[ "$(curl -Ss https://${CMD_TOKEN_ALPHA}@alpha.cmd.io/run/gliderbot/ping)" == "pong" ]]
+            fi
+      - deploy:
+          name: Deploy beta channel
+          command: |
+            if is-branch "master"; then
+              echo "$GCLOUD_KEY" | base64 --decode --ignore-garbage > .circleci/gliderlabs.json
+              ./google-cloud-sdk/bin/gcloud auth activate-service-account --key-file .circleci/gliderlabs.json
+              docker tag gliderlabs/cmd us.gcr.io/gliderlabs/cmd:build-$CIRCLE_BUILD_NUM
+              docker tag gliderlabs/cmd us.gcr.io/gliderlabs/cmd:latest
+              ./google-cloud-sdk/bin/gcloud docker -- push us.gcr.io/gliderlabs/cmd:build-$CIRCLE_BUILD_NUM
+              ./google-cloud-sdk/bin/gcloud docker -- push us.gcr.io/gliderlabs/cmd:latest
+              ./google-cloud-sdk/bin/gcloud config set project gliderlabs
+              ./google-cloud-sdk/bin/gcloud container clusters get-credentials production --zone us-central1-b
+              kubectl apply -f run/channels/beta.yaml
+              kubectl rollout status deployment/cmd-beta --watch
             fi
