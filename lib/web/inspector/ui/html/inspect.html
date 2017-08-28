@@ -1,0 +1,23 @@
+<html>
+<head>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/5.9.5/jsoneditor.min.css" rel="stylesheet" type="text/css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/5.9.5/jsoneditor.min.js"></script>
+</head>
+<body>
+<div id="jsoneditor" style="width: 100%; height: 100%;"></div>
+
+    <script>
+        // create the editor
+        var container = document.getElementById("jsoneditor");
+        var options = {mode: "view"};
+        var editor = new JSONEditor(container, options);
+
+        // set json
+        var json = {{ .JSON }};
+        editor.set(json);
+
+        // get json
+        var json = editor.get();
+    </script>
+</body>
+</html>
