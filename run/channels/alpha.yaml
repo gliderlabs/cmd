@@ -15,7 +15,7 @@ data:
     deny_msg = "Access Denied: Visit https://alpha.cmd.io/request to request access"
 
     [dockerbox]
-    hostname = "dockerbox-alpha.cmd.svc.cluster.local"
+    hostname = "dockerbox.cmd.svc.cluster.local"
 
     [store]
     backend = "store.dynamodb"
@@ -23,6 +23,7 @@ data:
     [dynamodb]
     table = "alpha.cmd.io_config"
     token_table = "alpha.cmd.io_tokens"
+    region = "us-east-1"
 
     [auth0]
     domain = "gl-cmd.auth0.com"
@@ -38,6 +39,9 @@ data:
 
     [web]
     listen_addr = ":80"
+    tls_addr = ":443"
+    tls_cert = "/tmp/tls/tls.crt"
+    tls_key = "/tmp/tls/tls.key"
 
     [analytics]
     tracking_id = "UA-58928488-4"
@@ -67,13 +71,18 @@ spec:
         - name: config-volume
           configMap:
             name: cmd-alpha
+        - name: tls-cert
+          secret:
+            secretName: cmd-alpha-tls
       containers:
         - name: cmd
-          image: ${image}
+          image: us.gcr.io/gliderlabs/cmd:{{.tag}}
           command: ["/usr/local/bin/cmd", "-d", "/config/config.toml"]
           ports:
             - name: http
               containerPort: 80
+            - name: https
+              containerPort: 443
             - name: ssh
               containerPort: 22
           readinessProbe:
@@ -85,6 +94,8 @@ spec:
               name: host-key
             - mountPath: /config
               name: config-volume
+            - mountPath: /tmp/tls
+              name: tls-cert
           env:
             - name: CHANNEL
               value: alpha
@@ -158,10 +169,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: cmd-alpha
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:055471703963:certificate/5ce76820-c1b6-4bf3-b462-01bafa699232"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
 spec:
   type: LoadBalancer
   selector:
@@ -172,52 +179,8 @@ spec:
       targetPort: http
       port: 80
     - name: https
-      targetPort: http
+      targetPort: https
       port: 443
     - name: ssh
       targetPort: ssh
       port: 22
----
-apiVersion: extensions/v1beta1
-kind: DaemonSet
-metadata:
-  name: dockerbox-alpha
-spec:
-  template:
-    metadata:
-      labels:
-        app: dockerbox
-        channel: alpha
-    spec:
-      containers:
-        - name: dockerbox
-          image: gliderlabs/dockerbox:latest
-          ports:
-            - name: http
-              containerPort: 2375
-          readinessProbe:
-            tcpSocket:
-              port: http
-            initialDelaySeconds: 5
-          securityContext:
-            privileged: true
-          volumeMounts:
-            - name: dockerbox
-              mountPath: /var/lib/docker
-      volumes:
-        - name: dockerbox
-          emptyDir: {}
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: dockerbox-alpha
-spec:
-  clusterIP: None
-  selector:
-    app: dockerbox
-    channel: alpha
-  ports:
-    - name: http
-      targetPort: http
-      port: 2375

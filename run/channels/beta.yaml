@@ -17,8 +17,8 @@ data:
 
     [auth0]
     domain = "gl-cmd.auth0.com"
-    callback_url = "http://beta.cmd.io/_auth/callback"
-    logout_url = "http://beta.cmd.io/_auth/logout"
+    callback_url = "https://beta.cmd.io/_auth/callback"
+    logout_url = "https://beta.cmd.io/_auth/logout"
 
     [mailgun]
     domain = "gliderlabs.com"
@@ -33,6 +33,8 @@ data:
     tls_cert = "/tmp/tls/tls.crt"
     tls_key = "/tmp/tls/tls.key"
 
+    [analytics]
+    tracking_id = "UA-58928488-4"
 
 ---
 apiVersion: extensions/v1beta1
