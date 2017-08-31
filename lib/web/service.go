@@ -32,13 +32,13 @@ func (c *Component) Serve() {
 			}
 
 			// redirect to https if available
-			// if r.URL.Scheme != "https" && c.https != nil {
-			// 	u := r.URL
-			// 	u.Host = r.Host
-			// 	u.Scheme = "https"
-			// 	http.Redirect(w, r, u.String(), 302)
-			// 	return
-			// }
+			if r.TLS == nil && c.https != nil {
+				u := r.URL
+				u.Host = r.Host
+				u.Scheme = "https"
+				http.Redirect(w, r, u.String(), http.StatusFound)
+				return
+			}
 
 			// serve static
 			staticPrefix := com.GetString("static_path") + "/"
