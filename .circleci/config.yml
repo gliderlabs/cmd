@@ -41,8 +41,6 @@ jobs:
             docker tag gliderlabs/cmd us.gcr.io/gliderlabs/cmd:latest
             ./google-cloud-sdk/bin/gcloud docker -- push us.gcr.io/gliderlabs/cmd:build-$CIRCLE_BUILD_NUM
             ./google-cloud-sdk/bin/gcloud docker -- push us.gcr.io/gliderlabs/cmd:latest
-            ./google-cloud-sdk/bin/gcloud config set project gliderlabs
-            ./google-cloud-sdk/bin/gcloud container clusters get-credentials production --zone us-central1-b
       - store_artifacts:
           path: build
           destination: build
@@ -58,6 +56,8 @@ jobs:
           name: Deploy alpha channel
           command: |
             if is-branch "master"; then
+              ./google-cloud-sdk/bin/gcloud config set project gliderlabs
+              ./google-cloud-sdk/bin/gcloud container clusters get-credentials production --zone us-central1-b
               sigil -f run/channels/alpha.yaml tag=build-$CIRCLE_BUILD_NUM | ./kubectl apply --namespace cmd -f -
               ./kubectl rollout status deployment/cmd-alpha --watch --namespace cmd
             fi
@@ -70,6 +70,8 @@ jobs:
           name: Deploy beta channel
           command: |
             if is-branch "master"; then
+              ./google-cloud-sdk/bin/gcloud config set project gliderlabs
+              ./google-cloud-sdk/bin/gcloud container clusters get-credentials production --zone us-central1-b
               sigil -f run/channels/beta.yaml tag=build-$CIRCLE_BUILD_NUM | ./kubectl apply --namespace cmd -f -
               ./kubectl rollout status deployment/cmd-beta --watch --namespace cmd
             fi
