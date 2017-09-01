@@ -15,6 +15,7 @@ func (c *Component) PreprocessOrder() uint {
 func (c *Component) PreprocessSession(sess ssh.Session) (cont bool, msg string) {
 	// check for first time user
 	if user := ContextUser(sess.Context()); user != nil {
+		fmt.Println(*user)
 		if user.Account.CustomerID == "" {
 			fmt.Fprintf(sess, cli.Bright("\nWelcome, %s!\n\n"), sess.User())
 			fmt.Fprintln(sess, "We noticed this is your first login. So far so good!")

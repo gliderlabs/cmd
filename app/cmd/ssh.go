@@ -132,7 +132,10 @@ func (c *Component) HandleAuth(ctx ssh.Context, key ssh.PublicKey) bool {
 			}
 			keys = append(keys, k)
 		}
-		usr, _ := console.LookupNickname(user)
+		usr, err := console.LookupNickname(user)
+		if err != nil {
+			log.Info(user, err)
+		}
 		u = cachedUser{
 			user: usr,
 			keys: keys,
