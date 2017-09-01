@@ -89,11 +89,14 @@ func (c *Client) NewToken(code string) (*oauth2.Token, error) {
 	return c.oauthConfig().Exchange(oauth2.NoContext, code)
 }
 
-func (c *Client) get(token *oauth2.Token, url string) (map[string]interface{}, error) {
+func (c *Client) oauthGet(token *oauth2.Token, url string) (map[string]interface{}, error) {
 	client := c.oauthConfig().Client(oauth2.NoContext, token)
 	resp, err := client.Get(url)
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode != 200 {
+		return nil, c.readError(resp)
 	}
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -106,7 +109,7 @@ func (c *Client) get(token *oauth2.Token, url string) (map[string]interface{}, e
 }
 
 func (c *Client) UserInfo(token *oauth2.Token) (UserInfo, error) {
-	resp, err := c.get(token, fmt.Sprintf(userInfoEndpoint, c.Domain))
+	resp, err := c.oauthGet(token, fmt.Sprintf(userInfoEndpoint, c.Domain))
 	return UserInfo(resp), err
 }
 
@@ -133,6 +136,9 @@ func (c *Client) DelegationToken(token *oauth2.Token, apiType string) (string, e
 	if err != nil {
 		return "", err
 	}
+	if resp.StatusCode != 200 {
+		return "", c.readError(resp)
+	}
 	raw, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	if err != nil {
@@ -156,6 +162,9 @@ func (c *Client) User(id string) (User, error) {
 	resp, err := new(http.Client).Do(req)
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode != 200 {
+		return nil, c.readError(resp)
 	}
 	raw, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
@@ -184,7 +193,7 @@ func (c *Client) SearchUsers(q string) ([]User, error) {
 		return nil, err
 	}
 	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf(resp.Status)
+		return nil, c.readError(resp)
 	}
 	raw, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
@@ -215,7 +224,7 @@ func (c *Client) Users(params map[string]string) ([]User, error) {
 		return nil, err
 	}
 	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf(resp.Status)
+		return nil, c.readError(resp)
 	}
 	raw, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
@@ -246,16 +255,20 @@ func (c *Client) PatchUser(id string, user User) error {
 		return err
 	}
 	if resp.StatusCode != 200 {
-		raw, err := ioutil.ReadAll(resp.Body)
-		defer resp.Body.Close()
-		if err != nil {
-			return err
-		}
-		var errBody map[string]interface{}
-		if err := json.Unmarshal(raw, &errBody); err != nil {
-			return err
-		}
-		return fmt.Errorf("%s: %s", errBody["error"], errBody["message"])
+		return c.readError(resp)
 	}
 	return nil
+}
+
+func (c *Client) readError(resp *http.Response) error {
+	raw, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	if err != nil {
+		return fmt.Errorf("response read error: %s", err)
+	}
+	var errBody map[string]interface{}
+	if err := json.Unmarshal(raw, &errBody); err != nil {
+		return fmt.Errorf("response parse error: %s", err)
+	}
+	return fmt.Errorf("%s: %s", errBody["error"], errBody["message"])
 }
