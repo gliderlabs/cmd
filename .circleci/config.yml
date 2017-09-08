@@ -53,7 +53,7 @@ jobs:
               make -C www publish-ci
             fi
       - deploy:
-          name: Deploy alpha channel
+          name: Deploy alpha channel (master)
           command: |
             if is-branch "master"; then
               ./google-cloud-sdk/bin/gcloud config set project gliderlabs
@@ -67,9 +67,9 @@ jobs:
             #   [[ "$(curl -Ss https://${CMD_TOKEN_ALPHA}@alpha.cmd.io/run/gliderbot/ping)" == "pong" ]]
             # fi
       - deploy:
-          name: Deploy beta channel
+          name: Deploy beta channel (beta)
           command: |
-            if is-branch "master"; then
+            if is-branch "beta"; then
               ./google-cloud-sdk/bin/gcloud config set project gliderlabs
               ./google-cloud-sdk/bin/gcloud container clusters get-credentials production --zone us-central1-b
               sigil -f run/channels/beta.yaml tag=build-$CIRCLE_BUILD_NUM | ./kubectl apply --namespace cmd -f -
