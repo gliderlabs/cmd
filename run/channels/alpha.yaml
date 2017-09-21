@@ -100,7 +100,7 @@ spec:
             - name: CHANNEL
               value: alpha
             - name: DEBUG
-              value: true
+              value: "true"
             - name: SLACK_TOKEN
               valueFrom:
                 secretKeyRef:
