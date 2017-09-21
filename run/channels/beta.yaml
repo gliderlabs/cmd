@@ -67,7 +67,7 @@ spec:
       containers:
         - name: cmd
           image: us.gcr.io/gliderlabs/cmd:{{.tag}}
-          command: ["/usr/local/bin/cmd", "-d", "/config/config.toml"]
+          command: ["/usr/local/bin/cmd", "/config/config.toml"]
           ports:
             - name: http
               containerPort: 80
